@@ -81,4 +81,4 @@ return CMap::mergeArray(array(
 		// this is used in contact page
 		'adminEmail'=>'webmaster@example.com',
 	),
-), require(dirname(__FILE__) . '/main.default.php'));
+), require(dirname(__FILE__) . '/main.php'));
