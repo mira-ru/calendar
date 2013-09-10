@@ -8,14 +8,9 @@
 		<meta name="author" content="">
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 		<!-- Bootstrap core CSS -->
-		<link href="../../css/bootstrap.css" rel="stylesheet">
+		<link href="/css/bootstrap.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
-		<link href="../../css/custom/backend/offcanvas.css" rel="stylesheet">
-		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!--[if lt IE 9]>
-			<script src="../../assets/js/html5shiv.js"></script>
-			<script src="../../assets/js/respond.min.js"></script>
-		<![endif]-->
+		<link href="/css/custom/backend/offcanvas.css" rel="stylesheet">
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
@@ -48,16 +43,36 @@
 			<div class="row row-offcanvas row-offcanvas-left">
 				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
 					<div class="list-group">
-						<a href="#" class="list-group-item active">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
-						<a href="#" class="list-group-item">Link</a>
+						<?php
+						$links = array(
+							array(
+								'label' => 'Мастера',
+								'url' => $this->createUrl('/admin/user/index'),
+								'active' => $this->id == 'user'
+							),
+							array(
+								'label' => 'Залы',
+								'url' => $this->createUrl('/admin/hall/index'),
+								'active' => $this->id == 'hall'
+							),
+							array(
+								'label' => 'Центры',
+								'url' => $this->createUrl('/admin/center/index'),
+								'active' => $this->id == 'center'
+							),
+							array(
+								'label' => 'Услуги',
+								'url' => $this->createUrl('/admin/service/index'),
+								'active' => $this->id == 'service'
+							),
+						);
+
+						foreach ($links as $link) {
+							$class = $link['active'] ? 'list-group-item active' : 'list-group-item';
+							echo CHtml::link($link['label'], $link['url'], array('class'=>$class));
+						}
+
+						?>
 					</div>
 				</div><!--/span-->
 				<div class="col-xs-12 col-sm-9">
@@ -68,14 +83,14 @@
 				</div><!--/span-->
 			</div><!--/row-->
 			<hr>
-			<footer>Copyright &copy; <?php echo date('Y'); ?> by Miracenter. All Rights Reserved.<br/><?php echo Yii::powered(); ?></footer>
+			<footer>Copyright &copy; <?php echo date('Y'); ?> by Miracenter. All Rights Reserved.</footer>
 		</div><!--/.container-->
 
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="../../js/lib/Jquery.js"></script>
-		<script src="../../js/lib/Bootstrap.js"></script>
-		<script src="../../js/lib/mod/backend/offcanvas.js"></script>
+		<script src="/js/lib/Jquery.js"></script>
+		<script src="/js/lib/Bootstrap.js"></script>
+		<script src="/js/lib/mod/backend/offcanvas.js"></script>
 	</body>
 </html>

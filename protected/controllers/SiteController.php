@@ -1,8 +1,7 @@
 <?php
 
-class SiteController extends Controller
+class SiteController extends FrontController
 {
-	public $layout = 'backend';
 	/**
 	 * Declares class-based actions.
 	 */
