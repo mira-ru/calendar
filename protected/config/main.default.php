@@ -10,6 +10,7 @@ return CMap::mergeArray(array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
+		'ext.yii-firephp.*',
 	),
 
 	'modules'=>array(
@@ -39,21 +40,16 @@ return CMap::mergeArray(array(
 				'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 			),
-		),
-		*/
+		),*/
+
 		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-		),
-		// uncomment the following to use a MySQL database
-		/*
-		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=testdrive',
+			'connectionString' => 'mysql:host=localhost;dbname=calendar',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'calendar',
+			'password' => '12345',
 			'charset' => 'utf8',
 		),
-		*/
+
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',

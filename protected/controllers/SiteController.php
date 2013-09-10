@@ -30,6 +30,9 @@ class SiteController extends Controller
 	{
 		// renders the view file 'protected/views/site/index.php'
 		// using the default layout 'protected/views/layouts/main.php'
+//		setlocale(LC_TIME, 'ru_RU.utf8');
+//		FirePHP::getInstance()->fb(strtotime('08.00') - strtotime('TODAY'));
+//		FirePHP::getInstance()->fb(strtotime('+8 hours',0));
 		$this->render('index');
 	}
 
