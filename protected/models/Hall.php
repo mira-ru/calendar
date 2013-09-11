@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'hall':
  * @property integer $id
  * @property string $name
+ * @property string $status
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -40,7 +41,7 @@ class Hall extends CActiveRecord
 			array('name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, status, name, create_time, update_time', 'safe', 'on'=>'search'),
+			array('id, status, name', 'safe', 'on'=>'search'),
 		);
 	}
 

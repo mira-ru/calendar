@@ -7,13 +7,6 @@ $this->breadcrumbs=array(
 	$model->name=>array('view','id'=>$model->id),
 	'Update',
 );
-
-$this->menu=array(
-	array('label'=>'List Hall', 'url'=>array('index')),
-	array('label'=>'Create Hall', 'url'=>array('create')),
-	array('label'=>'View Hall', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Hall', 'url'=>array('admin')),
-);
 ?>
 
 <h1>Редактирование зала: <?php echo $model->name; ?></h1>

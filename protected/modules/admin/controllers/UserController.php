@@ -134,17 +134,4 @@ class UserController extends AdminController
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
-
-	/**
-	 * Performs the AJAX validation.
-	 * @param User $model the model to be validated
-	 */
-	protected function performAjaxValidation($model)
-	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
-	}
 }
