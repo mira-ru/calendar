@@ -7,13 +7,6 @@ $this->breadcrumbs=array(
 	$model->name,
 );
 
-$this->menu=array(
-	array('label'=>'List Service', 'url'=>array('index')),
-	array('label'=>'Create Service', 'url'=>array('create')),
-	array('label'=>'Update Service', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Service', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Service', 'url'=>array('admin')),
-);
 ?>
 
 <h1>View Service #<?php echo $model->id; ?></h1>
@@ -21,9 +14,25 @@ $this->menu=array(
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'name',
-		'create_time',
-		'update_time',
+		array(
+			'name'=>'id',
+			'value' => $model->id,
+		),
+		array(
+			'name'=>'status',
+			'value' => User::$statusNames[$model->status],
+		),
+		array(
+			'name'=>'name',
+			'value' => $model->name,
+		),
+		array(
+			'name'=> 'create_time',
+			'value'=>date("d.m.Y", $model->create_time),
+		),
+		array(
+			'name'=> 'update_time',
+			'value'=>date("d.m.Y", $model->update_time),
+		),
 	),
 )); ?>

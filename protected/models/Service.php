@@ -11,6 +11,15 @@
  */
 class Service extends CActiveRecord
 {
+	const STATUS_ACTIVE = 1;
+	const STATUS_DELETED = 2;
+
+	public static $statusNames = array(
+		self::STATUS_ACTIVE => 'Активен',
+		self::STATUS_DELETED => 'Удален',
+	);
+
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -27,7 +36,8 @@ class Service extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
+//			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
+			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -45,26 +55,16 @@ class Service extends CActiveRecord
 	}
 
 	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-		);
-	}
-
-	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
 	public function attributeLabels()
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'create_time' => 'Create Time',
-			'update_time' => 'Update Time',
+			'status' => 'Статус',
+			'name' => 'Название',
+			'create_time' => 'Дата создания',
+			'update_time' => 'Дата обновления',
 		);
 	}
 
@@ -82,14 +82,24 @@ class Service extends CActiveRecord
 	 */
 	public function search()
 	{
-		// @todo Please modify the following code to remove attributes that should not be searched.
-
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('create_time',$this->create_time);
-		$criteria->compare('update_time',$this->update_time);
+
+		if (empty($this->status)) {
+			$criteria->compare('status', self::STATUS_ACTIVE);
+		} else {
+			$criteria->compare('status',$this->status);
+		}
+
+		$request = Yii::app()->getRequest();
+		if (($dateFrom = $request->getParam('date_from'))) {
+			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
+		}
+		if (($dateTo = $request->getParam('update_to'))) {
+			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+		}
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
