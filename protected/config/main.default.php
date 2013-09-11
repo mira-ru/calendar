@@ -12,6 +12,7 @@ return CMap::mergeArray(array(
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
+		'application.config.Config',
 		'ext.yii-firephp.*',
 	),
 

@@ -21,7 +21,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><?php echo CHtml::encode(Yii::app()->name); ?></a>
+					<a class="navbar-brand" href="/admin"><?php echo CHtml::encode(Yii::app()->name); ?></a>
 				</div>
 				<div class="collapse navbar-collapse">
 				<?php $this->widget('zii.widgets.CMenu', array(
@@ -62,6 +62,11 @@
 								'label' => 'Услуги',
 								'url' => $this->createUrl('/admin/service/index'),
 								'active' => $this->id == 'service'
+							),
+							array(
+								'label' => 'События',
+								'url' => $this->createUrl('/admin/event/index'),
+								'active' => $this->id == 'event'
 							),
 						);
 
