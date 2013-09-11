@@ -29,6 +29,7 @@ class m130910_055801_init extends CDbMigration
 
 		$this->createTable('center', array(
 			'id'          => 'pk',
+			'status'      => 'TINYINT(1) NOT NULL DEFAULT 0',
 			'name'       => 'VARCHAR(255) NOT NULL DEFAULT ""',
 			'create_time' => 'INT(11) NOT NULL DEFAULT 0',
 			'update_time' => 'INT(11) NOT NULL DEFAULT 0',
@@ -36,6 +37,7 @@ class m130910_055801_init extends CDbMigration
 
 		$this->createTable('service', array(
 			'id'          => 'pk',
+			'status'      => 'TINYINT(1) NOT NULL DEFAULT 0',
 			'name'       => 'VARCHAR(255) NOT NULL DEFAULT ""',
 			'create_time' => 'INT(11) NOT NULL DEFAULT 0',
 			'update_time' => 'INT(11) NOT NULL DEFAULT 0',
@@ -43,6 +45,7 @@ class m130910_055801_init extends CDbMigration
 
 		$this->createTable('hall', array(
 			'id'          => 'pk',
+			'status'      => 'TINYINT(1) NOT NULL DEFAULT 0',
 			'name'       => 'VARCHAR(255) NOT NULL DEFAULT ""',
 			'create_time' => 'INT(11) NOT NULL DEFAULT 0',
 			'update_time' => 'INT(11) NOT NULL DEFAULT 0',

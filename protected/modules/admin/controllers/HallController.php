@@ -9,7 +9,7 @@ class HallController extends AdminController
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			'postOnly + delete', // we only allow deletion via POST request
+//			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -21,16 +21,8 @@ class HallController extends AdminController
 	public function accessRules()
 	{
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
-				'users'=>array('@'),
-			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array('index', 'create', 'update', 'view' ,'delete'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -65,7 +57,7 @@ class HallController extends AdminController
 		{
 			$model->attributes=$_POST['Hall'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('index','id'=>$model->id));
 		}
 
 		$this->render('create',array(
@@ -89,7 +81,7 @@ class HallController extends AdminController
 		{
 			$model->attributes=$_POST['Hall'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('index','id'=>$model->id));
 		}
 
 		$this->render('update',array(
@@ -116,23 +108,12 @@ class HallController extends AdminController
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Hall');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
 		$model=new Hall('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Hall']))
 			$model->attributes=$_GET['Hall'];
 
-		$this->render('admin',array(
+		$this->render('index',array(
 			'model'=>$model,
 		));
 	}

@@ -1,20 +1,81 @@
 <?php
 /* @var $this HallController */
-/* @var $dataProvider CActiveDataProvider */
+/* @var $model Hall */
 
 $this->breadcrumbs=array(
-	'Halls',
+	'Halls'=>array('index'),
+	'Manage',
 );
 
 $this->menu=array(
+	array('label'=>'List Hall', 'url'=>array('index')),
 	array('label'=>'Create Hall', 'url'=>array('create')),
-	array('label'=>'Manage Hall', 'url'=>array('admin')),
 );
+
+Yii::app()->clientScript->registerScript('search', "
+$('.search-button').click(function(){
+	$('.search-form').toggle();
+	return false;
+});
+$('.search-form form').submit(function(){
+	$('#hall-grid').yiiGridView('update', {
+		data: $(this).serialize()
+	});
+	return false;
+});
+");
 ?>
 
-<h1>Halls</h1>
+<h1>Управление залами</h1>
 
-<?php $this->widget('zii.widgets.CListView', array(
-	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
+<div class="row">
+	<div class="col-xs-12 col-sm-9">
+		<?php echo CHtml::link('Расширенный поиск','#',array('class'=>'search-button btn btn-default')); ?>
+		<?php echo CHtml::button('Добавить', array('onclick'=>'document.location = \''.$this->createUrl($this->id.'/create').'\'', 'class' => 'btn btn-primary')); ?>
+	</div>
+</div>
+
+<div class="search-form" style="display:none">
+<?php $this->renderPartial('_search',array(
+	'model'=>$model,
+	'dateTo'=>Yii::app()->request->getParam('date_to'),
+	'dateFrom'=>Yii::app()->request->getParam('date_from'),
+)); ?>
+</div><!-- search-form -->
+
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'hall-grid',
+	'dataProvider'=>$model->search(),
+	'itemsCssClass' => 'table table-striped',
+	'columns'=>array(
+		array(
+			'name'=>'id',
+			'sortable' => false,
+			'value' => '$data->id',
+		),
+		array(
+			'name'=>'status',
+			'sortable' => false,
+			'value' => 'Hall::$statusNames[$data->status]',
+		),
+		array(
+			'name'=>'name',
+			'sortable' => false,
+			'value' => '$data->name',
+		),
+		array(
+			'name'=> 'create_time',
+			'sortable' => false,
+			'value'=>'date("d.m.Y", $data->create_time)',
+		),
+		array(
+			'name'=> 'update_time',
+			'sortable' => false,
+			'value'=>'date("d.m.Y", $data->update_time)',
+		),
+		array(
+			'class'=>'CButtonColumn',
+			'htmlOptions' => array('style' => 'width: 100px;')
+		),
+	),
 )); ?>

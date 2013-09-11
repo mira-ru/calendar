@@ -32,8 +32,10 @@
 		</div>
 	</div>
 
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить'); ?>
+	<div class="form-group">
+		<div class="col-lg-offset-2 col-lg-10">
+			<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', array('class'=>'btn btn-default')); ?>
+		</div>
 	</div>
 
 <?php $this->endWidget(); ?>
