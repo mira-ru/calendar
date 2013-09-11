@@ -14,6 +14,14 @@ class User extends CActiveRecord
 {
 	private $_identity;
 
+	const STATUS_ACTIVE = 1;
+	const STATUS_DELETED = 2;
+
+	public static $statusNames = array(
+		self::STATUS_ACTIVE => 'Активен',
+		self::STATUS_DELETED => 'Удален',
+	);
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -30,11 +38,11 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('status, create_time, update_time', 'numerical', 'integerOnly'=>true),
+//			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
+			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
-			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, status, name, create_time, update_time', 'safe', 'on'=>'search'),
+			array('id, status, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,10 +99,14 @@ class User extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('status',$this->status);
+
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('create_time',$this->create_time);
-		$criteria->compare('update_time',$this->update_time);
+
+		if (empty($this->status)) {
+			$criteria->compare('status', self::STATUS_ACTIVE);
+		} else {
+			$criteria->compare('status',$this->status);
+		}
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {

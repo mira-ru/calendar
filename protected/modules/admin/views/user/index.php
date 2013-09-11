@@ -48,8 +48,6 @@ $('.search-form form').submit(function(){
 )); ?>
 </div><!-- search-form -->
 
-
-
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'user-grid',
 	'dataProvider'=>$model->search(),
@@ -59,6 +57,11 @@ $('.search-form form').submit(function(){
 			'name'=>'id',
 			'sortable' => false,
 			'value' => '$data->id',
+		),
+		array(
+			'name'=>'status',
+			'sortable' => false,
+			'value' => 'User::$statusNames[$data->status]',
 		),
 		array(
 			'name'=>'name',
@@ -77,6 +80,7 @@ $('.search-form form').submit(function(){
 		),
 		array(
 			'class'=>'CButtonColumn',
+			'htmlOptions' => array('style' => 'width: 100px;')
 		),
 	),
 )); ?>

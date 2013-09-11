@@ -8,6 +8,7 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'action'=>Yii::app()->createUrl($this->route),
 	'method'=>'get',
+	'enableAjaxValidation'=>false,
 	'htmlOptions' => array(
 		'class'=>'form-horizontal',
 	),
@@ -17,6 +18,13 @@
 		<?php echo $form->label($model,'id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 		<?php echo $form->textField($model,'id', array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'status', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'status', User::$statusNames, array('class'=>'form-control')); ?>
 		</div>
 	</div>
 
