@@ -6,7 +6,7 @@ return CMap::mergeArray(array(
 	'id' => 'calendar',
 
 	// preloading 'log' component
-	'preload'=>array('log'),
+	'preload'=>array('init', 'log'),
 
 	// autoloading model and component classes
 	'import'=>array(
@@ -50,7 +50,9 @@ return CMap::mergeArray(array(
 			'password' => '12345',
 			'charset' => 'utf8',
 		),
-
+		'init'=>array(
+			'class'=>'application.components.core.InitComponent'
+		),
 		'errorHandler'=>array(
 			// use 'site/error' action to display errors
 			'errorAction'=>'site/error',
