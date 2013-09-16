@@ -27,6 +27,11 @@ $this->breadcrumbs=array(
 			'value' => $model->name,
 		),
 		array(
+			'name'=>'color',
+			'type'=>'raw',
+			'value' => CHtml::tag('span', array('style'=>'display:block; width:25px; height:25px; background:'.$model->color.';')),
+		),
+		array(
 			'name'=> 'create_time',
 			'value'=>date("d.m.Y", $model->create_time),
 		),

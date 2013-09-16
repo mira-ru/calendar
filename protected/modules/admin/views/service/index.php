@@ -59,6 +59,12 @@ $('.search-form form').submit(function(){
 			'value' => '$data->name',
 		),
 		array(
+			'name'=>'color',
+			'sortable' => false,
+			'type'=>'raw',
+			'value'=>'CHtml::tag(\'span\', array(\'style\'=>\'display:block; width:20px; height:20px; background:\'.$data->color.\';\'))',
+		),
+		array(
 			'name'=> 'create_time',
 			'sortable' => false,
 			'value'=>'date("d.m.Y", $data->create_time)',

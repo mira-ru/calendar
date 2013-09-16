@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'center':
  * @property integer $id
  * @property string $name
+ * @property string $color
  * @property string $status
  * @property integer $create_time
  * @property integer $update_time
@@ -39,6 +40,8 @@ class Center extends CActiveRecord
 //			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
+			array('color', 'length', 'max'=>7),
+			array('color', 'required'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, status', 'safe', 'on'=>'search'),
@@ -63,6 +66,7 @@ class Center extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'name' => 'Название',
+			'color' => 'Цвет',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
