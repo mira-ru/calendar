@@ -36,7 +36,6 @@ class EventController extends AdminController
 		$request = Yii::app()->getRequest();
 
 		$date = $request->getParam('date');
-//		$changeAll = (bool)$request->getParam('change_all', true);
 		$startTime = $request->getParam('start_time');
 		$endTime = $request->getParam('end_time');
 
@@ -85,7 +84,6 @@ class EventController extends AdminController
 			'services' => $services,
 			'halls' => $halls,
 			'date' => $date,
-//			'changeAll' => $changeAll,
 			'startTime' => $startTime,
 			'endTime' => $endTime,
 		));
@@ -108,16 +106,14 @@ class EventController extends AdminController
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
 
-		$changeAll = (bool)$request->getParam('change_all', true);
+		$changeAll = (bool)$request->getParam('change_all', false);
 		$startTime = $request->getParam('start_time');
 		$endTime = $request->getParam('end_time');
 		$date = $request->getParam('date');
-//		$modifyAll = (bool)$request->getParam('modify_all', true); // флаг для смены типа, затрагивает всех или нет
 
+		if ($request->getIsPostRequest()) {
 
-		if($request->getIsPostRequest()) {
-
-			$newType = isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
+			$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
 			$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
 
 			if (isset($_POST['Event'])) {
@@ -150,6 +146,7 @@ class EventController extends AdminController
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
 						// Сменили тип на одиночное событие, прибиваем младшие копии события
 						$currentTemplate->type = EventTemplate::TYPE_SINGLE;
+						$currentTemplate->status = EventTemplate::STATUS_DISABLED;
 
 						// Установка времени самого события
 						$event->start_time += $initTime;
@@ -158,11 +155,12 @@ class EventController extends AdminController
 						$event->save(false);
 						$event->removeYoungEvents();
 
-					} elseif ($currentTemplate->type=EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
+					} elseif ($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
 						// Событие стало регулярным
 
 						// обновляем шаблон
 						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
+						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
 						// Установка времени самого события
 						$event->start_time += $initTime;
@@ -170,12 +168,14 @@ class EventController extends AdminController
 
 						// Сохраняем и создаем линки на событие
 						$currentTemplate->save(false);
+						$event->save(false);
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
 						// Обновляем все события
 						$event->removeYoungEvents();
 
 						// обновляем шаблон
 						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
+						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
 						// Установка времени самого события
 						$event->start_time += $initTime;
@@ -183,23 +183,18 @@ class EventController extends AdminController
 
 						// Сохраняем и создаем линки на событие
 						$currentTemplate->save(false);
+						$event->save(false);
 
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}
+					$template->type = $currentTemplate->type;
+
 				}
 			}
 
+			$this->redirect(array('index'));
 
-			FirePHP::getInstance()->fb($event->getErrors());
-			FirePHP::getInstance()->fb($event->attributes);
-
-//			$this->redirect(array('index'));
-
-
-//			$model->attributes=$_POST['User'];
-//			if($model->save())
-//				$this->redirect(array('index','id'=>$model->id));
 		}
 
 		if (!$request->getIsPostRequest()) {
@@ -225,8 +220,6 @@ class EventController extends AdminController
 			'changeAll' => $changeAll,
 			'startTime' => $startTime,
 			'endTime' => $endTime,
-
-//			'model'=>$model,
 		));
 	}
 
@@ -237,9 +230,25 @@ class EventController extends AdminController
 	 */
 	public function actionDelete($id)
 	{
-		$model = $this->loadModel($id);
-		$model->status = User::STATUS_DELETED;
-		$model->save(false);
+		/** @var $event Event */
+		$event = Event::model()->findByPk(intval($id));
+		if ($event===null)
+			throw new CHttpException(404);
+
+		$template = $event->getTemplate();
+		if ($template->type == EventTemplate::TYPE_SINGLE) {
+			$event->delete();
+		} elseif ($template->type == EventTemplate::TYPE_REGULAR) {
+			/**
+			 * Для регулярных - проверяем число линков, ставин неактивность шаблону, если дропнули все линки
+			 */
+			$count = Event::model()->countByAttributes(array('template_id'=>$event->template_id));
+			$event->delete();
+			if ($count <= 1) {
+				$template->status = EventTemplate::STATUS_DISABLED;
+				$template->save(false);
+			}
+		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))
@@ -256,23 +265,18 @@ class EventController extends AdminController
 		if(isset($_GET['Event']))
 			$model->attributes=$_GET['Event'];
 
+
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE));
+		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
 		$this->render('index',array(
 			'model'=>$model,
+
+			'centers' => $centers,
+			'services' => $services,
+			'halls' => $halls,
 		));
 	}
 
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer $id the ID of the model to be loaded
-	 * @return User the loaded model
-	 * @throws CHttpException
-	 */
-	public function loadModel($id)
-	{
-		$model=User::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
-		return $model;
-	}
 }

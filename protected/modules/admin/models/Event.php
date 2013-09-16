@@ -57,6 +57,7 @@ class Event extends CActiveRecord
 			array('user_id', 'required', 'message'=>'Укажите мастера'),
 			array('name', 'required', 'message'=>'Укажите название'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
+			array('center_id', 'required', 'message'=>'Укажите центр'),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -117,6 +118,8 @@ class Event extends CActiveRecord
 			'service_id' => 'Группа услуг',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
+			'start_time' => 'Дата начала',
+			'end_time' => 'Дата окончания',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
@@ -149,9 +152,6 @@ class Event extends CActiveRecord
 		if (($dateFrom = $request->getParam('date_from'))) {
 			$criteria->compare('start_time', '>=' . strtotime($dateFrom));
 		}
-//		if (($dateTo = $request->getParam('update_to'))) {
-//			$criteria->compare('start_time', '<' . strtotime('+1 day', strtotime($dateTo)));
-//		}
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

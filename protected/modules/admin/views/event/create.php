@@ -5,11 +5,6 @@
  * @var $date string
  */
 
-//$this->breadcrumbs=array(
-//	'Users'=>array('index'),
-//	'Create',
-//);
-
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
 $hallList = CHtml::listData($halls, 'id', 'name');
@@ -148,28 +143,7 @@ $hallList = CHtml::listData($halls, 'id', 'name');
 			<?php echo $form->error($template,'type', array('class'=>'text-danger')); ?>
 
 		</div>
-<!--		<label class="checkbox-inline">-->
-<!--			--><?php
-//			$htmlOptions = array('id'=>'eventCheckbox');
-//			if ($template->type == EventTemplate::TYPE_SINGLE) {
-//				$htmlOptions['disabled'] = 'disabled';
-//			}
-//			echo CHtml::checkBox('change_all', $changeAll, $htmlOptions);
-//			?>
-<!--			Применить ко всем событиям-->
-<!--		</label>-->
 	</div>
-
-<!--	<script type="text/javascript">-->
-<!--		$('#typeSelect').change(function(){-->
-<!--			if (this.value==--><?php //echo EventTemplate::TYPE_SINGLE; ?><!--) {-->
-<!--				$('#eventCheckbox').attr('disabled','disabled');-->
-<!--			} else {-->
-<!--				$('#eventCheckbox').removeAttr('disabled');-->
-<!--			}-->
-<!--		});-->
-<!---->
-<!--	</script>-->
 
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">

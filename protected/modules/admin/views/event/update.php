@@ -158,7 +158,6 @@ $hallList = CHtml::listData($halls, 'id', 'name');
 			echo CHtml::checkBox('change_all', $changeAll, $htmlOptions);
 			?>
 			Применить ко всем событиям
-<!--			--><?php //echo CHtml::hiddenField('modify_all', true); ?>
 		</label>
 	</div>
 

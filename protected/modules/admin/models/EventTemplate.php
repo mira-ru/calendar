@@ -124,6 +124,9 @@ class EventTemplate extends CActiveRecord
 	 */
 	public function makeLinks()
 	{
+		if ($this->status != self::STATUS_ACTIVE)
+			return false;
+
 		if ($this->getIsNewRecord()) {
 			$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
 			$initTime = $this->init_time; // время начала события
@@ -168,44 +171,6 @@ class EventTemplate extends CActiveRecord
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
-	}
-
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
-
-		if (empty($this->status)) {
-			$criteria->compare('status', self::STATUS_ACTIVE);
-		} else {
-			$criteria->compare('status',$this->status);
-		}
-
-		$request = Yii::app()->getRequest();
-		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
-		}
-		if (($dateTo = $request->getParam('update_to'))) {
-			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
-		}
-
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
 	}
 
 	/**

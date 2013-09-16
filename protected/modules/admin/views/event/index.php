@@ -37,7 +37,10 @@ $('.search-form form').submit(function(){
 <div class="search-form" style="display:none">
 <?php $this->renderPartial('_search',array(
 	'model'=>$model,
-	'dateTo'=>Yii::app()->request->getParam('date_to'),
+	'dateFrom'=>Yii::app()->request->getParam('date_from'),
+	'centers' => $centers,
+	'services' => $services,
+	'halls' => $halls,
 )); ?>
 </div><!-- search-form -->
 
