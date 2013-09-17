@@ -15,7 +15,11 @@
 		<script>
 			lib.include('Less');
 			lib.include('Jquery');
-			//lib.include('mod.App');
+			<?php
+				foreach($styles as $style) {
+					echo "lib.include('mod.Calendar')";
+				}
+			?>
 		</script>
 	</head>
 	<body class="<?php foreach($bodyclass as $class) { echo $class.' ';} ?>">
