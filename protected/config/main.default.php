@@ -6,12 +6,13 @@ return CMap::mergeArray(array(
 	'id' => 'calendar',
 
 	// preloading 'log' component
-	'preload'=>array('init', 'log'),
+	'preload'=>array('log', 'init'),
 
 	// autoloading model and component classes
 	'import'=>array(
 		'application.models.*',
 		'application.components.*',
+		'application.config.Config',
 		'ext.yii-firephp.*',
 	),
 
@@ -49,6 +50,8 @@ return CMap::mergeArray(array(
 			'username' => 'calendar',
 			'password' => '12345',
 			'charset' => 'utf8',
+			'enableProfiling' => true,
+			'enableParamLogging' => true,
 		),
 		'init'=>array(
 			'class'=>'application.components.core.InitComponent'
@@ -64,12 +67,10 @@ return CMap::mergeArray(array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-				// uncomment the following to show log messages on web pages
-				/*
-				array(
-					'class'=>'CWebLogRoute',
-				),
-				*/
+//				array(
+//					'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+//					'ipFilters' => array('127.0.0.1', '127.0.1.1'),
+//				),
 			),
 		),
 	),

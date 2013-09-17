@@ -42,10 +42,42 @@ class SiteController extends FrontController
 	{
 		if($error=Yii::app()->errorHandler->error)
 		{
-			if(Yii::app()->request->isAjaxRequest)
+			if ( empty($error['message']) && isset(Config::$errors[ $error['code'] ]) ) {
+				$error['message'] = Config::$errors[$error['code']];
+			}
+
+			if(Yii::app()->getRequest()->getIsAjaxRequest())
 				echo $error['message'];
 			else
 				$this->render('error', $error);
+		}
+
+
+		$error = Yii::app()->errorHandler->error;
+
+		if ($error) {
+			if (empty($error['message'])) {
+				if (array_key_exists($error['code'], Config::$errors))
+					$error['message'] = Config::$errors[$error['code']];
+			}
+
+			if (Yii::app()->request->isAjaxRequest)
+				echo $error['message'];
+			else {
+				$this->hide_div_content = true;
+				$this->spec_div_class = 'e404';
+
+				if ($error['code'] == 404) {
+					$error['title'] = "Страница не найдена";
+					$error['message'] = 'Возможно неправильно'
+					    .' набран адрес или такой страницы не существует.<br>'
+					    .' Попробуйте начать с <a href="/">главной страницы</a>.';
+				} else {
+					$error['title'] = 'Ошибка ' . $error['code'];
+				}
+
+				$this->render('//site/error', $error);
+			}
 		}
 	}
 

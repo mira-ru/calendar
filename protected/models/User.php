@@ -140,4 +140,17 @@ class User extends CActiveRecord
 		}
 	}
 
+	/**
+	 * Получение имени пользователя по ID
+	 * @param $id
+	 */
+	public static function getName($id)
+	{
+		if (empty($id)) {
+			return '';
+		}
+		$model = self::model()->findByPk(intval($id));
+		return $model===null ? '' : $model->name;
+	}
+
 }
