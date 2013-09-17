@@ -7,10 +7,19 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+		<?php
+		/** @var $cs CClientScript */
+		$cs = Yii::app()->getClientScript();
+		$cs->registerCoreScript('jquery');
+		$cs->registerCssFile('/css/bootstrap.css');
+		$cs->registerCssFile('/css/custom/backend/offcanvas.css');
+
+
+		?>
 		<!-- Bootstrap core CSS -->
-		<link href="/css/bootstrap.css" rel="stylesheet">
+<!--		<link href="/css/bootstrap.css" rel="stylesheet">-->
 		<!-- Custom styles for this template -->
-		<link href="/css/custom/backend/offcanvas.css" rel="stylesheet">
+<!--		<link href="/css/custom/backend/offcanvas.css" rel="stylesheet">-->
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
@@ -92,7 +101,7 @@
 		<!-- Bootstrap core JavaScript
 		================================================== -->
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="/js/lib/Jquery.js"></script>
+<!--		<script src="/js/lib/Jquery.js"></script>-->
 		<script src="/js/lib/Bootstrap.js"></script>
 		<script src="/js/lib/mod/backend/offcanvas.js"></script>
 	</body>
