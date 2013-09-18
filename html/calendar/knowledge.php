@@ -8,7 +8,7 @@
 	/**
 	*	Custom body class
 	*/
-	$bodyclass = array('calendar', 'physical');
+	$bodyclass = array('calendar', 'knowledge');
 
 	/**
 	 *	Module ID
@@ -26,13 +26,13 @@
 					</div>
 					<div class="col-lg-12">
 						<ul class="list-inline list-justified top-menu">
-							<li class="item-1 current"><a href="#">Центр физического развития</a></li>
+							<li class="item-1"><a href="index.php">Центр физического развития</a></li>
 							<li class="item-2"><a href="creative.php">Творческий центр</a></li>
-							<li class="item-3"><a href="knowledge.php">Центр знаний</a></li>
+							<li class="item-3 current"><a href="#">Центр знаний</a></li>
 						</ul>
 						<ul class="list-inline list-justified sub-menu">
 							<li>
-								<span class="item-a">Боевые искусства
+								<span class="item-a">Психотерапия
 									<ul class="list-unstyled">
 										<li data-id="1">Рукопашный бой</li>
 										<li data-id="2">Русское боевое искусство</li>
@@ -43,7 +43,7 @@
 								</span>
 							</li>
 							<li>
-								<span class="item-b">Гимнастика
+								<span class="item-b">Звуковые практики
 									<ul class="list-unstyled">
 										<li data-id="5">Пилатес</li>
 										<li data-id="6">Волновая гимнастика</li>
@@ -53,7 +53,7 @@
 								</span>
 							</li>
 							<li>
-								<span class="item-c">Йога
+								<span class="item-c">Создание пространства
 									<ul class="list-unstyled">
 										<li data-id="8">Йога дервишей</li>
 										<li data-id="9">Анахатха-йога</li>
@@ -69,7 +69,7 @@
 								</span>
 							</li>
 							<li>
-								<span class="item-d">Танцы
+								<span class="item-d">Оздоровление
 									<ul class="list-unstyled">
 										<li data-id="17">Трайбл</li>
 										<li data-id="18">Танец мандала</li>
@@ -80,7 +80,7 @@
 								</span>
 							</li>
 							<li>
-								<span class="item-e">Мамина школа
+								<span class="item-e">Арт-терапия
 									<ul class="list-unstyled">
 										<li data-id="21">Детская йога от 3 до 6 лет</li>
 										<li data-id="22">Беби-йога от 1,5 месяцев до 7 месяцев</li>
@@ -91,16 +91,7 @@
 								</span>
 							</li>
 							<li>
-								<span class="item-f">Медитация
-									<ul class="list-unstyled">
-										<li data-id="25">Сахаджа-Йога</li>
-										<li data-id="26">Йога Нидра</li>
-										<li data-id="27">Ошо медитации</li>
-										<li data-id="28">Холотропное дыхание</li>
-										<li data-id="29">Медитации по методу Сахаджа</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
+								<span class="item-f">Осознанность</span>
 							</li>
 						</ul>
 					</div>
@@ -113,9 +104,7 @@
 					</div>
 				</div>
 				<div class="table-responsive">
-					<a href="javascript:void(0);" class="prev-month" data-month="10" data-year="2013">Октябрь</a>
-					<strong class="current" data-month="11" data-year="2013">Ноябрь, 2013</strong>
-					<a href="javascript:void(0);" class="next-month" data-month="12" data-year="2013">Декабрь</a>
+					<a href="#" class="prev-month">Октябрь</a><strong class="current" data-month="11" data-year="2013">Ноябрь, 2013</strong><a href="#" class="next-month">Декабрь</a>
 					<table class="table timeline-days">
 						<thead>
 							<tr>
@@ -235,18 +224,7 @@
 					</table>				
 				</div>
 			</div>
-			<div class="event-balloon">
-				<div>
-					<strong>Русское боевое искусство для детей 7-12 лет</strong>
-					<span><i>Мастер:</i>Денис Вербицкий</span>
-					<span><i>Зал:</i>Энергия Земли</span>
-					<span><i>Время:</i>пн, 17:00-19:00</span>
-				</div>
-			<i class="cross"></i></div>
 		</div>
-<style>
-
-</style>
 		<!-- EOF PAGE CONTENT -->
 <?php
 	include('../common/_footer.php');

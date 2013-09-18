@@ -14,11 +14,12 @@ var Calendar = function () { 'use strict';
 
 		$('.timeline-days').on('click', 'span', function(e){
 			var span = $(this),
-			    month = $('[data-month]').data('month'),
-			    year = $('[data-year]').data('year'),
+			    month = $('strong.current').data('month'),
+			    year = $('strong.current').data('year'),
+			    day = $('i', span).data('day'),
 			    current = $('.current', $(e.delegateTarget));
 			span.add(current).toggleClass('current');
-			var date = span.find('i').text() + '-' + month + '-' + year;
+			var date = year + '-' + month + '-' + day;
 			console.log(date);
 		});
 
@@ -81,16 +82,62 @@ var Calendar = function () { 'use strict';
 			 		});
 		 		}
 		 	});
-		});
-		function _setFilterLabel(text) {
-			$('.filter-items').empty();
-			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
-				$('.timeline-wrapper > div').slideDown('fast', function(){
-					$('div', $(this)).fadeIn('fast');
-					$('.filter-items').empty();
+			function _setFilterLabel(text) {
+				$('.filter-items').empty();
+				filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
+					if ($('.warning-empty').is(':visible')) {
+						$('.warning-empty').fadeOut('fast').promise().done(function(){
+							$('.timeline-wrapper > div').slideDown('fast', function(){
+								$('div', $(this)).fadeIn('fast');
+								$('.filter-items').empty();
+							});
+						});
+					}
+					else {
+						$('.timeline-wrapper > div').slideDown('fast', function(){
+							$('div', $(this)).fadeIn('fast');
+							$('.filter-items').empty();
+						});
+					}
 				});
+			}
+		});
+		
+		$('[data-sub]').on('click', 'span', function(){
+			var toggler = $(this),
+			    li = toggler.parent(),
+			    pos = li.offset(),
+			    balloon = $('.event-balloon'),
+			    left = pos.left - (balloon.outerWidth() / 2) + (li.outerWidth() / 2),
+			    top = pos.top - (balloon.outerHeight() / 2) + (li.outerHeight() / 2);
+
+			// Получаем дату
+			$.getJSON('', function(data){
 			});
-		}
+
+			if (balloon.is(':visible')) {
+				balloon.hide('fast', function(){
+					balloon./*find('div').text(pos.top + ' ' + pos.left).end().*/css({top: top, left: left}).fadeIn('fast');
+				});
+			}
+			else {
+				balloon./*find('div').text(pos.top + ' ' + pos.left).end().*/css({top: top, left: left}).fadeIn('fast');
+			}
+			$('.cross', balloon).bind('click', function(){
+				var clk = $(this);
+				balloon.hide('fast', function(){
+					// clk.prev().empty();
+				});
+			})
+		});
+
+		$('.prev-month, .next-month').on('click', function(){
+			var day = $('.timeline-days .current i').data('day'),
+			    month = $(this).data('month'),
+			    year = $(this).data('year'),
+			    date = year + '-' + month + '-' + day;
+			console.log(date);
+		});
 	}
 
 	// Mapping

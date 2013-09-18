@@ -16,8 +16,8 @@
 			lib.include('Less');
 			lib.include('Jquery');
 			<?php
-				foreach($styles as $style) {
-					echo "lib.include('mod.Calendar')";
+				foreach($moduleId as $module) {
+					echo "lib.include('mod.".$module."')";
 				}
 			?>
 		</script>
