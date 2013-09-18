@@ -14,17 +14,6 @@ class EventController extends AdminController
 	}
 
 	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
-	public function actionView($id)
-	{
-		$this->render('view',array(
-			'model'=>$this->loadModel($id),
-		));
-	}
-
-	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
@@ -54,12 +43,7 @@ class EventController extends AdminController
 				else
 					$template->day_of_week = -1;
 
-				if ($template->type == EventTemplate::TYPE_SINGLE) {
-					$template->status = EventTemplate::STATUS_DISABLED; // отключаем повторение для одиночных событий
-				} else {
-					$template->status = EventTemplate::STATUS_ACTIVE;
-				}
-
+				$template->status = EventTemplate::STATUS_ACTIVE;
 			}
 
 			if ($template->validate()) { // Создание событий
@@ -75,13 +59,16 @@ class EventController extends AdminController
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
+		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 		$this->render('create',array(
 			'template' => $template,
 			'centers' => $centers,
 			'services' => $services,
+			'directions' => $directions,
+
 			'halls' => $halls,
 			'date' => $date,
 			'startTime' => $startTime,
@@ -146,7 +133,7 @@ class EventController extends AdminController
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
 						// Сменили тип на одиночное событие, прибиваем младшие копии события
 						$currentTemplate->type = EventTemplate::TYPE_SINGLE;
-						$currentTemplate->status = EventTemplate::STATUS_DISABLED;
+						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
 						// Установка времени самого события
 						$event->start_time += $initTime;
@@ -189,11 +176,11 @@ class EventController extends AdminController
 						throw new CHttpException(500, 'Invalid action');
 					}
 					$template->type = $currentTemplate->type;
-
+					$this->redirect(array('index'));
 				}
 			}
 
-			$this->redirect(array('index'));
+
 
 		}
 
@@ -205,8 +192,10 @@ class EventController extends AdminController
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$event->center_id));
+		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$event->service_id));
+
 
 		$this->render('update',array(
 			'event'=>$event,
@@ -215,6 +204,7 @@ class EventController extends AdminController
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,
+			'directions' => $directions,
 
 			'date' => $date,
 			'changeAll' => $changeAll,

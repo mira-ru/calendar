@@ -20,7 +20,7 @@ $this->breadcrumbs=array(
 		),
 		array(
 			'name'=>'status',
-			'value' => User::$statusNames[$model->status],
+			'value' => Service::$statusNames[$model->status],
 		),
 		array(
 			'name'=>'name',
@@ -30,6 +30,11 @@ $this->breadcrumbs=array(
 			'name'=>'color',
 			'type'=>'raw',
 			'value' => CHtml::tag('span', array('style'=>'display:block; width:25px; height:25px; background:'.$model->color.';')),
+		),
+		array(
+			'name'=>'center_id',
+			'type'=>'raw',
+			'value'=>empty($model->center_id) ? 'Центр не указан' : $model->center->name,
 		),
 		array(
 			'name'=> 'create_time',

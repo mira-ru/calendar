@@ -60,8 +60,11 @@ class ServiceController extends AdminController
 				$this->redirect(array('index','id'=>$model->id));
 		}
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+
 		$this->render('create',array(
 			'model'=>$model,
+			'centers'=>$centers,
 		));
 	}
 
@@ -84,8 +87,10 @@ class ServiceController extends AdminController
 				$this->redirect(array('index','id'=>$model->id));
 		}
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
 		$this->render('update',array(
 			'model'=>$model,
+			'centers'=>$centers,
 		));
 	}
 
@@ -96,7 +101,10 @@ class ServiceController extends AdminController
 	 */
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		$model = $this->loadModel($id);
+
+		$model->status = Service::STATUS_DELETED;
+		$model->save(false);
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 		if(!isset($_GET['ajax']))

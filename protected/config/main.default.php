@@ -30,7 +30,7 @@ return CMap::mergeArray(array(
 		'clientScript'=>array(
 			'class'=>'CClientScript',
 			'corePackages'=>require(dirname(__FILE__).'/../data/packages.php'),
-			'coreScriptPosition'=>CClientScript::POS_END,
+			'coreScriptPosition'=>CClientScript::POS_HEAD,
 		),
 		'user' => array(
 			'allowAutoLogin' => true,

@@ -2,6 +2,8 @@
 /* @var $this ServiceController */
 /* @var $model Service */
 /* @var $form CActiveForm */
+
+$centerList = array(''=>'')+CHtml::listData($centers, 'id', 'name');
 ?>
 
 <div class="form">
@@ -18,8 +20,16 @@
 	<div class="form-group <?php if ($model->hasErrors('status')) echo 'has-error'; ?>"">
 		<?php echo $form->label($model,'status', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($model, 'status', User::$statusNames, array('class'=>'form-control')); ?>
+			<?php echo $form->dropDownList($model, 'status', Service::$statusNames, array('class'=>'form-control')); ?>
 			<?php echo $form->error($model,'status', array('class'=>'text-danger')); ?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($model->hasErrors('center_id')) echo 'has-error'; ?>"">
+		<?php echo $form->label($model,'center_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'center_id', $centerList, array('class'=>'form-control')); ?>
+			<?php echo $form->error($model,'center_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
