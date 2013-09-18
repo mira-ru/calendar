@@ -27,7 +27,11 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
-
+		'clientScript'=>array(
+			'class'=>'CClientScript',
+			'corePackages'=>require(dirname(__FILE__).'/../data/packages.php'),
+			'coreScriptPosition'=>CClientScript::POS_HEAD,
+		),
 		'user' => array(
 			'allowAutoLogin' => true,
 			'loginUrl' => array('site/login'),
@@ -67,10 +71,10 @@ return CMap::mergeArray(array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-//				array(
-//					'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-//					'ipFilters' => array('127.0.0.1', '127.0.1.1'),
-//				),
+				array(
+					'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+					'ipFilters' => array('127.0.0.1', '127.0.1.1'),
+				),
 			),
 		),
 	),

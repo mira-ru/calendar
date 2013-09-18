@@ -11,4 +11,4 @@ $this->breadcrumbs=array(
 
 <h1>Редактирование услуги: <?php echo $model->name; ?></h1>
 
-<?php $this->renderPartial('_form', array('model'=>$model)); ?>
+<?php $this->renderPartial('_form', array('model'=>$model, 'centers'=>$centers,)); ?>

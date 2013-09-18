@@ -1,19 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "service".
+ * This is the model class for table "direction".
  *
- * The followings are the available columns in table 'service':
+ * The followings are the available columns in table 'direction':
  * @property integer $id
  * @property integer $status
- * @property integer $center_id
+ * @property integer $service_id
  * @property string $name
- * @property string $color
  * @property integer $create_time
  * @property integer $update_time
  */
-class Service extends CActiveRecord
+class Direction extends CActiveRecord
 {
+	public $center_id;
+
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
 
@@ -28,7 +29,7 @@ class Service extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service';
+		return 'direction';
 	}
 
 	/**
@@ -39,16 +40,31 @@ class Service extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
-			array('color', 'length', 'max'=>7),
-			array('color', 'required'),
 			array('center_id', 'required'),
+			array('service_id', 'required'),
+
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
 		);
+	}
+
+	public function init()
+	{
+		parent::init();
+		$this->onAfterFind = array($this, 'setCenter');
+		$this->onAfterSave = array($this, 'setCenter');
+	}
+
+	public function setCenter()
+	{
+		$service = $this->service;
+		if ($service!==null) {
+			$this->center_id = $service->center_id;
+		}
 	}
 
 	public function behaviors()
@@ -66,6 +82,7 @@ class Service extends CActiveRecord
 	public function relations()
 	{
 		return array(
+			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
 			'center' => array(self::BELONGS_TO, 'Center', 'center_id'),
 		);
 	}
@@ -80,8 +97,8 @@ class Service extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'center_id' => 'Центр',
+			'service_id' => 'Услуга',
 			'name' => 'Название',
-			'color' => 'Цвет',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);

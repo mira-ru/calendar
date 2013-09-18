@@ -7,32 +7,17 @@
  * @property integer $id
  * @property integer $template_id
  * @property integer $hall_id
+ * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
  * @property integer $day_of_week
  * @property integer $status
  * @property integer $user_id
- * @property string $name
  * @property integer $start_time
  * @property integer $end_time
  */
 class Event extends CActiveRecord
 {
-//	const STATUS_ACTIVE = 1;
-//	const STATUS_DISABLED = 2;
-//
-//	public static $statusNames = array(
-//		self::STATUS_ACTIVE => 'Активен',
-//		self::STATUS_DISABLED => 'Удален',
-//	);
-//
-//	const TYPE_SINGLE = 1;
-//	const TYPE_REGULAR = 2;
-//	public static $typeNames = array(
-//		self::TYPE_SINGLE => 'Одиночное событие',
-//		self::TYPE_REGULAR => 'Регулярное событие',
-//	);
-
 	private $_template = null;
 
 	/**
@@ -51,13 +36,12 @@ class Event extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id', 'numerical', 'integerOnly'=>true),
-			array('name', 'length', 'max'=>255),
+			array('center_id, service_id, user_id, hall_id, direction_id', 'numerical', 'integerOnly'=>true),
 
 			array('user_id', 'required', 'message'=>'Укажите мастера'),
-			array('name', 'required', 'message'=>'Укажите название'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
+			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -68,7 +52,7 @@ class Event extends CActiveRecord
 			array('start_time, end_time', 'timeCheck'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, user_id, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
+			array('id, user_id, direction_id, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -103,6 +87,7 @@ class Event extends CActiveRecord
 			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
 			'hall' => array(self::BELONGS_TO, 'Hall', 'hall_id'),
 			'center' => array(self::BELONGS_TO, 'Center', 'center_id'),
+			'direction' => array(self::BELONGS_TO, 'Direction', 'direction_id'),
 		);
 	}
 
@@ -113,9 +98,9 @@ class Event extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Название',
 			'center_id' => 'Центр',
 			'service_id' => 'Группа услуг',
+			'direction_id' => 'Направление',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
 			'start_time' => 'Дата начала',
@@ -142,11 +127,11 @@ class Event extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
 		$criteria->compare('user_id', $this->user_id);
 		$criteria->compare('service_id', $this->service_id);
 		$criteria->compare('hall_id', $this->hall_id);
 		$criteria->compare('center_id', $this->center_id);
+		$criteria->compare('direction_id', $this->direction_id);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {

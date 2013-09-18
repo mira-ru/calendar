@@ -1,15 +1,10 @@
 <?php
-/* @var $this UserController */
-/* @var $model User */
-
-$this->breadcrumbs=array(
-	'Users'=>array('index'),
-	$model->name,
-);
+/* @var $this DirectionController */
+/* @var $model Direction */
 
 ?>
 
-<h1>Просмотр мастера #<?php echo $model->name; ?></h1>
+<h1>Просмотр направления #<?php echo $model->name; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
@@ -25,6 +20,17 @@ $this->breadcrumbs=array(
 		array(
 			'name'=>'name',
 			'value' => $model->name,
+		),
+		array(
+			'name'=>'service_id',
+			'sortable' => false,
+			'type'=>'raw',
+			'value'=>empty($model->service_id) ? 'Услуга не указана' : $model->service->name,
+		),
+		array(
+			'name'=>'center_id',
+			'type'=>'raw',
+			'value'=>empty($model->center_id) ? 'Центр не указан' : $model->center->name,
 		),
 		array(
 			'name'=> 'create_time',
