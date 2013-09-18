@@ -12,6 +12,11 @@ return array(
 		'js'=>array('Jquery.js'),
 		'baseUrl'=>'/js/lib',
 	),
+	'bootstrap'=>array(
+		'js'=>array('Bootstrap.js'),
+		'baseUrl'=>'/js/lib',
+		'depends'=>array('jquery'),
+	),
 	'yii'=>array(
 		'js'=>array('jquery.yii.js'),
 		'depends'=>array('jquery'),

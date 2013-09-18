@@ -10,9 +10,9 @@
  * @property integer $status
  * @property integer $user_id
  * @property integer $hall_id
+ * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
- * @property string $name
  * @property integer $day_of_week
  * @property integer $init_time - день первого события(timestamp)
  * @property integer $start_time
@@ -22,9 +22,6 @@
  */
 class EventTemplate extends CActiveRecord
 {
-//	public $eventTime = null;
-
-
 	const STATUS_ACTIVE = 1;
 	const STATUS_DISABLED = 2;
 
@@ -56,14 +53,13 @@ class EventTemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, user_id, hall_id, direction_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
-			array('name', 'length', 'max'=>255),
 			array('user_id', 'required', 'message'=>'Укажите мастера'),
-			array('name', 'required', 'message'=>'Укажите название'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
+			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -77,7 +73,7 @@ class EventTemplate extends CActiveRecord
 			array('start_time, end_time', 'timeCheck'),
 
 			// The following rule is used by search().
-			array('id, status, type, name', 'safe', 'on'=>'search'),
+//			array('id, status, type, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -138,12 +134,13 @@ class EventTemplate extends CActiveRecord
 		for ($i=0; $i<$count; $i++) {
 			$event = new Event();
 			$event->template_id = $this->id;
-			$event->hall_id = $this->hall_id; // ?
+			$event->hall_id = $this->hall_id;
 			$event->center_id = $this->center_id;
 			$event->service_id = $this->service_id;
 			$event->user_id = $this->user_id;
-			$event->day_of_week = $this->day_of_week; // ?
-			$event->name = $this->name;
+			$event->day_of_week = $this->day_of_week;
+			$event->direction_id = $this->direction_id;
+//			$event->name = $this->name;
 
 			$event->start_time = $initTime + $this->start_time;
 			$event->end_time = $initTime + $this->end_time;
@@ -163,9 +160,9 @@ class EventTemplate extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'type' => 'Тип события',
-			'name' => 'Название',
 			'center_id' => 'Центр',
 			'service_id' => 'Группа услуг',
+			'direction_id' => 'Направление',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
 			'create_time' => 'Дата создания',
@@ -198,7 +195,8 @@ class EventTemplate extends CActiveRecord
 		if ( !$event instanceof Event || !isset(self::$typeNames[$type]) )
 			throw new CHttpException(500);
 
-		$this->name = $event->name;
+//		$this->name = $event->name;
+		$this->direction_id = $event->direction_id;
 		$this->hall_id = $event->hall_id;
 		$this->user_id = $event->user_id;
 		$this->center_id = $event->center_id;

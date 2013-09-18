@@ -1,6 +1,6 @@
 <?php
 
-class HallController extends AdminController
+class DirectionController extends AdminController
 {
 	/**
 	 * @return array action filters
@@ -48,20 +48,22 @@ class HallController extends AdminController
 	 */
 	public function actionCreate()
 	{
-		$model=new Hall;
+		$model=new Direction();
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Hall']))
+		if(isset($_POST['Direction']))
 		{
-			$model->attributes=$_POST['Hall'];
+			$model->attributes=$_POST['Direction'];
 			if($model->save())
 				$this->redirect(array('index','id'=>$model->id));
 		}
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+		$services = array();
+
 		$this->render('create',array(
 			'model'=>$model,
+			'centers'=>$centers,
+			'services'=>$services,
 		));
 	}
 
@@ -74,18 +76,20 @@ class HallController extends AdminController
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Hall']))
+		if(isset($_POST['Direction']))
 		{
-			$model->attributes=$_POST['Hall'];
+			$model->attributes=$_POST['Direction'];
 			if($model->save())
 				$this->redirect(array('index','id'=>$model->id));
 		}
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$model->center_id));
+
 		$this->render('update',array(
 			'model'=>$model,
+			'centers'=>$centers,
+			'services'=>$services,
 		));
 	}
 
@@ -98,7 +102,7 @@ class HallController extends AdminController
 	{
 		$model = $this->loadModel($id);
 
-		$model->status = Hall::STATUS_DELETED;
+		$model->status = Direction::STATUS_DELETED;
 		$model->save(false);
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
@@ -111,10 +115,10 @@ class HallController extends AdminController
 	 */
 	public function actionIndex()
 	{
-		$model=new Hall('search');
+		$model=new Direction('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Hall']))
-			$model->attributes=$_GET['Hall'];
+		if(isset($_GET['Direction']))
+			$model->attributes=$_GET['Direction'];
 
 		$this->render('index',array(
 			'model'=>$model,
@@ -125,15 +129,14 @@ class HallController extends AdminController
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Hall the loaded model
+	 * @return Direction the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Hall::model()->findByPk($id);
+		$model=Direction::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
-
 }

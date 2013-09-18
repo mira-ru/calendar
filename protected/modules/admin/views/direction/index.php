@@ -1,10 +1,6 @@
 <?php
-/* @var $this EventController */
-
-$this->breadcrumbs=array(
-	'Users'=>array('index'),
-	'Manage',
-);
+/* @var $this DirectionController */
+/* @var $model Direction */
 
 Yii::app()->clientScript->registerScript('search', "
 $('.search-button').click(function(){
@@ -12,20 +8,15 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$('#user-grid').yiiGridView('update', {
+	$('#service-grid').yiiGridView('update', {
 		data: $(this).serialize()
 	});
 	return false;
 });
 ");
-
-
-/*
- * TODO: проверить striped и пагинатор, мб подменить
- */
 ?>
 
-<h1>Управление событиями</h1>
+<h1>Управление направлениями</h1>
 
 <div class="row">
 	<div class="col-xs-12 col-sm-9">
@@ -33,19 +24,16 @@ $('.search-form form').submit(function(){
 		<?php echo CHtml::button('Добавить', array('onclick'=>'document.location = \''.$this->createUrl($this->id.'/create').'\'', 'class' => 'btn btn-primary')); ?>
 	</div>
 </div>
-
 <div class="search-form" style="display:none">
 <?php $this->renderPartial('_search',array(
 	'model'=>$model,
+	'dateTo'=>Yii::app()->request->getParam('date_to'),
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
-	'centers' => $centers,
-	'services' => $services,
-	'halls' => $halls,
 )); ?>
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'user-grid',
+	'id'=>'service-grid',
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
 	'columns'=>array(
@@ -55,44 +43,40 @@ $('.search-form form').submit(function(){
 			'value' => '$data->id',
 		),
 		array(
-			'name'=>'user_id',
+			'name'=>'status',
 			'sortable' => false,
-			'value' => 'empty($data->user) ? \'Мастер не указан\' : $data->user->name',
+			'value' => 'Direction::$statusNames[$data->status]',
+		),
+		array(
+			'name'=>'name',
+			'sortable' => false,
+			'value' => '$data->name',
 		),
 		array(
 			'name'=>'service_id',
 			'sortable' => false,
-			'value' => 'empty($data->service) ? \'Услуги не указаны\' : $data->service->name',
-		),
-		array(
-			'name'=>'hall_id',
-			'sortable' => false,
-			'value' => 'empty($data->hall) ? \'Зал не указан\' : $data->hall->name',
+			'type'=>'raw',
+			'value'=>'empty($data->service_id) ? \'Услуга не указана\' : $data->service->name',
 		),
 		array(
 			'name'=>'center_id',
-			'sortable' => false,
-			'value' => 'empty($data->center) ? \'Центр не выбран\' : $data->center->name',
+			'sortable'=>false,
+			'type'=>'raw',
+			'value'=>'empty($data->center_id) ? \'Центр не указан\' : $data->center->name',
 		),
 		array(
-			'name'=>'direction_id',
+			'name'=> 'create_time',
 			'sortable' => false,
-			'value' => 'empty($data->direction) ? \'Направление не выбрано\' : $data->direction->name',
+			'value'=>'date("d.m.Y", $data->create_time)',
 		),
 		array(
-			'name'=> 'start_time',
+			'name'=> 'update_time',
 			'sortable' => false,
-			'value'=>'date("d.m.Y H:i:s", $data->start_time)',
-		),
-		array(
-			'name'=> 'end_time',
-			'sortable' => false,
-			'value'=>'date("d.m.Y H:i:s", $data->end_time)',
+			'value'=>'date("d.m.Y", $data->update_time)',
 		),
 		array(
 			'class'=>'CButtonColumn',
-//			'htmlOptions' => array('style' => 'width: 30px;'),
-			'template'=>'{update}{delete}',
+			'htmlOptions' => array('style' => 'width: 100px;')
 		),
 	),
 )); ?>

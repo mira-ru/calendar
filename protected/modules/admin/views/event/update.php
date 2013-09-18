@@ -1,19 +1,15 @@
 <?php
 /**
- * @var $this UserController
+ * @var $this EventController
  * @var $template EventTemplate
  * @var $event Event
  * @var $date string
  */
 
-//$this->breadcrumbs=array(
-//	'Users'=>array('index'),
-//	'Create',
-//);
-
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
 $hallList = CHtml::listData($halls, 'id', 'name');
+$directionList = CHtml::listData($directions, 'id', 'name');
 ?>
 
 <h1>Редактирование события</h1>
@@ -29,14 +25,6 @@ $hallList = CHtml::listData($halls, 'id', 'name');
 		),
 	)); ?>
 
-	<div class="form-group <?php if ($event->hasErrors('name')) echo 'has-error'; ?>">
-		<?php echo $form->label($event,'name', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
-			<?php echo $form->textField($event,'name',array('size'=>60,'maxlength'=>255, 'class'=>'form-control')); ?>
-			<?php echo $form->error($event,'name', array('class'=>'text-danger')); ?>
-		</div>
-	</div>
-
 	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
 		<?php
 		echo CHtml::link(
@@ -46,23 +34,66 @@ $hallList = CHtml::listData($halls, 'id', 'name');
 		);
 		?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($event, 'center_id', $centerList, array('class'=>'form-control')); ?>
+			<?php echo $form->dropDownList($event, 'center_id', $centerList,
+				array(
+					'class'=>'form-control',
+					'prompt'=>'Выберите центр',
+					'ajax' => array(
+						'type'=>'POST',
+						'url'=>'/admin/ajax/axService',
+						'update'=>'#services',
+						'data'=>array('center_id'=>'js:this.value'),
+					)
+				)
+			); ?>
 			<?php echo $form->error($event,'center_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
 	<div class="form-group <?php if ($event->hasErrors('service_id')) echo 'has-error'; ?>"">
-	<?php
-	echo CHtml::link(
-		$event->getAttributeLabel('service_id'),
-		$this->createUrl('/admin/service/create'),
-		array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-	);
-	?>
-	<div class="col-lg-5">
-		<?php echo $form->dropDownList($event, 'service_id', $serviceList, array('class'=>'form-control')); ?>
-		<?php echo $form->error($event,'service_id', array('class'=>'text-danger')); ?>
+		<?php
+		echo CHtml::link(
+			$event->getAttributeLabel('service_id'),
+			$this->createUrl('/admin/service/create'),
+			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
+		);
+		?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($event, 'service_id', $serviceList,
+				array(
+					'class'=>'form-control',
+					'id'=>'services',
+					'ajax' => array(
+						'type'=>'POST',
+						'url'=>'/admin/ajax/axDirection',
+						'update'=>'#directions',
+						'data'=>array('service_id'=>'js:this.value'),
+					)
+				)
+			);
+			?>
+			<?php echo $form->error($event,'service_id', array('class'=>'text-danger')); ?>
+		</div>
 	</div>
+
+	<div class="form-group <?php if ($event->hasErrors('direction_id')) echo 'has-error'; ?>"">
+		<?php
+		echo CHtml::link(
+			$event->getAttributeLabel('direction_id'),
+			$this->createUrl('/admin/direction/create'),
+			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
+		);
+		?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($event, 'direction_id', $directionList,
+				array(
+					'class'=>'form-control',
+					'id'=>'directions',
+				)
+			);
+			?>
+			<?php echo $form->error($event,'direction_id', array('class'=>'text-danger')); ?>
+		</div>
 	</div>
 
 	<div class="form-group <?php if ($event->getError('user_id')) echo 'has-error';?>">
@@ -83,7 +114,7 @@ $hallList = CHtml::listData($halls, 'id', 'name');
 				'options'	=> array(
 					'showAnim'	=>'fold',
 					'open' => 'js:function(){}',
-					'minLength' => 3
+					'minLength' => 2
 				),
 				'htmlOptions'	=> array('id'=>'user_id', 'name'=>'Event[user_id]', 'class' => 'form-control'),
 	//				'cssFile' => null,
