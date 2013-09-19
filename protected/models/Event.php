@@ -11,7 +11,6 @@
  * @property integer $center_id
  * @property integer $service_id
  * @property integer $day_of_week
- * @property integer $status
  * @property integer $user_id
  * @property integer $start_time
  * @property integer $end_time
@@ -177,4 +176,27 @@ class Event extends CActiveRecord
 		}
 		return self::model()->deleteAllByAttributes(array('template_id'=>$this->template_id), 'id>:id', array(':id'=>$this->id));
 	}
+
+	/**
+	 * Обновляет младшие события
+	 * @param $event
+	 * @throws CHttpException
+	 */
+//	public function updateLinks($template)
+//	{
+//		if ( !$template instanceof EventTemplate )
+//			throw new CHttpException(500);
+//
+//		$events = self::model()->findAllByAttributes(array('template_id'=>$this->template_id), 'id>:id', array(':id'=>$this->id));
+//
+//		/** @var $item Event */
+//		foreach ($events as $item) {
+//			$initTime = $template->init_time;
+//
+//
+//			$item->setAttributes($this->attributes, false);
+//			$item->save(false);
+//		}
+//
+//	}
 }
