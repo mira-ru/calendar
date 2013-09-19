@@ -67,6 +67,7 @@ class Service extends CActiveRecord
 	{
 		return array(
 			'center' => array(self::BELONGS_TO, 'Center', 'center_id'),
+			'directions' => array(self::HAS_MANY, 'Direction', 'service_id', 'condition' => 'status='.Direction::STATUS_ACTIVE),
 		);
 	}
 

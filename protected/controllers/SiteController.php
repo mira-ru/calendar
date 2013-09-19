@@ -9,15 +9,15 @@ class SiteController extends FrontController
 	{
 		return array(
 			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
+//			'captcha'=>array(
+//				'class'=>'CCaptchaAction',
+//				'backColor'=>0xFFFFFF,
+//			),
 			// page action renders "static" pages stored under 'protected/views/site/pages'
 			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
+//			'page'=>array(
+//				'class'=>'CViewAction',
+//			),
 		);
 	}
 
@@ -25,14 +25,50 @@ class SiteController extends FrontController
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex()
+	public function actionIndex($id=null, $time=null)
 	{
-		// renders the view file 'protected/views/site/index.php'
-		// using the default layout 'protected/views/layouts/main.php'
-//		setlocale(LC_TIME, 'ru_RU.utf8');
-//		FirePHP::getInstance()->fb(strtotime('08.00') - strtotime('TODAY'));
-//		FirePHP::getInstance()->fb(strtotime('+8 hours',0));
-		$this->render('index');
+		Yii::import('application.components.maps.DateMap');
+
+		$time = intval($time);
+		$checkedTime = empty($time) ? time() : $time;
+
+		$this->layout = '//layouts/front';
+		$this->pageTitle = 'Расписание';
+		$this->moduleId = array('Calendar');
+		$this->styles = array('calendar');
+		$this->bodyClass = array('calendar', 'creative');
+
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
+		$id = intval($id);
+
+		if (empty($id)) {
+			$current = @reset($centers);
+		} else {
+			if (empty($centers[$id])) {
+				throw new CHttpException(404);
+			}
+			$current = $centers[$id];
+		}
+
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$current->id), array('index'=>'id'));
+		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
+		$dayStart = strtotime('TODAY', $checkedTime);
+		$dayEnd = $dayStart + 86400;
+
+		$events = Event::getByTime($dayStart, $dayEnd);
+
+
+		$this->render('index', array(
+
+			'current' => $current,
+			'centers' => $centers,
+			'services' => $services,
+			'halls' => $halls,
+
+			'checkedTime' => $checkedTime,
+			'events' => $events,
+		));
 	}
 
 	/**
@@ -51,60 +87,6 @@ class SiteController extends FrontController
 			else
 				$this->render('error', $error);
 		}
-
-
-		$error = Yii::app()->errorHandler->error;
-
-		if ($error) {
-			if (empty($error['message'])) {
-				if (array_key_exists($error['code'], Config::$errors))
-					$error['message'] = Config::$errors[$error['code']];
-			}
-
-			if (Yii::app()->request->isAjaxRequest)
-				echo $error['message'];
-			else {
-				$this->hide_div_content = true;
-				$this->spec_div_class = 'e404';
-
-				if ($error['code'] == 404) {
-					$error['title'] = "Страница не найдена";
-					$error['message'] = 'Возможно неправильно'
-					    .' набран адрес или такой страницы не существует.<br>'
-					    .' Попробуйте начать с <a href="/">главной страницы</a>.';
-				} else {
-					$error['title'] = 'Ошибка ' . $error['code'];
-				}
-
-				$this->render('//site/error', $error);
-			}
-		}
-	}
-
-	/**
-	 * Displays the contact page
-	 */
-	public function actionContact()
-	{
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$name='=?UTF-8?B?'.base64_encode($model->name).'?=';
-				$subject='=?UTF-8?B?'.base64_encode($model->subject).'?=';
-				$headers="From: $name <{$model->email}>\r\n".
-					"Reply-To: {$model->email}\r\n".
-					"MIME-Version: 1.0\r\n".
-					"Content-Type: text/plain; charset=UTF-8";
-
-				mail(Yii::app()->params['adminEmail'],$subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
 	}
 
 	/**

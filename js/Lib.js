@@ -126,7 +126,7 @@ lib.include = function(path, version) {
 	(typeof execScript != 'undefined') ? execScript(code) : 
 		(lib.context.eval ? lib.context.eval(code) : eval(code));
 
-	console.log(lib.pathToUrl(path, version));
+//	console.log(lib.pathToUrl(path, version));
 
 	return true;
 }

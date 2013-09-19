@@ -178,6 +178,22 @@ class Event extends CActiveRecord
 	}
 
 	/**
+	 * Получение событий в интервале времени
+	 * @param $startTime
+	 * @param $endTime
+	 * @return array|CActiveRecord
+	 */
+	public static function getByTime($startTime, $endTime)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->condition = 'start_time >= :start AND end_time <= :end';
+		$criteria->order = 'start_time ASC';
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime);
+
+		return self::model()->findAll($criteria);
+	}
+
+	/**
 	 * Обновляет младшие события
 	 * @param $event
 	 * @throws CHttpException
