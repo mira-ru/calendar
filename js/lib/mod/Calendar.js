@@ -54,7 +54,7 @@ var Calendar = function () { 'use strict';
 				    request = $.ajax({
 					url: '/site/axActiveDays',
 					type: 'POST',
-					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id, sub_id: id },
+					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id, activity_id: id },
 					dataType: 'json'
 				});
 				request.done(function( msg ) {
@@ -72,7 +72,7 @@ var Calendar = function () { 'use strict';
 				$('.timeline-days span.disabled').removeClass('disabled');
 			}
 
-			$.extend(true, _moduleOptions, {'activity_id' : id});
+			_moduleOptions.activity_id = id;
 
 			// Делаем маппинг занятий
 		 	sub.map(function(){
@@ -139,7 +139,7 @@ var Calendar = function () { 'use strict';
 						});
 					}
 					$('.timeline-days span.disabled').removeClass('disabled');
-					$.extend(true, _moduleOptions, {'activity_id' : 0});
+					_moduleOptions.activity_id = 0;
 				});
 			}
 		});

@@ -190,7 +190,7 @@ class Event extends CActiveRecord
 		$criteria->order = 'start_time ASC';
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId);
 
-		if ($directionId!==null) {
+		if ( !empty($directionId) ) {
 			$criteria->compare('direction_id', $directionId);
 		}
 

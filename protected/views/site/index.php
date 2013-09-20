@@ -155,8 +155,12 @@
 				<td colspan="15" class="timeline-wrapper">
 					<?php
 					$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
+					$htmlOptions = array('class'=>'warning-empty');
+					if ( empty($halls) || empty($events) ) {
+						$htmlOptions['style'] = 'display:block';
+					}
+					echo CHtml::tag('p', $htmlOptions, 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 					?>
-					<p class="warning-empty">К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!</p>
 				</td>
 			</tr>
 			</tbody>

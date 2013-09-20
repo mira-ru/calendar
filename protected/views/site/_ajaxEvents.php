@@ -5,6 +5,7 @@
  * @var $services array
  * @var $halls array
  */
+
 $totalHasEvents = false;
 foreach ($halls as $hall) {
 	$tmp = '';
@@ -17,7 +18,12 @@ foreach ($halls as $hall) {
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
 			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
-			$hasEvents = true;
+			// Если указано направление - скрываем не подходящие элементы
+			if ( !empty($directionId) && $directionId != $event->direction_id ) {
+				$htmlOptions['style'] = 'display:none;';
+			} else {
+				$hasEvents = true;
+			}
 
 			// TODO: color class
 			$timeStart = date('H-i', $event->start_time);
@@ -46,8 +52,13 @@ foreach ($halls as $hall) {
 	$htmlOptions = array();
 	if (!$hasEvents) {
 		continue;
+//		$htmlOptions['style'] = 'display:none;';
 	}
 	$totalHasEvents = true;
 	echo CHtml::tag('div', $htmlOptions, $tmp);
 
+}
+FirePHP::getInstance()->fb($totalHasEvents);
+if ( !$totalHasEvents ) {
+	echo CHtml::tag('p', array('class'=>'warning-empty', 'style'=>'display:block'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 }

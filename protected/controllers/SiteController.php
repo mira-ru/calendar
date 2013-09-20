@@ -56,7 +56,7 @@ class SiteController extends FrontController
 	}
 
 	/**
-	 * Список событий
+	 * Список событий за день
 	 * @throws CHttpException
 	 */
 	public function actionAxEvents()
@@ -69,6 +69,7 @@ class SiteController extends FrontController
 
 		$centerId = intval($request->getParam('center_id'));
 		$day = intval($request->getParam('day_timestamp'));
+		$directionId = intval($request->getParam('activity_id'));
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -81,7 +82,7 @@ class SiteController extends FrontController
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
 
-		$html = $this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services), true);
+		$html = $this->renderPartial('_ajaxEvents', array('halls'=>$halls, 'events'=>$events, 'services'=>$services, 'directionId'=>$directionId), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
@@ -121,7 +122,7 @@ class SiteController extends FrontController
 
 		$monthTime = intval($request->getParam('current_month'));
 		$centerId = intval($request->getParam('center_id'));
-		$subId = intval($request->getParam('sub_id'));
+		$directionId = intval($request->getParam('activity_id'));
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -131,7 +132,7 @@ class SiteController extends FrontController
 		$monthTime = DateMap::currentMonth($monthTime);
 		$nextMonthTime = DateMap::getNextMonth($monthTime);
 
-		$events = Event::getByTime($monthTime, $nextMonthTime, $center->id, $subId);
+		$events = Event::getByTime($monthTime, $nextMonthTime, $center->id, $directionId);
 
 		$data = array();
 		// начинаем выкашивать используемые
