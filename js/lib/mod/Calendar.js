@@ -8,6 +8,7 @@ lib.include('plugins.bootstrap.Button');
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
 		'center_id': 0,
+		'activity_id': 0,
 		'current_month': 0
 	};
 	// Public method
@@ -28,7 +29,7 @@ var Calendar = function () { 'use strict';
 			var request = $.ajax({
 				url: '/site/axEvents',
 				type: 'POST',
-				data: { day_timestamp : day , center_id: _moduleOptions.center_id },
+				data: { day_timestamp : day , center_id: _moduleOptions.center_id, activity_id: _moduleOptions.activity_id },
 				dataType: 'json'
 			});
 			request.done(function( msg ) {
@@ -41,7 +42,6 @@ var Calendar = function () { 'use strict';
 			    id = li.data('id'),
 			    row = $('.timeline-row'),
 			    sub = $('div', row),
-			    // sub = $('div', row).not('[data-sub="' + id + '"]'),
 			    label, key_map, ids = (id == 0) ? li.siblings() : li ;
 
 			key_map = ids.map(function(){
@@ -67,12 +67,12 @@ var Calendar = function () { 'use strict';
 						}
 					});
 				});
-				// request.error(function( msg ) {
-				// });
 			}
 			else {
 				$('.timeline-days span.disabled').removeClass('disabled');
 			}
+
+			$.extend(true, _moduleOptions, {'activity_id' : id});
 
 			// Делаем маппинг занятий
 		 	sub.map(function(){
@@ -139,6 +139,7 @@ var Calendar = function () { 'use strict';
 						});
 					}
 					$('.timeline-days span.disabled').removeClass('disabled');
+					$.extend(true, _moduleOptions, {'activity_id' : 0});
 				});
 			}
 		});
