@@ -19,7 +19,7 @@ class SiteController extends FrontController
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
 		$this->moduleId = array('Calendar');
-		$this->styles = array('calendar');
+//		$this->styles = array('calendar');
 		$this->bodyClass = array('calendar', 'creative');
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));

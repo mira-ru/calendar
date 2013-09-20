@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="/css/bootstrap.css">
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
+		Yii::app()->less->register();
 		foreach($this->styles as $style) {
 			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.less">';
 		}
@@ -16,6 +17,7 @@
 		$cs = Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
 		$cs->registerCssFile($url);
+		$cs->registerCssFile('/css/generated/calendar.css')
 
 		?>
 		<script src="/js/Lib.js"></script>

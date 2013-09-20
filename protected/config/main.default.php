@@ -57,6 +57,19 @@ return CMap::mergeArray(array(
 			'enableProfiling' => true,
 			'enableParamLogging' => true,
 		),
+		'less'=>array(
+			'class'=>'ext.yii-less.components.Less',
+			'mode'=>'server',
+			'files'=>array(
+				'css/custom/calendar.less'                  => 'css/generated/calendar.css',
+			),
+			'options'=>array(
+				'compression'=>'yui',
+				'compilerPath'=>'/usr/bin/lessc',
+				'nodePath'=>'node',
+				'forceCompile'=>true,
+			),
+		),
 		'init'=>array(
 			'class'=>'application.components.core.InitComponent'
 		),
