@@ -114,7 +114,9 @@ var Calendar = function () { 'use strict';
 			 					$(this).parent().slideUp('fast');
 			 				}
 			 			});
+			 			
 			 			_setFilterLabel(li.text());
+			 			
 			 			if (elems.length == 0) {
 							$('.warning-empty').fadeIn();
 						}
@@ -128,18 +130,20 @@ var Calendar = function () { 'use strict';
 						$('.warning-empty').fadeOut('fast').promise().done(function(){
 							$('.timeline-wrapper > div').slideDown('fast', function(){
 								$('div', $(this)).fadeIn('fast');
-								$('.filter-items').empty();
 							});
+						$('.filter-items').empty();
 						});
 					}
 					else {
 						$('.timeline-wrapper > div').slideDown('fast', function(){
 							$('div', $(this)).fadeIn('fast');
-							$('.filter-items').empty();
 						});
+						$('.filter-items').empty();
 					}
 					$('.timeline-days span.disabled').removeClass('disabled');
 					_moduleOptions.activity_id = 0;
+					
+
 					console.log('kill filter');
 				});
 			}
