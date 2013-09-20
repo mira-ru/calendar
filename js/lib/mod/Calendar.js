@@ -140,6 +140,7 @@ var Calendar = function () { 'use strict';
 					}
 					$('.timeline-days span.disabled').removeClass('disabled');
 					_moduleOptions.activity_id = 0;
+					console.log('kill filter');
 				});
 			}
 		});
