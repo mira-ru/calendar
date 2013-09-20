@@ -30,7 +30,7 @@
 					}
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url)
-					);
+					)."\n";
 					$cnt++;
 				}
 				?>
@@ -41,26 +41,29 @@
 				/** @var $service Service */
 				foreach ($services as $service) {
 					echo CHtml::openTag('li');
-						$class = 'item-a c-'.ltrim($service->color, '#');
 
+						$class = 'item-'.ltrim($service->color, '#');
 						echo CHtml::openTag('span', array('class'=>$class));
-							echo $service->name;
-							echo CHtml::tag('ul', array('class'=>'list-unstyled'));
+							echo $service->name."\n";
+
+							echo CHtml::openTag('ul', array('class'=>'list-unstyled'));
 							/** @var $direction Direction */
 							foreach ($service->directions as $direction) {
-								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name);
+								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 							}
-							echo CHtml::tag('li', array('data-id'=>0), 'Все направления');
+								echo CHtml::tag('li', array('data-id'=>0), 'Все направления')."\n";
 
-					echo CHtml::closeTag('ul');
+							echo CHtml::closeTag('ul');
 						echo CHtml::closeTag('span');
-					echo CHtml::closeTag('li');
+
+					echo CHtml::closeTag('li')."\n";
 				}
 
-				?>
+//				?>
 			</ul>
 		</div>
 	</div>
+
 	<div class="row">
 		<div class="col-lg-12">
 			<ul class="list-inline filter-items">
@@ -74,6 +77,7 @@
 		$yearNumber = date('Y', $checkedTime);
 		$prevMonthTime = DateMap::getPrevMonth($checkedTime);
 		$nextMonthTime = DateMap::getNextMonth($checkedTime);
+		$currentMonthTime = DateMap::currentMonth($checkedTime);
 		
 		echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
 			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
@@ -103,11 +107,12 @@
 					}
 					echo CHtml::openTag('span', $htmlOptions);
 
-					$dow = date('w',strtotime( date($n . ' F Y', $checkedTime) ) );
+					$dayTime = $currentMonthTime + ($n-1)*86400;
+					$dow = date('w', $dayTime);
 
 					$htmlOptions = array(
 						'data-weekday'=>DateMap::$smallDayMap[$dow],
-						'data-day'=>$n,
+						'data-day'=>$dayTime,
 					);
 					if ($dow == 0 || $dow == 6) {
 						$htmlOptions['class'] = 'weekend';
@@ -149,50 +154,7 @@
 			<tr>
 				<td colspan="15" class="timeline-wrapper">
 					<?php
-					/** @var $hall Hall */
-					foreach ($halls as $hall) {
-						$tmp = '';
-						$hasEvents = false;
-
-						$tmp .= CHtml::tag('div', array('class'=>'text-center'), $hall->name);
-						$tmp .= CHtml::openTag('div', array('class'=>'row timeline-row'));
-
-						/** @var $event Event */
-						foreach ($events as $event) {
-							if ($event->hall_id == $hall->id) {
-								$hasEvents = true;
-								$htmlOptions = array('data-sub'=>$event->direction_id);
-								// TODO: color class
-								$timeStart = date('H-i', $event->start_time);
-								// Продолжительность в минутах
-								$eventTime = ($event->end_time - $event->start_time) / 60;
-
-								$colorClass = isset($services[$event->service_id]) ?
-								    	'c-'.ltrim($services[$event->service_id]->color, '#') : '';
-
-								$class = 'col-'.$eventTime.' start-'.$timeStart.' '.$colorClass;
-
-								$htmlOptions['class'] = $class;
-
-								$tmp .= CHtml::openTag('div', $htmlOptions);
-
-								$text = empty($event->direction) ? '' : $event->direction->name;
-								$tmp .= CHtml::tag('span', array(), $text);
-
-								$tmp .= CHtml::closeTag('div');
-							}
-						}
-
-
-						$tmp .= CHtml::closeTag('div');
-
-						$htmlOptions = array();
-						if (!$hasEvents) {
-							$htmlOptions['style'] = 'display:none;';
-						}
-						echo CHtml::tag('div', $htmlOptions, $tmp);
-
-					}
+					$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
 					?>
 					<p class="warning-empty">К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!</p>
 				</td>
@@ -203,3 +165,8 @@
 </div>
 </div>
 <!-- EOF PAGE CONTENT -->
+<script>
+	$(function () {
+		Calendar.initialize(<?php echo json_encode(array('center_id'=>$current->id), JSON_NUMERIC_CHECK); ?>);
+	});
+</script>

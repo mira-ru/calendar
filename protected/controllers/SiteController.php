@@ -2,35 +2,19 @@
 
 class SiteController extends FrontController
 {
-	/**
-	 * Declares class-based actions.
-	 */
-	public function actions()
+	public function beforeAction($action)
 	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-//			'captcha'=>array(
-//				'class'=>'CCaptchaAction',
-//				'backColor'=>0xFFFFFF,
-//			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-//			'page'=>array(
-//				'class'=>'CViewAction',
-//			),
-		);
+		Yii::import('application.components.maps.DateMap');
+		return parent::beforeAction($action);
 	}
-
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
 	public function actionIndex($id=null, $time=null)
 	{
-		Yii::import('application.components.maps.DateMap');
-
 		$time = intval($time);
-		$checkedTime = empty($time) ? time() : $time;
+		$checkedTime = empty($time) ? time()-86400 : $time;
 
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
@@ -56,7 +40,7 @@ class SiteController extends FrontController
 		$dayStart = strtotime('TODAY', $checkedTime);
 		$dayEnd = $dayStart + 86400;
 
-		$events = Event::getByTime($dayStart, $dayEnd);
+		$events = Event::getByTime($dayStart, $dayEnd, $current->id);
 
 
 		$this->render('index', array(
@@ -72,6 +56,59 @@ class SiteController extends FrontController
 	}
 
 	/**
+	 * Список событий
+	 * @throws CHttpException
+	 */
+	public function actionAxEvents()
+	{
+		/** @var $request CHttpRequest */
+		$request = Yii::app()->getRequest();
+		if (!$request->getIsAjaxRequest()) {
+			throw new CHttpException(400);
+		}
+
+		$centerId = intval($request->getParam('center_id'));
+		$day = intval($request->getParam('day_timestamp'));
+
+		$center = Center::model()->findByPk($centerId);
+		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
+			throw new CHttpException(404);
+		}
+
+		$dayStart = strtotime('TODAY', $day);
+
+		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
+		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
+
+		$html = $this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services), true);
+
+		Yii::app()->end( json_encode(array('html'=>$html)) );
+	}
+
+	/**
+	 * Детальная инфа по событию
+	 */
+	public function actionAxEvent()
+	{
+		/** @var $request CHttpRequest */
+		$request = Yii::app()->getRequest();
+		if (!$request->getIsAjaxRequest()) {
+			throw new CHttpException(400);
+		}
+
+		$eventId = intval($request->getParam('event_id'));
+		$event = Event::model()->findByPk($eventId);
+		if ($event===null) {
+			throw new CHttpException(404);
+		}
+
+		$html = $this->renderPartial('_event', array('event'=>$event), true);
+
+		Yii::app()->end( json_encode(array('html'=>$html)) );
+	}
+
+	/**
 	 * This is the action to handle external exceptions.
 	 */
 	public function actionError()
@@ -82,9 +119,9 @@ class SiteController extends FrontController
 				$error['message'] = Config::$errors[$error['code']];
 			}
 
-			if(Yii::app()->getRequest()->getIsAjaxRequest())
-				echo $error['message'];
-			else
+			if(Yii::app()->getRequest()->getIsAjaxRequest()) {
+				Yii::app()->end( json_encode( array('error'=>$error['code'], 'message'=>$error['message']), JSON_NUMERIC_CHECK ) );
+			} else
 				$this->render('error', $error);
 		}
 	}

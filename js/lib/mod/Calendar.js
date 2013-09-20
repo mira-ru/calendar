@@ -6,10 +6,14 @@ lib.include('plugins.bootstrap.Button');
 
 // Class definition
 var Calendar = function () { 'use strict';
-
+	var _moduleOptions = {
+		'center_id': 0
+	};
 	// Public method
-	function initialize () {
-		
+	function initialize (options) {
+
+		$.extend(true, _moduleOptions, options)
+
 		var filter;
 
 		$('.timeline-days').on('click', 'span', function(e){
@@ -19,8 +23,17 @@ var Calendar = function () { 'use strict';
 			    day = $('i', span).data('day'),
 			    current = $('.current', $(e.delegateTarget));
 			span.add(current).toggleClass('current');
-			var date = year + '-' + month + '-' + day;
-			console.log(date);
+
+			var request = $.ajax({
+				url: '/site/axEvents',
+				type: 'POST',
+				data: { day_timestamp : day , center_id: _moduleOptions.center_id },
+				dataType: 'json'
+			});
+			request.done(function( msg ) {
+				console.log(msg);
+				$( '.timeline-wrapper' ).html( msg.html );
+			});
 		});
 
 		$('[data-id]').on('click', function(){
@@ -105,14 +118,22 @@ var Calendar = function () { 'use strict';
 		
 		$('[data-sub]').on('click', 'span', function(){
 			var toggler = $(this),
-			    li = toggler.parent(),
-			    pos = li.offset(),
+			    div = toggler.parent(),
+			    pos = div.offset(),
 			    balloon = $('.event-balloon'),
-			    left = pos.left - (balloon.outerWidth() / 2) + (li.outerWidth() / 2),
-			    top = pos.top - (balloon.outerHeight() / 2) + (li.outerHeight() / 2);
+			    left = pos.left - (balloon.outerWidth() / 2) + (div.outerWidth() / 2),
+			    top = pos.top - (balloon.outerHeight() / 2) + (div.outerHeight() / 2);
 
-			// Получаем дату
-			$.getJSON('', function(data){
+			// Получаем данные
+			var request = $.ajax({
+				url: '/site/axEvent',
+				type: 'POST',
+				data: { event_id: div.data('event') },
+				dataType: 'json'
+			});
+			request.done(function( msg ) {
+				console.log(msg);
+				//$( '.timeline-wrapper' ).html( msg.html );
 			});
 
 			if (balloon.is(':visible')) {

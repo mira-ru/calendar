@@ -183,12 +183,12 @@ class Event extends CActiveRecord
 	 * @param $endTime
 	 * @return array|CActiveRecord
 	 */
-	public static function getByTime($startTime, $endTime)
+	public static function getByTime($startTime, $endTime, $center_id)
 	{
 		$criteria = new CDbCriteria();
-		$criteria->condition = 'start_time >= :start AND end_time <= :end';
+		$criteria->condition = 'start_time >= :start AND end_time <= :end AND center_id=:cid';
 		$criteria->order = 'start_time ASC';
-		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime);
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$center_id);
 
 		return self::model()->findAll($criteria);
 	}

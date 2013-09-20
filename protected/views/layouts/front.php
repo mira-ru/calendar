@@ -10,11 +10,17 @@
 		foreach($this->styles as $style) {
 			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.less">';
 		}
+
+		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
+		/** @var $cs CClientScript */
+		$cs = Yii::app()->getClientScript();
+		$cs->registerCoreScript('jquery');
+		$cs->registerCssFile($url);
+
 		?>
 		<script src="/js/Lib.js"></script>
 		<script>
 			lib.include('Less');
-			lib.include('Jquery');
 			<?php
 				foreach($this->moduleId as $module) {
 					echo "lib.include('mod.".$module."')";
@@ -44,10 +50,5 @@
 			</div>
 		</div>
 		<!-- EOF PAGE FOOTER -->
-	<script>
-		$(function () {
-			Calendar.initialize();
-		});
-	</script>
 	</body>
 </html>

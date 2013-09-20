@@ -136,4 +136,31 @@ class Service extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Генерация css для всех цветов
+	 */
+	public static function generateCss()
+	{
+		$sql = 'SELECT color FROM service WHERE status='.self::STATUS_ACTIVE;
+		$colors = Yii::app()->db->createCommand($sql)->queryColumn();
+
+		$content = '';
+		foreach ($colors as $color) {
+			$clearCode = ltrim($color, '#');
+			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
+			$content .= '.item-'.$clearCode.':before{background:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.':hover{color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.' ul{border-color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.' ul:before{background-color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.' ul li:hover{color:'.$color.' !important}';
+		}
+
+		$path = Yii::getPathOfAlias('application.runtime').'/assets';
+		if (!file_exists($path)) {
+			mkdir($path, 0700, true);
+		}
+		$path .= '/color.css';
+		@file_put_contents($path, $content);
+	}
 }

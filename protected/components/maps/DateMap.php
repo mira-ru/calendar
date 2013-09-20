@@ -36,7 +36,8 @@ class DateMap {
 		return strtotime( date('Y-m', strtotime("next month", $timestamp)) );
 	}
 
-
-
-
+	public static function currentMonth($timestamp)
+	{
+		return strtotime( date('Y-m', $timestamp) );
+	}
 }
