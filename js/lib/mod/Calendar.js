@@ -144,7 +144,7 @@ var Calendar = function () { 'use strict';
 			}
 		});
 		
-		$('[data-sub]').on('click', 'span', function(){
+		$('.timeline-wrapper').on('click', 'span', function(){
 			var toggler = $(this),
 			    div = toggler.parent(),
 			    pos = div.offset(),
@@ -172,9 +172,7 @@ var Calendar = function () { 'use strict';
 
 			$('.cross', balloon).bind('click', function(){
 				var clk = $(this);
-				balloon.hide('fast', function(){
-					// clk.prev().empty();
-				});
+				balloon.hide('fast');
 			})
 		});
 
