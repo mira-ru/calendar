@@ -8,7 +8,7 @@
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
 		foreach($this->styles as $style) {
-			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.less">';
+			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.css">';
 		}
 
 		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
