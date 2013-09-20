@@ -9,7 +9,8 @@
 $totalHasEvents = false;
 foreach ($halls as $hall) {
 	$tmp = '';
-	$hasEvents = false;
+	$hasEvents = false; // Наличие событий в принципе
+	$hasEnEvents = false; // Наличие отображаемых событий
 
 	$tmp .= CHtml::tag('div', array('class'=>'text-center'), $hall->name);
 	$tmp .= CHtml::openTag('div', array('class'=>'row timeline-row'));
@@ -17,12 +18,13 @@ foreach ($halls as $hall) {
 	/** @var $event Event */
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
+			$hasEvents = true;
 			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
 			// Если указано направление - скрываем не подходящие элементы
 			if ( !empty($directionId) && $directionId != $event->direction_id ) {
 				$htmlOptions['style'] = 'display:none;';
 			} else {
-				$hasEvents = true;
+				$hasEnEvents = true;
 			}
 
 			// TODO: color class
@@ -52,13 +54,14 @@ foreach ($halls as $hall) {
 	$htmlOptions = array();
 	if (!$hasEvents) {
 		continue;
-//		$htmlOptions['style'] = 'display:none;';
+	}
+	if (!$hasEnEvents) {
+		$htmlOptions['style'] = 'display:none;';
 	}
 	$totalHasEvents = true;
 	echo CHtml::tag('div', $htmlOptions, $tmp);
 
 }
-FirePHP::getInstance()->fb($totalHasEvents);
 if ( !$totalHasEvents ) {
 	echo CHtml::tag('p', array('class'=>'warning-empty', 'style'=>'display:block'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 }
