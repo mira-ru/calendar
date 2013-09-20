@@ -7,7 +7,8 @@ lib.include('plugins.bootstrap.Button');
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
-		'center_id': 0
+		'center_id': 0,
+		'current_month': 0
 	};
 	// Public method
 	function initialize (options) {
@@ -16,7 +17,7 @@ var Calendar = function () { 'use strict';
 
 		var filter;
 
-		$('.timeline-days').on('click', 'span', function(e){
+		$('.timeline-days').on('click', 'span:not(.disabled)', function(e){
 			var span = $(this),
 			    month = $('strong.current').data('month'),
 			    year = $('strong.current').data('year'),
@@ -47,6 +48,28 @@ var Calendar = function () { 'use strict';
 			key_map = ids.map(function(){
 				return $(this).data('id');
 			}).get();
+
+			// Отправляем данные для маппинга фильтра направлений в днях месяца
+			if (id != 0) {
+				var days = $('.timeline-days i');
+				    request = $.ajax({
+					url: '/site/axEvents',
+					type: 'POST',
+					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id },
+					dataType: 'json'
+				});
+				request.done(function( msg ) {
+					console.log(msg);
+					// days.each(function(index){
+					// 	if (jQuery.inArray($(this).data('day'), msg.days) != -1) {
+					// 		$(this).parent().addClass('disabled');
+					// 	}
+					// });
+				});
+				// request.error(function( msg ) {
+				// 	console.log('E');
+				// });
+			}
 
 			// Делаем маппинг занятий
 		 	sub.map(function(){
