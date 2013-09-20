@@ -20,7 +20,8 @@ class SiteController extends FrontController
 		$this->pageTitle = 'Расписание';
 		$this->moduleId = array('Calendar');
 		$this->styles = array('calendar');
-		$this->bodyClass = array('calendar', 'creative');
+		$this->bodyClass = array('calendar');
+
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
 		$id = intval($id);
@@ -33,6 +34,7 @@ class SiteController extends FrontController
 			}
 			$current = $centers[$id];
 		}
+		$this->bodyClass[] = 'center-'.$current->id;
 
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$current->id), array('index'=>'id'));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
