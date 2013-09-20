@@ -132,18 +132,17 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function( msg ) {
-				console.log(msg);
-				//$( '.timeline-wrapper' ).html( msg.html );
+				// console.log(msg);
+				if (balloon.is(':visible')) {
+					balloon.hide('fast', function(){
+						balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
+					});
+				}
+				else {
+					balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
+				}
 			});
 
-			if (balloon.is(':visible')) {
-				balloon.hide('fast', function(){
-					balloon./*find('div').text(pos.top + ' ' + pos.left).end().*/css({top: top, left: left}).fadeIn('fast');
-				});
-			}
-			else {
-				balloon./*find('div').text(pos.top + ' ' + pos.left).end().*/css({top: top, left: left}).fadeIn('fast');
-			}
 			$('.cross', balloon).bind('click', function(){
 				var clk = $(this);
 				balloon.hide('fast', function(){
