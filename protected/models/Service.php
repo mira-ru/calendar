@@ -22,6 +22,11 @@ class Service extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	public function init()
+	{
+		$this->onAfterSave = array('Service', 'generateCss');
+	}
+
 
 	/**
 	 * @return string the associated database table name

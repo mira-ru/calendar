@@ -14,7 +14,7 @@ class SiteController extends FrontController
 	public function actionIndex($id=null, $time=null)
 	{
 		$time = intval($time);
-		$checkedTime = empty($time) ? time()-86400 : $time;
+		$checkedTime = empty($time) ? time() : $time;
 
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
@@ -106,6 +106,44 @@ class SiteController extends FrontController
 		$html = $this->renderPartial('_event', array('event'=>$event), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
+	}
+
+	/**
+	 * Возвращает список активных дней в месяце
+	 */
+	public function actionAxActiveDays()
+	{
+		/** @var $request CHttpRequest */
+		$request = Yii::app()->getRequest();
+		if (!$request->getIsAjaxRequest()) {
+			throw new CHttpException(400);
+		}
+
+		$monthTime = intval($request->getParam('current_month'));
+		$centerId = intval($request->getParam('center_id'));
+		$subId = intval($request->getParam('sub_id'));
+
+		$center = Center::model()->findByPk($centerId);
+		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
+			throw new CHttpException(404);
+		}
+
+		$monthTime = DateMap::currentMonth($monthTime);
+		$nextMonthTime = DateMap::getNextMonth($monthTime);
+
+		$events = Event::getByTime($monthTime, $nextMonthTime, $center->id, $subId);
+
+		$data = array();
+		// начинаем выкашивать используемые
+		/** @var $event Event */
+		foreach ($events as $event) {
+			$dayNumber = date('j', $event->start_time);
+			if (!isset($data[$dayNumber])) {
+				$data[$dayNumber] = $monthTime + ($dayNumber-1)*86400;
+			}
+		}
+		$result = array_values($data);
+		Yii::app()->end( json_encode(array('days'=>$result), JSON_NUMERIC_CHECK) );
 	}
 
 	/**

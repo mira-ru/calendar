@@ -163,10 +163,17 @@
 		</table>
 	</div>
 </div>
+	<div class="event-balloon">
+	<div>
+	</div>
+	<i class="cross"></i></div>
 </div>
 <!-- EOF PAGE CONTENT -->
 <script>
 	$(function () {
-		Calendar.initialize(<?php echo json_encode(array('center_id'=>$current->id), JSON_NUMERIC_CHECK); ?>);
+		Calendar.initialize(<?php echo json_encode(array(
+			'center_id'=>$current->id,
+			'current_month'=>$currentMonthTime,
+		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>

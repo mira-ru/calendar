@@ -32,7 +32,6 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function( msg ) {
-				console.log(msg);
 				$( '.timeline-wrapper' ).html( msg.html );
 			});
 		});
@@ -51,24 +50,28 @@ var Calendar = function () { 'use strict';
 
 			// Отправляем данные для маппинга фильтра направлений в днях месяца
 			if (id != 0) {
-				var days = $('.timeline-days i');
+				var days = $('.timeline-days i'),
 				    request = $.ajax({
-					url: '/site/axEvents',
+					url: '/site/axActiveDays',
 					type: 'POST',
-					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id },
+					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id, sub_id: id },
 					dataType: 'json'
 				});
 				request.done(function( msg ) {
-					console.log(msg);
-					// days.each(function(index){
-					// 	if (jQuery.inArray($(this).data('day'), msg.days) != -1) {
-					// 		$(this).parent().addClass('disabled');
-					// 	}
-					// });
+					days.each(function(index){
+
+						if (jQuery.inArray($(this).data('day'), msg.days) == -1) {
+							$(this).parent().addClass('disabled');
+						} else {
+							$(this).parent().removeClass('disabled');
+						}
+					});
 				});
 				// request.error(function( msg ) {
-				// 	console.log('E');
 				// });
+			}
+			else {
+				$('.timeline-days span.disabled').removeClass('disabled');
 			}
 
 			// Делаем маппинг занятий
@@ -135,6 +138,7 @@ var Calendar = function () { 'use strict';
 							$('.filter-items').empty();
 						});
 					}
+					$('.timeline-days span.disabled').removeClass('disabled');
 				});
 			}
 		});
@@ -155,7 +159,6 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function( msg ) {
-				// console.log(msg);
 				if (balloon.is(':visible')) {
 					balloon.hide('fast', function(){
 						balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
@@ -179,7 +182,6 @@ var Calendar = function () { 'use strict';
 			    month = $(this).data('month'),
 			    year = $(this).data('year'),
 			    date = year + '-' + month + '-' + day;
-			console.log(date);
 		});
 	}
 
