@@ -1,15 +1,9 @@
 // Definition
 lib.module('mod.Calendar');
 
-// Dependencies
-lib.include('plugins.bootstrap.Button');
-
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
-		// 'center_id': 0,
-		// 'activity_id': 0,
-		// 'current_month': 0,
 		'day': 0,
 		'activity_id': 0,
 		'center_id': 0,
