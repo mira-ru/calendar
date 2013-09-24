@@ -19,6 +19,7 @@ var Calendar = function () { 'use strict';
 	// Public method
 	function initialize (options) {
 		$.extend(true, _moduleOptions, options)
+		
 		var filter;
 
 		$('.timeline-days').on('click', 'span:not(.disabled, .current)', function(e){
@@ -28,266 +29,26 @@ var Calendar = function () { 'use strict';
 			span.add(current).toggleClass('current');
 			_moduleOptions.day = day;
 			_getEvents(_moduleOptions);
-
-			console.log(_moduleOptions);
 		});
 
 		$('[data-service]').on('click', function(){
 			var li = $(this),
 			    sid = li.data('service'),
-			    ids = li.siblings(),
-			    row = $('.timeline-row'),
-			    sub = $('div', row),
-			    key_map;
+			    text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
 			_moduleOptions.service_id = sid;
 			_moduleOptions.activity_id = 0;
 			_updateTimelineDays(_moduleOptions);
-
-			// Делаем маппинг событий
-			key_map = ids.map(function(){
-				return $(this).data('id');
-			}).get();
-			console.log(key_map);
-		 	sub.map(function(){
-		 		var key = $(this).data('sub');
-		 		if (jQuery.inArray(key, key_map) != -1) {
-		 			return this;
-		 		}
-		 	}).promise().done(function(){
-		 		var elems = $(this);
-				if (elems.length != 0) {
-					$('.warning-empty').fadeOut();
-				}
-		 		if (filter) {
-		 			// Здесь нужно:
-		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-		 			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-					arr.fadeToggle('fast').promise().done(function(){
-			 			row.each(function(index){
-			 				var c = $(this).children('[style="display: block;"], :visible').length;
-			 				if (c == 0) {
-			 					$(this).parent().slideUp('fast');
-			 				}
-			 				else {
-			 					$(this).parent().slideDown('fast');
-			 				}
-			 			});
-			 			_setFilterLabel(li.text());
-			 			if (elems.length == 0) {
-							$('.warning-empty').fadeIn();
-						}
-		 			});
-		 		}
-		 		else {
-			 		sub.not(elems).fadeOut('fast').promise().done(function(){
-			 			row.each(function(index){
-			 				var c = $(this).children(':visible').length;
-			 				if (c == 0) {
-			 					$(this).parent().slideUp('fast');
-			 				}
-			 			});
-			 			_setFilterLabel(li.text());
-			 			if (elems.length == 0) {
-							$('.warning-empty').fadeIn();
-						}
-			 		});
-		 		}
-		 	});
-
-			console.log(_moduleOptions);
+			_filterEvents(text, 0, sid);
 		});
 
 		$('[data-id]').on('click', function(){
 			var li = $(this),
-			    id = li.data('id'),
-			    row = $('.timeline-row'),
-			    sub = $('div', row);
+			    id = li.data('id');
 			_moduleOptions.activity_id = id;
 			_moduleOptions.service_id = 0;
 		 	_updateTimelineDays(_moduleOptions);
-
-			// Делаем маппинг занятий
-		 	sub.map(function(){
-		 		var key = $(this).data('sub');
-		 		if (key == id) {
-		 			return this;
-		 		}
-		 	}).promise().done(function(){
-		 		var elems = $(this);
-				if (elems.length != 0) {
-					$('.warning-empty').fadeOut();
-				}
-		 		if (filter) {
-		 			// Здесь нужно:
-		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-		 			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-					arr.fadeToggle('fast').promise().done(function(){
-			 			row.each(function(index){
-			 				var c = $(this).children('[style="display: block;"], :visible').length;
-			 				if (c == 0) {
-			 					$(this).parent().slideUp('fast');
-			 				}
-			 				else {
-			 					$(this).parent().slideDown('fast');
-			 				}
-			 			});
-			 			_setFilterLabel(li.text());
-			 			if (elems.length == 0) {
-							$('.warning-empty').fadeIn();
-						}
-		 			});
-		 		}
-		 		else {
-			 		sub.not(elems).fadeOut('fast').promise().done(function(){
-			 			row.each(function(index){
-			 				var c = $(this).children(':visible').length;
-			 				if (c == 0) {
-			 					$(this).parent().slideUp('fast');
-			 				}
-			 			});
-			 			_setFilterLabel(li.text());
-			 			if (elems.length == 0) {
-							$('.warning-empty').fadeIn();
-						}
-			 		});
-		 		}
-		 	});
-
-			console.log(_moduleOptions);
+			_filterEvents(li.text(), id, 0);
 		});
-		console.log(_moduleOptions);
-
-		// $('.timeline-days').on('click', 'span:not(.disabled, .current)', function(e){
-		// 	var span = $(this),
-		// 	    // month = $('strong.current').data('month'),
-		// 	    // year = $('strong.current').data('year'),
-		// 	    day = $('i', span).data('day'),
-		// 	    current = $('.current', $(e.delegateTarget));
-		// 	span.add(current).toggleClass('current');
-		// 	// Получаем события
-		// 	_getEvents({
-		// 		day_timestamp: day,
-		// 		center_id: _moduleOptions.center_id,
-		// 		activity_id: _moduleOptions.activity_id
-		// 	});
-		// });
-
-		// $('[data-service]').on('click', function(){
-		// 	var li = $(this),
-		// 	    service_id = li.data('service'),
-		// 	    ids = li.siblings(),
-		// 	    row = $('.timeline-row'),
-		// 	    sub = $('div', row),
-		// 	    key_map;
-		// 	// Обновляем таймлайн
-		// 	_updateTimelineDays(0, service_id);
-		// 	// Делаем маппинг событий
-		// 	key_map = ids.map(function(){
-		// 		return $(this).data('id');
-		// 	}).get();
-		// 	console.log(key_map);
-		//  	sub.map(function(){
-		//  		var key = $(this).data('sub');
-		//  		if (jQuery.inArray(key, key_map) != -1) {
-		//  			return this;
-		//  		}
-		//  	}).promise().done(function(){
-		//  		var elems = $(this);
-		// 		if (elems.length != 0) {
-		// 			$('.warning-empty').fadeOut();
-		// 		}
-		//  		if (filter) {
-		//  			// Здесь нужно:
-		//  			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-		//  			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-		// 			arr.fadeToggle('fast').promise().done(function(){
-		// 	 			row.each(function(index){
-		// 	 				var c = $(this).children('[style="display: block;"], :visible').length;
-		// 	 				if (c == 0) {
-		// 	 					$(this).parent().slideUp('fast');
-		// 	 				}
-		// 	 				else {
-		// 	 					$(this).parent().slideDown('fast');
-		// 	 				}
-		// 	 			});
-		// 	 			_setFilterLabel(li.text());
-		// 	 			if (elems.length == 0) {
-		// 					$('.warning-empty').fadeIn();
-		// 				}
-		//  			});
-		//  		}
-		//  		else {
-		// 	 		sub.not(elems).fadeOut('fast').promise().done(function(){
-		// 	 			row.each(function(index){
-		// 	 				var c = $(this).children(':visible').length;
-		// 	 				if (c == 0) {
-		// 	 					$(this).parent().slideUp('fast');
-		// 	 				}
-		// 	 			});
-		// 	 			_setFilterLabel(li.text());
-		// 	 			if (elems.length == 0) {
-		// 					$('.warning-empty').fadeIn();
-		// 				}
-		// 	 		});
-		//  		}
-		//  	});
-		// });
-
-		// $('[data-id]').on('click', function(){
-		// 	var li = $(this),
-		// 	    id = li.data('id'),
-		// 	    row = $('.timeline-row'),
-		// 	    sub = $('div', row);
-		// 	_moduleOptions.activity_id = id;
-		// 	// Обновляем таймлайн
-		// 	_updateTimelineDays(_moduleOptions.activity_id);
-		// 	// Делаем маппинг занятий
-		//  	sub.map(function(){
-		//  		var key = $(this).data('sub');
-		//  		if (key == id) {
-		//  			return this;
-		//  		}
-		//  	}).promise().done(function(){
-		//  		var elems = $(this);
-		// 		if (elems.length != 0) {
-		// 			$('.warning-empty').fadeOut();
-		// 		}
-		//  		if (filter) {
-		//  			// Здесь нужно:
-		//  			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-		//  			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-		// 			arr.fadeToggle('fast').promise().done(function(){
-		// 	 			row.each(function(index){
-		// 	 				var c = $(this).children('[style="display: block;"], :visible').length;
-		// 	 				if (c == 0) {
-		// 	 					$(this).parent().slideUp('fast');
-		// 	 				}
-		// 	 				else {
-		// 	 					$(this).parent().slideDown('fast');
-		// 	 				}
-		// 	 			});
-		// 	 			_setFilterLabel(li.text());
-		// 	 			if (elems.length == 0) {
-		// 					$('.warning-empty').fadeIn();
-		// 				}
-		//  			});
-		//  		}
-		//  		else {
-		// 	 		sub.not(elems).fadeOut('fast').promise().done(function(){
-		// 	 			row.each(function(index){
-		// 	 				var c = $(this).children(':visible').length;
-		// 	 				if (c == 0) {
-		// 	 					$(this).parent().slideUp('fast');
-		// 	 				}
-		// 	 			});
-		// 	 			_setFilterLabel(li.text());
-		// 	 			if (elems.length == 0) {
-		// 					$('.warning-empty').fadeIn();
-		// 				}
-		// 	 		});
-		//  		}
-		//  	});
-		// });
 		
 		$('.timeline-wrapper').on('click', 'span', function(){
 			var toggler = $(this),
@@ -322,6 +83,59 @@ var Calendar = function () { 'use strict';
 				balloon.hide('fast');
 			});
 		});
+
+		function _filterEvents(text, id, sid) {
+			var row = $('.timeline-row'),
+			    sub = $('div', row),
+			    val = (sid == 0) ? id : sid ;
+			
+			// Делаем маппинг занятий
+		 	sub.map(function(){
+		 		var key = (sid == 0) ? $(this).data('sub') : $(this).data('sid') ;
+		 		if (key == val) {
+		 			return this;
+		 		}
+		 	}).promise().done(function(){
+		 		var elems = $(this);
+				if (elems.length != 0) {
+					$('.warning-empty').fadeOut();
+				}
+		 		if (filter) {
+		 			// Здесь нужно:
+		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
+		 			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
+					arr.fadeToggle('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children('[style="display: block;"], :visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 				else {
+			 					$(this).parent().slideDown('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(text);
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+		 			});
+		 		}
+		 		else {
+			 		sub.not(elems).fadeOut('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children(':visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(text);
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+			 		});
+		 		}
+		 	});			
+		}
 
 		// Обновление .timeline-wrapper
 
@@ -390,7 +204,6 @@ var Calendar = function () { 'use strict';
 				_moduleOptions.service_id = 0;
 				// Обновляем таймлайн
 				_updateTimelineDays(_moduleOptions);
-				console.log(_moduleOptions);
 			});
 		}
 	}

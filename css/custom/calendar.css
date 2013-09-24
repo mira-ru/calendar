@@ -163,6 +163,9 @@ html, body {
   position: relative;
   text-decoration: underline;
 }
+.calendar .list-justified.sub-menu li span i {
+  font-style: normal;
+}
 .calendar .list-justified.sub-menu li span .list-unstyled {
   background: #fff;
   border: 3px solid;

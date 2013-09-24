@@ -47,7 +47,7 @@
 
 						$class = 'item-'.ltrim($service->color, '#');
 						echo CHtml::openTag('span', array('class'=>$class));
-							echo $service->name."\n";
+							echo '<i>'.$service->name."</i>\n";
 
 							echo CHtml::openTag('ul', array('class'=>'list-unstyled'));
 							/** @var $direction Direction */

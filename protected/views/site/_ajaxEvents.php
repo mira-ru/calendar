@@ -20,7 +20,7 @@ foreach ($halls as $hall) {
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
 			$hasEvents = true;
-			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
+			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
 			// Если указано направление - скрываем не подходящие элементы
 			if (
 			    (!empty($directionId) && $directionId != $event->direction_id)
