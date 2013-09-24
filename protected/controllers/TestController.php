@@ -21,4 +21,10 @@ class TestController extends AdminController
 		Service::generateCss();
 		die();
 	}
+
+	public function actionInfo()
+	{
+		phpinfo();
+		die();
+	}
 }

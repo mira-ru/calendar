@@ -61,13 +61,15 @@ return CMap::mergeArray(array(
 			'class'=>'ext.yii-less.components.Less',
 			'mode'=>'server',
 			'files'=>array(
-				'css/custom/calendar.less'                  => 'css/generated/calendar.css',
+				//'css/custom/calendar.less'                  => 'css/generated/calendar.css',
+				'css/custom/test.less'                  => 'css/generated/test.css',
 			),
 			'options'=>array(
 				'compression'=>'yui',
 				'compilerPath'=>'/usr/bin/lessc',
-				'nodePath'=>'node',
+				'nodePath'=>'/usr/bin/node',
 				'forceCompile'=>true,
+				'rootPath'=>'/var/www/calendar/css',
 			),
 		),
 		'init'=>array(
