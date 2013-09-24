@@ -4,6 +4,8 @@
  * @var $events array
  * @var $services array
  * @var $halls array
+ * @var $serviceId integer
+ * @var $directionId integer
  */
 
 foreach ($halls as $hall) {
@@ -20,7 +22,10 @@ foreach ($halls as $hall) {
 			$hasEvents = true;
 			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
 			// Если указано направление - скрываем не подходящие элементы
-			if ( !empty($directionId) && $directionId != $event->direction_id ) {
+			if (
+			    (!empty($directionId) && $directionId != $event->direction_id)
+			    || (!empty($serviceId) && $serviceId != $event->service_id)
+			) {
 				$htmlOptions['style'] = 'display:none;';
 			} else {
 				$hasEnEvents = true;
