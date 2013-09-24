@@ -33,10 +33,66 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('[data-service]').on('click', function(){
-			var sid = $(this).data('service');
+			var li = $(this),
+			    sid = li.data('service'),
+			    ids = li.siblings(),
+			    row = $('.timeline-row'),
+			    sub = $('div', row),
+			    key_map;
 			_moduleOptions.service_id = sid;
 			_moduleOptions.activity_id = 0;
+			_updateTimelineDays(_moduleOptions);
 
+			// Делаем маппинг событий
+			key_map = ids.map(function(){
+				return $(this).data('id');
+			}).get();
+			console.log(key_map);
+		 	sub.map(function(){
+		 		var key = $(this).data('sub');
+		 		if (jQuery.inArray(key, key_map) != -1) {
+		 			return this;
+		 		}
+		 	}).promise().done(function(){
+		 		var elems = $(this);
+				if (elems.length != 0) {
+					$('.warning-empty').fadeOut();
+				}
+		 		if (filter) {
+		 			// Здесь нужно:
+		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
+		 			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
+					arr.fadeToggle('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children('[style="display: block;"], :visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 				else {
+			 					$(this).parent().slideDown('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(li.text());
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+		 			});
+		 		}
+		 		else {
+			 		sub.not(elems).fadeOut('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children(':visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(li.text());
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+			 		});
+		 		}
+		 	});
 
 			console.log(_moduleOptions);
 		});
@@ -49,6 +105,53 @@ var Calendar = function () { 'use strict';
 			_moduleOptions.activity_id = id;
 			_moduleOptions.service_id = 0;
 		 	_updateTimelineDays(_moduleOptions);
+
+			// Делаем маппинг занятий
+		 	sub.map(function(){
+		 		var key = $(this).data('sub');
+		 		if (key == id) {
+		 			return this;
+		 		}
+		 	}).promise().done(function(){
+		 		var elems = $(this);
+				if (elems.length != 0) {
+					$('.warning-empty').fadeOut();
+				}
+		 		if (filter) {
+		 			// Здесь нужно:
+		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
+		 			var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
+					arr.fadeToggle('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children('[style="display: block;"], :visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 				else {
+			 					$(this).parent().slideDown('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(li.text());
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+		 			});
+		 		}
+		 		else {
+			 		sub.not(elems).fadeOut('fast').promise().done(function(){
+			 			row.each(function(index){
+			 				var c = $(this).children(':visible').length;
+			 				if (c == 0) {
+			 					$(this).parent().slideUp('fast');
+			 				}
+			 			});
+			 			_setFilterLabel(li.text());
+			 			if (elems.length == 0) {
+							$('.warning-empty').fadeIn();
+						}
+			 		});
+		 		}
+		 	});
 
 			console.log(_moduleOptions);
 		});
@@ -186,39 +289,39 @@ var Calendar = function () { 'use strict';
 		//  	});
 		// });
 		
-		// $('.timeline-wrapper').on('click', 'span', function(){
-		// 	var toggler = $(this),
-		// 	    div = toggler.parent(),
-		// 	    pos = div.offset(),
-		// 	    balloon = $('.event-balloon'),
-		// 	    left = pos.left - (balloon.outerWidth() / 2) + (div.outerWidth() / 2),
-		// 	    top = pos.top - (balloon.outerHeight() / 2) + (div.outerHeight() / 2);
+		$('.timeline-wrapper').on('click', 'span', function(){
+			var toggler = $(this),
+			    div = toggler.parent(),
+			    pos = div.offset(),
+			    balloon = $('.event-balloon'),
+			    left = pos.left - (balloon.outerWidth() / 2) + (div.outerWidth() / 2),
+			    top = pos.top - (balloon.outerHeight() / 2) + (div.outerHeight() / 2);
 
-		// 	// Получаем данные
-		// 	var request = $.ajax({
-		// 		url: '/site/axEvent',
-		// 		type: 'POST',
-		// 		data: {
-		// 			event_id: div.data('event')
-		// 		},
-		// 		dataType: 'json'
-		// 	});
-		// 	request.done(function(msg) {
-		// 		if (balloon.is(':visible')) {
-		// 			balloon.hide('fast', function(){
-		// 				balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
-		// 			});
-		// 		}
-		// 		else {
-		// 			balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
-		// 		}
-		// 	});
+			// Получаем данные
+			var request = $.ajax({
+				url: '/site/axEvent',
+				type: 'POST',
+				data: {
+					event_id: div.data('event')
+				},
+				dataType: 'json'
+			});
+			request.done(function(msg) {
+				if (balloon.is(':visible')) {
+					balloon.hide('fast', function(){
+						balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
+					});
+				}
+				else {
+					balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
+				}
+			});
 
-		// 	$('.cross', balloon).bind('click', function(){
-		// 		var clk = $(this);
-		// 		balloon.hide('fast');
-		// 	});
-		// });
+			$('.cross', balloon).bind('click', function(){
+				var clk = $(this);
+				balloon.hide('fast');
+			});
+		});
 
 		// Обновление .timeline-wrapper
 
@@ -264,30 +367,32 @@ var Calendar = function () { 'use strict';
 			});			
 		}
 
-		// // Установка фильтра
+		// Установка фильтра
 
-		// function _setFilterLabel(text) {
-		// 	$('.filter-items').empty();
-		// 	filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
-		// 		if ($('.warning-empty').is(':visible')) {
-		// 			$('.warning-empty').fadeOut('fast').promise().done(function(){
-		// 				$('.timeline-wrapper > div > div').slideDown('fast', function(){
-		// 					$('div', $(this)).fadeIn('fast');
-		// 				});
-		// 				$('.filter-items').empty();
-		// 			});
-		// 		}
-		// 		else {
-		// 			$('.timeline-wrapper > div > div').slideDown('fast', function(){
-		// 				$('div', $(this)).fadeIn('fast');
-		// 			});
-		// 			$('.filter-items').empty();
-		// 		}
-		// 		_moduleOptions.activity_id = 0;
-		// 		// Обновляем таймлайн
-		// 		_updateTimelineDays(_moduleOptions.activity_id);
-		// 	});
-		// }
+		function _setFilterLabel(text) {
+			$('.filter-items').empty();
+			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
+				if ($('.warning-empty').is(':visible')) {
+					$('.warning-empty').fadeOut('fast').promise().done(function(){
+						$('.timeline-wrapper > div > div').slideDown('fast', function(){
+							$('div', $(this)).fadeIn('fast');
+						});
+						$('.filter-items').empty();
+					});
+				}
+				else {
+					$('.timeline-wrapper > div > div').slideDown('fast', function(){
+						$('div', $(this)).fadeIn('fast');
+					});
+					$('.filter-items').empty();
+				}
+				_moduleOptions.activity_id = 0;
+				_moduleOptions.service_id = 0;
+				// Обновляем таймлайн
+				_updateTimelineDays(_moduleOptions);
+				console.log(_moduleOptions);
+			});
+		}
 	}
 
 	// Mapping

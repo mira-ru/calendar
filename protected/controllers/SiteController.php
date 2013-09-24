@@ -82,11 +82,6 @@ class SiteController extends FrontController
 		$centerId = intval($request->getParam('center_id'));
 		$day = intval($request->getParam('day'));
 		$directionId = intval($request->getParam('activity_id'));
-		$serviceId = intval($request->getParam('service_id'));
-
-		if ($serviceId) {
-			$directionId = null;
-		}
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -95,8 +90,7 @@ class SiteController extends FrontController
 
 		$dayStart = strtotime('TODAY', $day);
 
-		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id, $serviceId);
-
+		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
 
@@ -138,14 +132,9 @@ class SiteController extends FrontController
 			throw new CHttpException(400);
 		}
 
-		$monthTime = intval($request->getParam('month'));
+		$monthTime = intval($request->getParam('current_month'));
 		$centerId = intval($request->getParam('center_id'));
 		$directionId = intval($request->getParam('activity_id'));
-		$serviceId = intval($request->getParam('service_id'));
-
-		if ($serviceId) {
-			$directionId = null;
-		}
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -155,7 +144,7 @@ class SiteController extends FrontController
 		$monthTime = DateMap::currentMonth($monthTime);
 		$nextMonthTime = DateMap::nextMonth($monthTime);
 
-		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
+		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId);
 
 		$result = array_values($data);
 		Yii::app()->end( json_encode(array('days'=>$result), JSON_NUMERIC_CHECK) );
