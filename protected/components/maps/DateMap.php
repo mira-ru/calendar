@@ -26,12 +26,12 @@ class DateMap {
 		12 => 'Декабрь',
 	);
 
-	public static function getPrevMonth($timestamp)
+	public static function prevMonth($timestamp)
 	{
 		return strtotime( date('Y-m', strtotime("last month", $timestamp)) );
 	}
 
-	public static function getNextMonth($timestamp)
+	public static function nextMonth($timestamp)
 	{
 		return strtotime( date('Y-m', strtotime("next month", $timestamp)) );
 	}
@@ -39,5 +39,15 @@ class DateMap {
 	public static function currentMonth($timestamp)
 	{
 		return strtotime( date('Y-m', $timestamp) );
+	}
+
+	/**
+	 * Timestamp текущего дня
+	 * @param $timestamp
+	 * @return int
+	 */
+	public static function currentDay($timestamp)
+	{
+		return strtotime('TODAY', $timestamp);
 	}
 }
