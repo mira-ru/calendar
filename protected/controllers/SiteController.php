@@ -19,7 +19,8 @@ class SiteController extends FrontController
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
 		$this->moduleId = array('Calendar');
-		$this->bodyClass = array('calendar', 'creative');
+		$this->styles = array('calendar');
+		$this->bodyClass = array('calendar');
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
 		$id = intval($id);
@@ -32,14 +33,21 @@ class SiteController extends FrontController
 			}
 			$current = $centers[$id];
 		}
+		$this->bodyClass[] = 'center-'.$current->id;
 
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$current->id), array('index'=>'id'));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 		$dayStart = strtotime('TODAY', $checkedTime);
 		$dayEnd = $dayStart + 86400;
 
 		$events = Event::getByTime($dayStart, $dayEnd, $current->id);
+
+		// Список активных дней в месяце
+		$currentMonth = DateMap::currentMonth($checkedTime);
+		$nextMonth = DateMap::nextMonth($checkedTime);
+		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id);
+		// Список активных услуг на месяц
+		$services = Service::getActiveByTime($currentMonth, $nextMonth, $current->id);
 
 
 		$this->render('index', array(
@@ -51,6 +59,10 @@ class SiteController extends FrontController
 
 			'checkedTime' => $checkedTime,
 			'events' => $events,
+			'activeDays' => $activeDays,
+
+			'currentMonth' => $currentMonth,
+			'nextMonth' => $nextMonth,
 		));
 	}
 
@@ -67,8 +79,13 @@ class SiteController extends FrontController
 		}
 
 		$centerId = intval($request->getParam('center_id'));
-		$day = intval($request->getParam('day_timestamp'));
+		$day = intval($request->getParam('day'));
 		$directionId = intval($request->getParam('activity_id'));
+		$serviceId = intval($request->getParam('service_id'));
+
+		if ($serviceId) {
+			$directionId = null;
+		}
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -78,10 +95,17 @@ class SiteController extends FrontController
 		$dayStart = strtotime('TODAY', $day);
 
 		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
+
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
 
-		$html = $this->renderPartial('_ajaxEvents', array('halls'=>$halls, 'events'=>$events, 'services'=>$services, 'directionId'=>$directionId), true);
+		$html = $this->renderPartial('_ajaxEvents', array(
+			'halls'=>$halls,
+			'events'=>$events,
+			'services'=>$services,
+			'directionId'=>$directionId,
+			'serviceId'=>$serviceId,
+		), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
@@ -119,9 +143,14 @@ class SiteController extends FrontController
 			throw new CHttpException(400);
 		}
 
-		$monthTime = intval($request->getParam('current_month'));
+		$monthTime = intval($request->getParam('month'));
 		$centerId = intval($request->getParam('center_id'));
 		$directionId = intval($request->getParam('activity_id'));
+		$serviceId = intval($request->getParam('service_id'));
+
+		if ($serviceId) {
+			$directionId = null;
+		}
 
 		$center = Center::model()->findByPk($centerId);
 		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
@@ -129,19 +158,10 @@ class SiteController extends FrontController
 		}
 
 		$monthTime = DateMap::currentMonth($monthTime);
-		$nextMonthTime = DateMap::getNextMonth($monthTime);
+		$nextMonthTime = DateMap::nextMonth($monthTime);
 
-		$events = Event::getByTime($monthTime, $nextMonthTime, $center->id, $directionId);
+		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
 
-		$data = array();
-		// начинаем выкашивать используемые
-		/** @var $event Event */
-		foreach ($events as $event) {
-			$dayNumber = date('j', $event->start_time);
-			if (!isset($data[$dayNumber])) {
-				$data[$dayNumber] = $monthTime + ($dayNumber-1)*86400;
-			}
-		}
 		$result = array_values($data);
 		Yii::app()->end( json_encode(array('days'=>$result), JSON_NUMERIC_CHECK) );
 	}

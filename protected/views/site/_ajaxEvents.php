@@ -4,9 +4,10 @@
  * @var $events array
  * @var $services array
  * @var $halls array
+ * @var $serviceId integer
+ * @var $directionId integer
  */
 
-$totalHasEvents = false;
 foreach ($halls as $hall) {
 	$tmp = '';
 	$hasEvents = false; // Наличие событий в принципе
@@ -21,7 +22,10 @@ foreach ($halls as $hall) {
 			$hasEvents = true;
 			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
 			// Если указано направление - скрываем не подходящие элементы
-			if ( !empty($directionId) && $directionId != $event->direction_id ) {
+			if (
+			    (!empty($directionId) && $directionId != $event->direction_id)
+			    || (!empty($serviceId) && $serviceId != $event->service_id)
+			) {
 				$htmlOptions['style'] = 'display:none;';
 			} else {
 				$hasEnEvents = true;
@@ -58,10 +62,5 @@ foreach ($halls as $hall) {
 	if (!$hasEnEvents) {
 		$htmlOptions['style'] = 'display:none;';
 	}
-	$totalHasEvents = true;
 	echo CHtml::tag('div', $htmlOptions, $tmp);
-
-}
-if ( !$totalHasEvents ) {
-	echo CHtml::tag('p', array('class'=>'warning-empty', 'style'=>'display:block'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 }
