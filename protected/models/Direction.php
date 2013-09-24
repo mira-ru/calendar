@@ -152,4 +152,23 @@ class Direction extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Получение списка направлений, у которых есть события
+	 * в указанном интервале времени
+	 * @param $startTime
+	 * @param $endTime
+	 * @param $serviceId
+	 */
+	public static function getActiveByTime($startTime, $endTime, $serviceId)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->select = 'DISTINCT t.*';
+		$criteria->join = 'INNER JOIN event as e ON e.direction_id=t.id AND e.start_time >= :start AND e.end_time < :end AND e.service_id=:sid';
+		$criteria->condition = 't.service_id=:sid AND t.status=:st';
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':sid'=>$serviceId, ':st'=>self::STATUS_ACTIVE);
+		$criteria->index = 'id';
+
+		return self::model()->findAll($criteria);
+	}
 }

@@ -198,6 +198,23 @@ class Event extends CActiveRecord
 	}
 
 	/**
+	 * Получение списка дней с событиями
+	 * (по центру и по направлениям)
+	 */
+	public static function getActiveDays($startTime, $endTime, $centerId, $directionId=null)
+	{
+		$events = self::getByTime($startTime, $endTime, $centerId, $directionId);
+		$result = array();
+		/** @var $event Event */
+		foreach ($events as $event) {
+			$dayTime = DateMap::currentDay($event->start_time);
+			$result[$dayTime] = $dayTime;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Обновляет младшие события
 	 * @param $event
 	 * @throws CHttpException

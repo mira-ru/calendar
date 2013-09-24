@@ -6,6 +6,9 @@
  * @var $events array
  * @var $halls array
  * @var $services array
+ * @var $activeDays array
+ * @var $currentMonth integer
+ * @var $nextMonth integer
  */
 ?>
 <!-- PAGE CONTENT -->
@@ -48,7 +51,7 @@
 
 							echo CHtml::openTag('ul', array('class'=>'list-unstyled'));
 							/** @var $direction Direction */
-							foreach ($service->directions as $direction) {
+							foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
 								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 							}
 								echo CHtml::tag('li', array('data-id'=>0), 'Все направления')."\n";
@@ -75,10 +78,8 @@
 		<?php
 		$monthNumber = date('n', $checkedTime);
 		$yearNumber = date('Y', $checkedTime);
-		$prevMonthTime = DateMap::getPrevMonth($checkedTime);
-		$nextMonthTime = DateMap::getNextMonth($checkedTime);
-		$currentMonthTime = DateMap::currentMonth($checkedTime);
-		
+		$prevMonthTime = DateMap::prevMonth($checkedTime);
+
 		echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
 			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
 			array('class'=>'prev-month')
@@ -87,8 +88,8 @@
 			array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
 			DateMap::$monthMap[$monthNumber].', '.$yearNumber
 		);
-		echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonthTime) ],
-			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonthTime)),
+		echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
+			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonth)),
 			array('class'=>'next-month')
 		);
 		?>
@@ -101,14 +102,19 @@
 				for ($n=1; $n<=$daysOfMonth; $n++) {
 					echo CHtml::openTag('td');
 
-					$htmlOptions = array();
+					$htmlOptions = array('class'=>'');
 					if ($n == $dayNumber) {
 						$htmlOptions['class'] = 'current';
 					}
-					echo CHtml::openTag('span', $htmlOptions);
-
-					$dayTime = $currentMonthTime + ($n-1)*86400;
+					$dayTime = $currentMonth + ($n-1)*86400;
 					$dow = date('w', $dayTime);
+
+					// нет событий в дне
+					if (empty($activeDays[$dayTime])) {
+						$htmlOptions['class'] .= ' disabled';
+					}
+
+					echo CHtml::openTag('span', $htmlOptions);
 
 					$htmlOptions = array(
 						'data-weekday'=>DateMap::$smallDayMap[$dow],
@@ -177,7 +183,7 @@
 	$(function () {
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
-			'current_month'=>$currentMonthTime,
+			'current_month'=>$currentMonth,
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>

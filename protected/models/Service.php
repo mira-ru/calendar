@@ -72,7 +72,6 @@ class Service extends CActiveRecord
 	{
 		return array(
 			'center' => array(self::BELONGS_TO, 'Center', 'center_id'),
-			'directions' => array(self::HAS_MANY, 'Direction', 'service_id', 'condition' => 'status='.Direction::STATUS_ACTIVE),
 		);
 	}
 
@@ -140,6 +139,25 @@ class Service extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Получение списка услуг, у которых есть события в центре по
+	 * указанному интервалу времени
+	 * @param $startTime
+	 * @param $endTime
+	 * @param $centerId
+	 */
+	public static function getActiveByTime($startTime, $endTime, $centerId)
+	{
+		$criteria = new CDbCriteria();
+		$criteria->select = 'DISTINCT t.*';
+		$criteria->join = 'INNER JOIN event as e ON e.service_id=t.id AND e.start_time >= :start AND e.end_time < :end AND e.center_id=:cid';
+		$criteria->condition = 't.center_id=:cid AND t.status=:st';
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId, ':st'=>self::STATUS_ACTIVE);
+		$criteria->index = 'id';
+
+		return self::model()->findAll($criteria);
 	}
 
 	/**
