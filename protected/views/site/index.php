@@ -187,7 +187,7 @@
 	$(function () {
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
-			'current_month'=>$currentMonth,
+			'month'=>$currentMonth,
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>

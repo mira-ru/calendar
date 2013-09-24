@@ -80,7 +80,7 @@ class SiteController extends FrontController
 		}
 
 		$centerId = intval($request->getParam('center_id'));
-		$day = intval($request->getParam('day_timestamp'));
+		$day = intval($request->getParam('day'));
 		$directionId = intval($request->getParam('activity_id'));
 
 		$center = Center::model()->findByPk($centerId);

@@ -16,7 +16,7 @@ foreach ($halls as $hall) {
 	/** @var $event Event */
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
-			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id);
+			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
 			$hasEvents = true;
 
 			// TODO: color class
