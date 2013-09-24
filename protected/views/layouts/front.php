@@ -8,10 +8,6 @@
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
 		Yii::app()->less->register();
-		foreach($this->styles as $style) {
-			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.css">';
-		}
-
 		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
 		/** @var $cs CClientScript */
 		$cs = Yii::app()->getClientScript();
@@ -22,7 +18,6 @@
 		?>
 		<script src="/js/Lib.js"></script>
 		<script>
-			lib.include('Less');
 			<?php
 				foreach($this->moduleId as $module) {
 					echo "lib.include('mod.".$module."')";
