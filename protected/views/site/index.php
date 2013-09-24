@@ -54,7 +54,7 @@
 							foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
 								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 							}
-								echo CHtml::tag('li', array('data-id'=>0), 'Все направления')."\n";
+								echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
 
 							echo CHtml::closeTag('ul');
 						echo CHtml::closeTag('span');

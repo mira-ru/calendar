@@ -18,30 +18,29 @@ var Calendar = function () { 'use strict';
 
 		var filter;
 
-		$('.timeline-days').on('click', 'span:not(.disabled)', function(e){
+		$('.timeline-days').on('click', 'span:not(.disabled, .current)', function(e){
 			var span = $(this),
-			    month = $('strong.current').data('month'),
-			    year = $('strong.current').data('year'),
+			    // month = $('strong.current').data('month'),
+			    // year = $('strong.current').data('year'),
 			    day = $('i', span).data('day'),
 			    current = $('.current', $(e.delegateTarget));
 			span.add(current).toggleClass('current');
-
-			var request = $.ajax({
-				url: '/site/axEvents',
-				type: 'POST',
-				data: { day_timestamp : day , center_id: _moduleOptions.center_id, activity_id: _moduleOptions.activity_id },
-				dataType: 'json'
+			// Получаем события
+			_getEvents({
+				day_timestamp: day,
+				center_id: _moduleOptions.center_id,
+				activity_id: _moduleOptions.activity_id
 			});
-			request.done(function( msg ) {
-				if (msg.html.length == 0) {
-					$('.timeline-wrapper > div').html(msg.html);
-					$('.warning-empty').fadeIn();
-				}
-				else {
-					$('.warning-empty').fadeOut(function(){
-						$('.timeline-wrapper > div').html(msg.html);
-					});
-				}
+		});
+
+		$('[data-service]').on('click', function(){
+			var service_id = $(this).data('service');
+			// Обновляем таймлайн
+			_updateTimelineDays(0, service_id);
+			// Получаем события
+			_getEvents({
+				center_id: _moduleOptions.center_id,
+				service_id: service_id
 			});
 		});
 
@@ -49,49 +48,21 @@ var Calendar = function () { 'use strict';
 			var li = $(this),
 			    id = li.data('id'),
 			    row = $('.timeline-row'),
-			    sub = $('div', row),
-			    label, key_map, ids = (id == 0) ? li.siblings() : li ;
-
-			key_map = ids.map(function(){
-				return $(this).data('id');
-			}).get();
-
-			// Отправляем данные для маппинга фильтра направлений в днях месяца
-			if (id != 0) {
-				var days = $('.timeline-days i'),
-				    request = $.ajax({
-					url: '/site/axActiveDays',
-					type: 'POST',
-					data: { current_month : _moduleOptions.current_month, center_id: _moduleOptions.center_id, activity_id: id },
-					dataType: 'json'
-				});
-				request.done(function( msg ) {
-					days.each(function(index){
-
-						if (jQuery.inArray($(this).data('day'), msg.days) == -1) {
-							$(this).parent().addClass('disabled');
-						} else {
-							$(this).parent().removeClass('disabled');
-						}
-					});
-				});
-			}
-			else {
-				$('.timeline-days span.disabled').removeClass('disabled');
-			}
-
+			    sub = $('div', row);
 			_moduleOptions.activity_id = id;
-
+			// Обновляем таймлайн
+			_updateTimelineDays(_moduleOptions.activity_id);
 			// Делаем маппинг занятий
 		 	sub.map(function(){
 		 		var key = $(this).data('sub');
-		 		
-		 		if (jQuery.inArray(key, key_map) != -1) {
+		 		if (key == id) {
 		 			return this;
 		 		}
 		 	}).promise().done(function(){
 		 		var elems = $(this);
-				if (elems.length != 0) $('.warning-empty').fadeOut();
+				if (elems.length != 0) {
+					$('.warning-empty').fadeOut();
+				}
 		 		if (filter) {
 		 			// Здесь нужно:
 		 			// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
@@ -106,9 +77,7 @@ var Calendar = function () { 'use strict';
 			 					$(this).parent().slideDown('fast');
 			 				}
 			 			});
-
 			 			_setFilterLabel(li.text());
-			 			
 			 			if (elems.length == 0) {
 							$('.warning-empty').fadeIn();
 						}
@@ -122,9 +91,7 @@ var Calendar = function () { 'use strict';
 			 					$(this).parent().slideUp('fast');
 			 				}
 			 			});
-			 			
 			 			_setFilterLabel(li.text());
-			 			
 			 			if (elems.length == 0) {
 							$('.warning-empty').fadeIn();
 						}
@@ -139,7 +106,7 @@ var Calendar = function () { 'use strict';
 							$('.timeline-wrapper > div > div').slideDown('fast', function(){
 								$('div', $(this)).fadeIn('fast');
 							});
-						$('.filter-items').empty();
+							$('.filter-items').empty();
 						});
 					}
 					else {
@@ -148,11 +115,9 @@ var Calendar = function () { 'use strict';
 						});
 						$('.filter-items').empty();
 					}
-					$('.timeline-days span.disabled').removeClass('disabled');
 					_moduleOptions.activity_id = 0;
-					
-
-					console.log('kill filter');
+					// Обновляем таймлайн
+					_updateTimelineDays(_moduleOptions.activity_id);
 				});
 			}
 		});
@@ -169,10 +134,12 @@ var Calendar = function () { 'use strict';
 			var request = $.ajax({
 				url: '/site/axEvent',
 				type: 'POST',
-				data: { event_id: div.data('event') },
+				data: {
+					event_id: div.data('event')
+				},
 				dataType: 'json'
 			});
-			request.done(function( msg ) {
+			request.done(function(msg) {
 				if (balloon.is(':visible')) {
 					balloon.hide('fast', function(){
 						balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
@@ -186,15 +153,67 @@ var Calendar = function () { 'use strict';
 			$('.cross', balloon).bind('click', function(){
 				var clk = $(this);
 				balloon.hide('fast');
-			})
+			});
 		});
 
-		$('.prev-month, .next-month').on('click', function(){
-			var day = $('.timeline-days .current i').data('day'),
-			    month = $(this).data('month'),
-			    year = $(this).data('year'),
-			    date = year + '-' + month + '-' + day;
-		});
+		// $('.prev-month, .next-month').on('click', function(){
+		// 	var day = $('.timeline-days .current i').data('day'),
+		// 	    month = $(this).data('month'),
+		// 	    year = $(this).data('year'),
+		// 	    date = year + '-' + month + '-' + day;
+		// });
+
+		// Обновление .timeline-wrapper
+
+		function _updateTimelineDays(activityId, serviceId) {
+			var days = $('.timeline-days span'),
+			    id = serviceId || activityId,
+			    flag = (serviceId) ? true : false,
+			    request = $.ajax({
+				url: '/site/axActiveDays',
+				type: 'POST',
+				data: {
+					current_month: _moduleOptions.current_month, 
+					center_id: _moduleOptions.center_id, 
+					activity_id: id,
+					flag: flag
+				},
+				dataType: 'json'
+			});
+			console.log(flag);
+			request.done(function(msg) {
+				days.each(function(){
+					var day = $(this).children('i').data('day');
+					if (jQuery.inArray(day, msg.days) == -1) {
+						$(this).addClass('disabled');
+					} else {
+						$(this).removeClass('disabled');
+					}
+				});
+			});
+		}
+
+		// Загрузка событий в .timeline-wrapper
+
+		function _getEvents(data) {
+			var request = $.ajax({
+				url: '/site/axEvents',
+				type: 'POST',
+				data: data,
+				dataType: 'json'
+			});
+			request.done(function(msg) {
+				if (msg.html.length == 0) {
+					$('.timeline-wrapper > div').html(msg.html);
+					$('.warning-empty').fadeIn();
+				}
+				else {
+					$('.warning-empty').fadeOut(function(){
+						$('.timeline-wrapper > div').html(msg.html);
+					});
+				}
+			});			
+		}
 	}
 
 	// Mapping
