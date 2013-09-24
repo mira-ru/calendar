@@ -7,6 +7,7 @@
  */
 
 $totalHasEvents = false;
+//echo CHtml::openTag('div');
 foreach ($halls as $hall) {
 	$tmp = '';
 	$hasEvents = false; // Наличие событий в принципе
@@ -60,8 +61,8 @@ foreach ($halls as $hall) {
 	}
 	$totalHasEvents = true;
 	echo CHtml::tag('div', $htmlOptions, $tmp);
-
 }
-if ( !$totalHasEvents ) {
-	echo CHtml::tag('p', array('class'=>'warning-empty', 'style'=>'display:block'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
-}
+//echo CHtml::closeTag('div');
+// if ( !$totalHasEvents ) {
+// 	echo CHtml::tag('p', array('class'=>'warning-empty', 'style'=>'display:block'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
+// }

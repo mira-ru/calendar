@@ -153,8 +153,12 @@
 			<tbody>
 			<tr>
 				<td colspan="15" class="timeline-wrapper">
+					<div>
 					<?php
 					$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
+					?>
+					</div>
+					<?php
 					$htmlOptions = array('class'=>'warning-empty');
 					if ( empty($halls) || empty($events) ) {
 						$htmlOptions['style'] = 'display:block';

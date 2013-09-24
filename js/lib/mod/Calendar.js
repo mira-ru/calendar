@@ -33,7 +33,15 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function( msg ) {
-				$( '.timeline-wrapper' ).html( msg.html );
+				if (msg.html.length == 0) {
+					$('.timeline-wrapper > div').html(msg.html);
+					$('.warning-empty').fadeIn();
+				}
+				else {
+					$('.warning-empty').fadeOut(function(){
+						$('.timeline-wrapper > div').html(msg.html);
+					});
+				}
 			});
 		});
 
@@ -128,14 +136,14 @@ var Calendar = function () { 'use strict';
 				filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
 					if ($('.warning-empty').is(':visible')) {
 						$('.warning-empty').fadeOut('fast').promise().done(function(){
-							$('.timeline-wrapper > div').slideDown('fast', function(){
+							$('.timeline-wrapper > div > div').slideDown('fast', function(){
 								$('div', $(this)).fadeIn('fast');
 							});
 						$('.filter-items').empty();
 						});
 					}
 					else {
-						$('.timeline-wrapper > div').slideDown('fast', function(){
+						$('.timeline-wrapper > div > div').slideDown('fast', function(){
 							$('div', $(this)).fadeIn('fast');
 						});
 						$('.filter-items').empty();
