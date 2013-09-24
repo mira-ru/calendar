@@ -7,20 +7,17 @@
 		<link rel="stylesheet" href="/css/bootstrap.css">
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
-		foreach($this->styles as $style) {
-			echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.css">';
-		}
-
+		Yii::app()->less->register();
 		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
 		/** @var $cs CClientScript */
 		$cs = Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
 		$cs->registerCssFile($url);
+		$cs->registerCssFile('/css/generated/calendar.css')
 
 		?>
 		<script src="/js/Lib.js"></script>
 		<script>
-			lib.include('Less');
 			<?php
 				foreach($this->moduleId as $module) {
 					echo "lib.include('mod.".$module."')";
