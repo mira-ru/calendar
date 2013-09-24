@@ -91,10 +91,17 @@ class SiteController extends FrontController
 		$dayStart = strtotime('TODAY', $day);
 
 		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
+
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
 
-		$html = $this->renderPartial('_ajaxEvents', array('halls'=>$halls, 'events'=>$events, 'services'=>$services, 'directionId'=>$directionId), true);
+		$html = $this->renderPartial('_ajaxEvents', array(
+			'halls'=>$halls,
+			'events'=>$events,
+			'services'=>$services,
+			'directionId'=>$directionId,
+			'serviceId'=>$serviceId,
+		), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
