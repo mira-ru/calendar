@@ -22,7 +22,6 @@ class SiteController extends FrontController
 		$this->styles = array('calendar');
 		$this->bodyClass = array('calendar');
 
-
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
 		$id = intval($id);
 

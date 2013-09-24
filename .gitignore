@@ -3,3 +3,4 @@
 /protected/config/console.php
 /assets/*
 /protected/runtime/*
+/css/generated/*
