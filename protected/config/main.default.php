@@ -29,9 +29,10 @@ return CMap::mergeArray(array(
 	// application components
 	'components'=>array(
 		'clientScript'=>array(
-			'class'=>'CClientScript',
+			'class'=>'application.components.core.EClientScript',
 			'corePackages'=>require(dirname(__FILE__).'/../data/packages.php'),
 			'coreScriptPosition'=>CClientScript::POS_HEAD,
+			'timeFile'=>dirname(__FILE__).'/../runtime/timeFile.dat',
 		),
 		'user' => array(
 			'allowAutoLogin' => true,
@@ -43,6 +44,10 @@ return CMap::mergeArray(array(
 			'urlFormat'=>'path',
 			'showScriptName' => false,
 			'rules'=>array(
+				'<id:\d+>/<time:\d+>' => 'site/index',
+				'<id:\d{0,}>' => 'site/index',
+				'/' => 'site/index',
+
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
 				'<controller:\w+>/<action:\w+>'          => '<controller>/<action>',

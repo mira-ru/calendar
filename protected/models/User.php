@@ -103,6 +103,8 @@ class User extends CActiveRecord
 			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
+		$criteria->order = 't.name ASC';
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

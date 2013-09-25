@@ -9,18 +9,19 @@
 		<?php
 		Yii::app()->less->register();
 		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
-		/** @var $cs CClientScript */
+		/** @var $cs EClientScript */
 		$cs = Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
 		$cs->registerCssFile($url);
-		$cs->registerCssFile('/css/generated/calendar.css')
+		$cs->releaseCssFile('/css/generated/calendar.css');
 
 		?>
 		<script src="/js/Lib.js"></script>
 		<script>
+			lib.versioninig = true;
 			<?php
 				foreach($this->moduleId as $module) {
-					echo "lib.include('mod.".$module."')";
+					echo 'lib.include(\'mod.'.$module.'\','.$cs->getVersion().')';
 				}
 			?>
 		</script>
