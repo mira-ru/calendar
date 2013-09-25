@@ -1,6 +1,8 @@
 // Definition
 lib.module('mod.Calendar');
 
+lib.include('mod.Common');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {

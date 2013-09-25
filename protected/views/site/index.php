@@ -74,25 +74,28 @@
 			</ul>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<?php
+			$monthNumber = date('n', $checkedTime);
+			$yearNumber = date('Y', $checkedTime);
+			$prevMonthTime = DateMap::prevMonth($checkedTime);
+			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
+				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
+				array('class'=>'prev-month')
+			);
+			echo CHtml::tag('strong',
+				array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
+				DateMap::$monthMap[$monthNumber].', '.$yearNumber
+			);
+			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
+				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonth)),
+				array('class'=>'next-month')
+			);
+			?>
+		</div>
+	</div>
 	<div class="table-responsive">
-		<?php
-		$monthNumber = date('n', $checkedTime);
-		$yearNumber = date('Y', $checkedTime);
-		$prevMonthTime = DateMap::prevMonth($checkedTime);
-
-		echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
-			array('class'=>'prev-month')
-		);
-		echo CHtml::tag('strong',
-			array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
-			DateMap::$monthMap[$monthNumber].', '.$yearNumber
-		);
-		echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-			$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonth)),
-			array('class'=>'next-month')
-		);
-		?>
 		<table class="table timeline-days">
 			<thead>
 			<tr>
