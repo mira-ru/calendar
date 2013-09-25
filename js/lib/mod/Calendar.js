@@ -25,6 +25,7 @@ var Calendar = function () { 'use strict';
 			span.add(current).toggleClass('current');
 			_moduleOptions.day = day;
 			_getEvents(_moduleOptions);
+			$('.event-balloon').hide('fast');
 		});
 
 		$('[data-service]').on('click', function(){
@@ -78,6 +79,10 @@ var Calendar = function () { 'use strict';
 				var clk = $(this);
 				balloon.hide('fast');
 			});
+		});
+
+		$('body').on('click', function(){
+			$('.event-balloon').hide('fast');
 		});
 
 		function _filterEvents(text, id, sid) {

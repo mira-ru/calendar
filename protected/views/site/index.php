@@ -95,95 +95,114 @@
 			?>
 		</div>
 	</div>
-	<div class="table-responsive">
+	<div class="table-responsive first-table">
 		<table class="table timeline-days">
 			<thead>
-			<tr>
-				<?php
-				$daysOfMonth = date('t', $checkedTime);
-				$dayNumber = date('j', $checkedTime);
-				for ($n=1; $n<=$daysOfMonth; $n++) {
-					echo CHtml::openTag('td');
+				<tr>
+					<?php
+					$daysOfMonth = date('t', $checkedTime);
+					$dayNumber = date('j', $checkedTime);
+					for ($n=1; $n<=$daysOfMonth; $n++) {
+						echo CHtml::openTag('td');
 
-					$htmlOptions = array('class'=>'');
-					if ($n == $dayNumber) {
-						$htmlOptions['class'] = 'current';
+						$htmlOptions = array('class'=>'');
+						if ($n == $dayNumber) {
+							$htmlOptions['class'] = 'current';
+						}
+						$dayTime = $currentMonth + ($n-1)*86400;
+						$dow = date('w', $dayTime);
+
+						// нет событий в дне
+						if (empty($activeDays[$dayTime])) {
+							$htmlOptions['class'] .= ' disabled';
+						}
+
+						echo CHtml::openTag('span', $htmlOptions);
+
+						$htmlOptions = array(
+							'data-weekday'=>DateMap::$smallDayMap[$dow],
+							'data-day'=>$dayTime,
+						);
+						if ($dow == 0 || $dow == 6) {
+							$htmlOptions['class'] = 'weekend';
+						}
+
+						echo CHtml::tag('i', $htmlOptions, $n);
+
+						echo CHtml::closeTag('span');
+						echo CHtml::closeTag('td');
 					}
-					$dayTime = $currentMonth + ($n-1)*86400;
-					$dow = date('w', $dayTime);
-
-					// нет событий в дне
-					if (empty($activeDays[$dayTime])) {
-						$htmlOptions['class'] .= ' disabled';
-					}
-
-					echo CHtml::openTag('span', $htmlOptions);
-
-					$htmlOptions = array(
-						'data-weekday'=>DateMap::$smallDayMap[$dow],
-						'data-day'=>$dayTime,
-					);
-					if ($dow == 0 || $dow == 6) {
-						$htmlOptions['class'] = 'weekend';
-					}
-
-					echo CHtml::tag('i', $htmlOptions, $n);
-
-					echo CHtml::closeTag('span');
-					echo CHtml::closeTag('td');
-				}
 
 
 
-				?>
-			</tr>
+					?>
+				</tr>
 			</thead>
 		</table>
+	</div>
+	<div class="table-responsive second-table">
 		<table class="table timeline-hours">
-			<thead>
-			<tr>
-				<td><span>07<sup>00</sup></span></td>
-				<td><span>08<sup>00</sup></span></td>
-				<td><span>09<sup>00</sup></span></td>
-				<td><span>10<sup>00</sup></span></td>
-				<td><span>11<sup>00</sup></span></td>
-				<td><span>12<sup>00</sup></span></td>
-				<td><span>13<sup>00</sup></span></td>
-				<td><span>14<sup>00</sup></span></td>
-				<td><span>15<sup>00</sup></span></td>
-				<td><span>16<sup>00</sup></span></td>
-				<td><span>17<sup>00</sup></span></td>
-				<td><span>18<sup>00</sup></span></td>
-				<td><span>19<sup>00</sup></span></td>
-				<td><span>20<sup>00</sup></span></td>
-				<td><span>21<sup>00</sup></span></td>
-			</tr>
-			</thead>
+<!-- 			<thead>
+				<tr>
+					<td><span>07<sup>00</sup></span></td>
+					<td><span>08<sup>00</sup></span></td>
+					<td><span>09<sup>00</sup></span></td>
+					<td><span>10<sup>00</sup></span></td>
+					<td><span>11<sup>00</sup></span></td>
+					<td><span>12<sup>00</sup></span></td>
+					<td><span>13<sup>00</sup></span></td>
+					<td><span>14<sup>00</sup></span></td>
+					<td><span>15<sup>00</sup></span></td>
+					<td><span>16<sup>00</sup></span></td>
+					<td><span>17<sup>00</sup></span></td>
+					<td><span>18<sup>00</sup></span></td>
+					<td><span>19<sup>00</sup></span></td>
+					<td><span>20<sup>00</sup></span></td>
+					<td><span>21<sup>00</sup></span></td>
+				</tr>
+			</thead> -->
 			<tbody>
-			<tr>
-				<td colspan="15" class="timeline-wrapper">
-					<div>
-					<?php
-					$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
-					?>
-					</div>
-					<?php
-					$htmlOptions = array('class'=>'warning-empty');
-					if ( empty($halls) || empty($events) ) {
-						$htmlOptions['style'] = 'display:block';
-					}
-					echo CHtml::tag('p', $htmlOptions, 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
-					?>
-				</td>
-			</tr>
+				<tr>
+					<td><span>07<sup>00</sup></span></td>
+					<td><span>08<sup>00</sup></span></td>
+					<td><span>09<sup>00</sup></span></td>
+					<td><span>10<sup>00</sup></span></td>
+					<td><span>11<sup>00</sup></span></td>
+					<td><span>12<sup>00</sup></span></td>
+					<td><span>13<sup>00</sup></span></td>
+					<td><span>14<sup>00</sup></span></td>
+					<td><span>15<sup>00</sup></span></td>
+					<td><span>16<sup>00</sup></span></td>
+					<td><span>17<sup>00</sup></span></td>
+					<td><span>18<sup>00</sup></span></td>
+					<td><span>19<sup>00</sup></span></td>
+					<td><span>20<sup>00</sup></span></td>
+					<td><span>21<sup>00</sup></span></td>
+				</tr>
+				<tr>
+					<td colspan="15" class="timeline-wrapper">
+						<div>
+						<?php
+						$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
+						?>
+						</div>
+						<?php
+						$htmlOptions = array('class'=>'warning-empty');
+						if ( empty($halls) || empty($events) ) {
+							$htmlOptions['style'] = 'display:block';
+						}
+						echo CHtml::tag('p', $htmlOptions, 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
+						?>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 	</div>
 </div>
 	<div class="event-balloon">
-	<div>
+		<div></div>
+		<!-- <i class="cross"></i> -->
 	</div>
-	<i class="cross"></i></div>
 </div>
 <!-- EOF PAGE CONTENT -->
 <script>

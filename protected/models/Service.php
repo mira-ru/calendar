@@ -173,10 +173,10 @@ class Service extends CActiveRecord
 			$clearCode = ltrim($color, '#');
 			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
 			$content .= '.item-'.$clearCode.':before{background:'.$color.' !important}';
-			$content .= '.item-'.$clearCode.':hover{color:'.$color.' !important}';
+			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul{border-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul:before{background-color:'.$color.' !important}';
-			$content .= '.item-'.$clearCode.' ul li:hover{color:'.$color.' !important}';
+			$content .= ':not(.touch) .item-'.$clearCode.' ul li:hover{color:'.$color.' !important}';
 		}
 
 		$path = Yii::getPathOfAlias('application.runtime').'/assets';
