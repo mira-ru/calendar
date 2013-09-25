@@ -3,44 +3,65 @@
  * Class EClientScript
  * Кастомизация CClientScript
  */
-class EClientScript extends CClientScript{
+class EClientScript extends CClientScript
+{
+	public $timeFile = '';
+
+	private $_suffix = '';
+
+	public function init()
+	{
+
+		parent::init();
+
+		if (empty($this->timeFile)) {
+			return;
+		}
+
+		if (file_exists($this->timeFile)) {
+			$this->_suffix = file_get_contents($this->timeFile);
+			return;
+		}
+		$this->_suffix = time();
+		file_put_contents($this->timeFile, $this->_suffix);
+	}
 
 	/**
-	 * Inserts the scripts in the head section.
-	 * @param string $output the output to be inserted with scripts.
+	 * CSS file с обновлением после деплоя
+	 * @param string $url URL of the CSS file
+	 * @param string $media media that the CSS file should be applied to. If empty, it means all media types.
+	 * @return CClientScript the CClientScript object itself (to support method chaining, available since version 1.1.5).
 	 */
-	public function renderHead(&$output)
+	public function releaseCssFile($url,$media='')
 	{
-		$html='';
-		foreach($this->metaTags as $meta)
-			$html.=CHtml::metaTag($meta['content'],null,null,$meta)."\n";
-		foreach($this->linkTags as $link)
-			$html.=CHtml::linkTag(null,null,null,null,$link)."\n";
-		foreach($this->cssFiles as $url=>$media)
-			$html.=CHtml::cssFile($url,$media)."\n";
-		foreach($this->css as $css)
-			$html.=CHtml::css($css[0],$css[1])."\n";
-		if($this->enableJavaScript)
-		{
-			if(isset($this->scriptFiles[self::POS_HEAD]))
-			{
-				foreach($this->scriptFiles[self::POS_HEAD] as $scriptFile)
-					$html.=CHtml::scriptFile($scriptFile)."\n";
-			}
+		$url .= '?'.$this->_suffix;
+		return $this->registerCssFile($url, $media);
+	}
 
-			if(isset($this->scripts[self::POS_HEAD]))
-				$html.=CHtml::script(implode("\n",$this->scripts[self::POS_HEAD]))."\n";
-		}
+	/**
+	 * Registers a javascript file with update after deploy.
+	 * @param string $url URL of the javascript file
+	 * @param integer $position the position of the JavaScript code. Valid values include the following:
+	 * <ul>
+	 * <li>CClientScript::POS_HEAD : the script is inserted in the head section right before the title element.</li>
+	 * <li>CClientScript::POS_BEGIN : the script is inserted at the beginning of the body section.</li>
+	 * <li>CClientScript::POS_END : the script is inserted at the end of the body section.</li>
+	 * </ul>
+	 * @param array $htmlOptions additional HTML attributes
+	 * @return CClientScript the CClientScript object itself (to support method chaining, available since version 1.1.5).
+	 */
+	public function releaseScriptFile($url,$position=null,array $htmlOptions=array())
+	{
+		$url .= '?'.$this->_suffix;
+		return $this->registerScriptFile($url, $position, $htmlOptions);
+	}
 
-		if($html!=='')
-		{
-			$count=0;
-			// Здесь вносилась правка
-			$output=preg_replace('/(<\/title\b[^>]*>)/is','$1<###head###>',$output,1,$count);
-			if($count)
-				$output=str_replace('<###head###>',$html,$output);
-			else
-				$output=$html.$output;
-		}
+	/**
+	 * Получение текущей версии релиза
+	 * @return string
+	 */
+	public function getVersion()
+	{
+		return $this->_suffix;
 	}
 }

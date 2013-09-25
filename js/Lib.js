@@ -92,8 +92,8 @@ lib.evalPath = function(path, context, value, forceSet) {
  * @return {String}
  */
 lib.pathToUrl = function(path, version) {
-	return lib.rootUrl + path.replace(/\./g, '/') + 
-		(lib.versioninig ? '.v' + version : '') + '.js';	
+	return lib.rootUrl + path.replace(/\./g, '/') + '.js' +
+		(lib.versioninig ? '?' + version : '');
 }
 /**
  * @type {Array}
@@ -119,6 +119,7 @@ lib.include = function(path, version) {
 	version = version || 1.0;
 	if(lib.loadedModules[path] && lib.loadedModules[path] >= version) return false;
 	var transport = lib.getXHTTPTransport();
+	console.log(lib.pathToUrl(path, version));
 	transport.open('GET', lib.pathToUrl(path, version), false);
 	transport.send(null);
 	

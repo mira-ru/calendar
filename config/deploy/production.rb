@@ -68,7 +68,8 @@ namespace :deploy do
     # создание runtime, assets и generated (для генерации less)
     run <<-CMD
            ln -s #{shared_path}/protected/runtime #{latest_release}/protected/runtime &
-           rm -rf #{shared_path}/assets/*
+           rm -rf #{shared_path}/assets/* &
+           rm -f #{shared_path}/protected/runtime/timeFile.dat
     CMD
 
     # Перевод приложения в режим Production

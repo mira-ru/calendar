@@ -29,9 +29,10 @@ return CMap::mergeArray(array(
 	// application components
 	'components'=>array(
 		'clientScript'=>array(
-			'class'=>'CClientScript',
+			'class'=>'application.components.core.EClientScript',
 			'corePackages'=>require(dirname(__FILE__).'/../data/packages.php'),
 			'coreScriptPosition'=>CClientScript::POS_HEAD,
+			'timeFile'=>dirname(__FILE__).'/../runtime/timeFile.dat',
 		),
 		'user' => array(
 			'allowAutoLogin' => true,
