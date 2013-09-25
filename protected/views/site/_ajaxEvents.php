@@ -31,10 +31,14 @@ foreach ($halls as $hall) {
 				$hasEnEvents = true;
 			}
 
-			// TODO: color class
 			$timeStart = date('H-i', $event->start_time);
 			// Продолжительность в минутах
 			$eventTime = ($event->end_time - $event->start_time) / 60;
+
+			if ($eventTime < 60) {
+				$eventTime = 60;
+			}
+//			$eventTime = floor($eventTime / 60) * 60;
 
 			$colorClass = isset($services[$event->service_id]) ?
 			    'c-'.ltrim($services[$event->service_id]->color, '#') : '';

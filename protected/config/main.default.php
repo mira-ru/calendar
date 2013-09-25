@@ -45,7 +45,7 @@ return CMap::mergeArray(array(
 			'rules'=>array(
 				'<id:\d+>/<time:\d+>' => 'site/index',
 				'<id:\d{0,}>' => 'site/index',
-//				'/' => 'site/index',
+				'/' => 'site/index',
 
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
