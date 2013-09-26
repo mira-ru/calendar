@@ -35,14 +35,14 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-2 col-sm-3 col-xs-6"><img src="/images/src/logobottom.gif"></div>
-					<div class="col-lg-7 col-sm-4 col-xs-6">Мира — центр здорового отдыха<br>Новосибирск, БЦ Речной вокзал, Добролюбова, 2«А»</div>
+					<div class="col-lg-7 col-sm-4 col-xs-6">Мира — центр здорового отдыха<br>Новосибирск, БЦ Речной вокзал, Добролюбова,&nbsp;2«А»<br>Телефон +7 (383) 2-300-108</div>
 					<div class="col-lg-3 col-sm-5 col-xs-12 text-right">
-						<a href="#" class="vk"></a>
-						<a href="#" class="fb"></a>
-						<a href="#" class="tw"></a>
-						<a href="#" class="ig"></a>
-						<a href="#" class="pl"></a>
-						<a href="#" class="ok"></a>
+						<a href="http://vk.com/miracentr" class="vk"></a>
+						<a href="https://www.facebook.com/miracentr.ru" class="fb"></a>
+						<a href="https://twitter.com/miracentr" class="tw"></a>
+						<a href="http://instagram.com/miracentrru" class="ig"></a>
+						<a href="http://www.youtube.com/channel/UCRXjttUgQzli-1Sh9f_zhBw" class="pl"></a>
+						<a href="http://www.odnoklassniki.ru/group/51871863144642" class="ok"></a>
 					</div>
 				</div>
 			</div>
