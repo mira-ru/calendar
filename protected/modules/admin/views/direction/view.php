@@ -28,6 +28,10 @@
 			'value'=>empty($model->service_id) ? 'Услуга не указана' : $model->service->name,
 		),
 		array(
+			'name'=>'url',
+			'value' => $model->url,
+		),
+		array(
 			'name'=>'center_id',
 			'type'=>'raw',
 			'value'=>empty($model->center_id) ? 'Центр не указан' : $model->center->name,

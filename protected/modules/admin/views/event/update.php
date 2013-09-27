@@ -16,7 +16,8 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 <div class="form">
 
-	<?php $form=$this->beginWidget('CActiveForm', array(
+	<?php /** @var $form CActiveForm */
+	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'event-form',
 		'enableAjaxValidation'=>false,
 		'method' =>'post',
@@ -205,6 +206,14 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		});
 
 	</script>
+
+	<div class="form-group <?php if ($event->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($event,'desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->textArea($event, 'desc', array('maxlength'=>1024, 'class'=>'form-control', 'rows'=>10)); ?>
+			<?php echo $form->error($event,'desc', array('class'=>'text-danger')); ?>
+		</div>
+	</div>
 
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">

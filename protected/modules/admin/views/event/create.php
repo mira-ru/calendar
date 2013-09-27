@@ -16,7 +16,8 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 <div class="form">
 
-	<?php $form=$this->beginWidget('CActiveForm', array(
+	<?php /** @var $form CActiveForm */
+	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'event-form',
 		'enableAjaxValidation'=>false,
 		'method' =>'post',
@@ -179,6 +180,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'type', EventTemplate::$typeNames, array('class'=>'form-control', 'id'=>'typeSelect')); ?>
 			<?php echo $form->error($template,'type', array('class'=>'text-danger')); ?>
+
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($template,'desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->textArea($template, 'desc', array('class'=>'form-control', 'maxlength'=>1024, 'rows'=>10)); ?>
+			<?php echo $form->error($template,'desc', array('class'=>'text-danger')); ?>
 
 		</div>
 	</div>

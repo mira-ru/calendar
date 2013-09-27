@@ -28,6 +28,17 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'widgetFactory'=>array(
+			'widgets'=>array(
+				'CJuiDatePicker'=>array(
+					'options' => array(
+						'firstDay' => 1,
+						'dayNamesMin' => array('Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'),
+						'monthNamesShort' => array('Янв','Фев','Март','Апр','Май','Июнь','Июль','Авг','Сент','Окт','Ноя', 'Дек'),
+					)
+				),
+			),
+		),
 		'clientScript'=>array(
 			'class'=>'application.components.core.EClientScript',
 			'corePackages'=>require(dirname(__FILE__).'/../data/packages.php'),
