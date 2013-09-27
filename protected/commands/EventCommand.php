@@ -11,7 +11,7 @@ class EventCommand extends CConsoleCommand{
 		$count = 0;
 		foreach ($templates as $template) {
 			if ($this->checkEvent($template, $time)) {
-				$this->createEvent($template, $time);
+				Event::createEvent($template, $time);
 				$count++;
 			}
 		}
@@ -31,27 +31,5 @@ class EventCommand extends CConsoleCommand{
 		}
 		$count = Event::model()->countByAttributes(array('template_id'=>$template->id), 'start_time>:time', array(':time'=>$time));
 		return $count == 0;
-	}
-
-	/**
-	 * Создание нового события (линка)
-	 * @param $template EventTemplate
-	 */
-	private function createEvent($template, $time)
-	{
-		$initTime = strtotime('TODAY', $time);
-
-		$event = new Event();
-		$event->direction_id = $template->direction_id;
-		$event->hall_id = $template->hall_id;
-		$event->user_id = $template->user_id;
-		$event->center_id = $template->center_id;
-		$event->service_id = $template->service_id;
-		$event->day_of_week = $template->day_of_week;
-		$event->start_time = $template->start_time + $initTime;
-		$event->end_time = $template->end_time + $initTime;
-		$event->template_id = $template->id;
-
-		$event->save(false);
 	}
 }
