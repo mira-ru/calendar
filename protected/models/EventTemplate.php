@@ -14,6 +14,7 @@
  * @property integer $center_id
  * @property integer $service_id
  * @property integer $day_of_week
+ * @property string $desc
  * @property integer $init_time - день первого события(timestamp)
  * @property integer $start_time
  * @property integer $end_time
@@ -61,6 +62,8 @@ class EventTemplate extends CActiveRecord
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
+			array('desc', 'length', 'max'=>1024),
+
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 
@@ -103,7 +106,16 @@ class EventTemplate extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'CSafeContentBehavor' => array(
+				'class' => 'application.components.behaviors.CSafeContentBehavior',
+				'attributes' => array('desc'),
+				'options' => array(
+					'HTML.AllowedElements' => array(
+						'a' => true,
+					),
+				),
+			),
 		);
 	}
 
@@ -132,20 +144,8 @@ class EventTemplate extends CActiveRecord
 		}
 
 		for ($i=0; $i<$count; $i++) {
-			$event = new Event();
-			$event->template_id = $this->id;
-			$event->hall_id = $this->hall_id;
-			$event->center_id = $this->center_id;
-			$event->service_id = $this->service_id;
-			$event->user_id = $this->user_id;
-			$event->day_of_week = $this->day_of_week;
-			$event->direction_id = $this->direction_id;
-//			$event->name = $this->name;
 
-			$event->start_time = $initTime + $this->start_time;
-			$event->end_time = $initTime + $this->end_time;
-			$event->save(false);
-
+			Event::createEvent($this, $initTime);
 			$initTime += 7*24*3600; // интервал событий - неделя
 		}
 
@@ -165,6 +165,7 @@ class EventTemplate extends CActiveRecord
 			'direction_id' => 'Направление',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
+			'desc' => 'Описание',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
@@ -196,6 +197,7 @@ class EventTemplate extends CActiveRecord
 			throw new CHttpException(500);
 
 //		$this->name = $event->name;
+		$this->desc = $event->desc;
 		$this->direction_id = $event->direction_id;
 		$this->hall_id = $event->hall_id;
 		$this->user_id = $event->user_id;
@@ -207,4 +209,5 @@ class EventTemplate extends CActiveRecord
 		$this->type = $type;
 		$this->init_time = $initTime;
 	}
+
 }

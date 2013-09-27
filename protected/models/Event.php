@@ -11,6 +11,7 @@
  * @property integer $center_id
  * @property integer $service_id
  * @property integer $day_of_week
+ * @property string $desc
  * @property integer $user_id
  * @property integer $start_time
  * @property integer $end_time
@@ -47,6 +48,8 @@ class Event extends CActiveRecord
 
 			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
 			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
+
+			array('desc', 'length', 'max'=>1024),
 
 			array('start_time, end_time', 'timeCheck'),
 			// The following rule is used by search().
@@ -90,6 +93,21 @@ class Event extends CActiveRecord
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'CSafeContentBehavor' => array(
+				'class' => 'application.components.behaviors.CSafeContentBehavior',
+				'attributes' => array('desc'),
+				'options' => array(
+					'HTML.AllowedElements' => array(
+						'a' => true,
+					),
+				),
+			),
+		);
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -102,6 +120,7 @@ class Event extends CActiveRecord
 			'direction_id' => 'Направление',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
+			'desc' => 'Описание',
 			'start_time' => 'Дата начала',
 			'end_time' => 'Дата окончания',
 			'create_time' => 'Дата создания',
@@ -215,6 +234,28 @@ class Event extends CActiveRecord
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Создание нового события (линка)
+	 * @param $template EventTemplate
+	 */
+	public static function createEvent($template, $time)
+	{
+		$initTime = strtotime('TODAY', $time);
+
+		$event = new Event();
+		$event->direction_id = $template->direction_id;
+		$event->hall_id = $template->hall_id;
+		$event->user_id = $template->user_id;
+		$event->center_id = $template->center_id;
+		$event->service_id = $template->service_id;
+		$event->day_of_week = $template->day_of_week;
+		$event->start_time = $template->start_time + $initTime;
+		$event->end_time = $template->end_time + $initTime;
+		$event->template_id = $template->id;
+
+		$event->save(false);
 	}
 
 	/**

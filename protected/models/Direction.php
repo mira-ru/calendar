@@ -8,6 +8,7 @@
  * @property integer $status
  * @property integer $service_id
  * @property string $name
+ * @property string $url
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -45,6 +46,11 @@ class Direction extends CActiveRecord
 			array('name', 'length', 'max'=>255),
 			array('center_id', 'required'),
 			array('service_id', 'required'),
+			array('url', 'url', 'allowEmpty' => true,
+				'message' => 'Неправильный URL страницы',
+				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
+			),
+			array('url', 'length', 'max'=>512),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -99,6 +105,7 @@ class Direction extends CActiveRecord
 			'center_id' => 'Центр',
 			'service_id' => 'Услуга',
 			'name' => 'Название',
+			'url' => 'URL страницы',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
