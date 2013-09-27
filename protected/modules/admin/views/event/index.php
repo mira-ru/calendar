@@ -11,12 +11,6 @@ $('.search-button').click(function(){
 	$('.search-form').toggle();
 	return false;
 });
-$('.search-form form').submit(function(){
-	$('#user-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
 ");
 
 
@@ -38,6 +32,7 @@ $('.search-form form').submit(function(){
 <?php $this->renderPartial('_search',array(
 	'model'=>$model,
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
+	'dateTo'=>Yii::app()->request->getParam('date_to'),
 	'centers' => $centers,
 	'services' => $services,
 	'halls' => $halls,
@@ -48,6 +43,7 @@ $('.search-form form').submit(function(){
 	'id'=>'user-grid',
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
+	'ajaxUpdate' => false,
 	'columns'=>array(
 		array(
 			'name'=>'id',
@@ -80,6 +76,11 @@ $('.search-form form').submit(function(){
 			'value' => 'empty($data->direction) ? \'Направление не выбрано\' : $data->direction->name',
 		),
 		array(
+			'name'=>'day_of_week',
+			'sortable' => false,
+			'value' => 'DateMap::$smallDayMap[$data->day_of_week]',
+		),
+		array(
 			'name'=> 'start_time',
 			'sortable' => false,
 			'value'=>'date("d.m.Y H:i:s", $data->start_time)',
@@ -91,7 +92,6 @@ $('.search-form form').submit(function(){
 		),
 		array(
 			'class'=>'CButtonColumn',
-//			'htmlOptions' => array('style' => 'width: 30px;'),
 			'template'=>'{update}{delete}',
 		),
 	),

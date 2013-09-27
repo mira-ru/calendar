@@ -62,7 +62,7 @@ class EventController extends AdminController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
 		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
-
+FirePHP::getInstance()->fb(Yii::app()->getUser()->getReturnUrl());
 		$this->render('create',array(
 			'template' => $template,
 			'centers' => $centers,
@@ -250,6 +250,8 @@ class EventController extends AdminController
 	 */
 	public function actionIndex()
 	{
+		Yii::app()->getUser()->setReturnUrl(Yii::app()->request->getRequestUri());
+
 		$model=new Event('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Event']))
