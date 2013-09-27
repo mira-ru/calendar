@@ -27,6 +27,10 @@ $this->breadcrumbs=array(
 			'value' => $model->name,
 		),
 		array(
+			'name'=>'url',
+			'value' => $model->url,
+		),
+		array(
 			'name'=> 'create_time',
 			'value'=>date("d.m.Y", $model->create_time),
 		),
