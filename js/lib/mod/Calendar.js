@@ -74,7 +74,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof e.target.offsetParent.dataset.sub === 'undefined') {
+			if (typeof $(e.target).parent().data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
