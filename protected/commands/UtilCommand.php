@@ -6,7 +6,7 @@ class UtilCommand extends CConsoleCommand{
 		Yii::import('application.models.*');
 
 		$startTime = strtotime('07.10.2013');
-		$endTime = strtotime('12.10.2013') + 86400;
+		$endTime = strtotime('13.10.2013') + 86400;
 
 //		print_r($startTime);
 //		print_r($endTime);
@@ -35,8 +35,13 @@ class UtilCommand extends CConsoleCommand{
 			echo "go\n";
 			foreach ($templates as $template) {
 				if ($this->checkEvent($template, $tmpTime)) {
-					Event::createEvent($template, $tmpTime);
-					$count++;
+					$tmp = $tmpTime;
+					for ($i = 1; $i <=4; $i++) {
+
+						Event::createEvent($template, $tmp);
+						$count++;
+						$tmp += 86400*7;
+					}
 				}
 			}
 
