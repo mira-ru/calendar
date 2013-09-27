@@ -47,10 +47,10 @@ var Calendar = function () { 'use strict';
 			_filterEvents(li.text(), id, 0);
 		});
 		
-		$('.timeline-wrapper').on('click', 'span', function(e){
+		$('.timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
+			e.stopImmediatePropagation();
 			var toggler = $(this),
-			    div = toggler.parent(),
-			    pos = div.offset(),
+			    pos = toggler.offset(),
 			    balloon = $('.event-balloon');
 
 			// Получаем данные
@@ -58,15 +58,15 @@ var Calendar = function () { 'use strict';
 				url: '/site/axEvent',
 				type: 'POST',
 				data: {
-					event_id: div.data('event')
+					event_id: toggler.data('event')
 				},
 				dataType: 'json'
 			});
 			request.done(function(msg) {
 				balloon.find('div').html(msg.html).end().css({opacity: 0, display: 'block'});
-				var left = pos.left - (balloon.outerWidth() / 2) + (div.outerWidth() / 2),
-			    	    top = pos.top - (balloon.outerHeight() / 2) + (div.outerHeight() / 2),
-				    bw = balloon.outerWidth(), row = div.parent(), ol = row.offset().left, or = ol + row.outerWidth(),
+				var left = pos.left - (balloon.outerWidth() / 2) + (toggler.outerWidth() / 2),
+			    	    top = pos.top - (balloon.outerHeight() / 2) + (toggler.outerHeight() / 2),
+				    bw = balloon.outerWidth(), row = toggler.parent(), ol = row.offset().left, or = ol + row.outerWidth(),
 				    bl = bw + left, 
 				    o = (ol > left) ? ol : (or < bl) ? or - bw : left ;
 				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
@@ -74,7 +74,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof $(e.target).parent().data('sub') === 'undefined') {
+			if (typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});

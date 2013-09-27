@@ -456,6 +456,7 @@ body {
 		border: 1px #eeeeee solid;
 		border-radius: 6px;
 		color: #ffffff;
+		cursor: pointer;
 		float: left;
 		font-size: 12px;
 		height: 50px;
@@ -469,12 +470,10 @@ body {
 			height: 30px;
 			max-height: 30px;
 			overflow: hidden;
-			margin: 10px;
+			line-height: 26px;
+			margin: 10px 5px;
 			text-overflow: ellipsis;
-			// &:hover {
-			// 	cursor: pointer;
-			// 	text-decoration: underline;
-			// }
+			white-space: nowrap;
 		}
 	}
 	.start-07-30 {
@@ -841,9 +840,8 @@ body {
 		.col-840,
 		.col-870,
 		.col-900 {
-			span {
-				&:hover {
-					cursor: pointer;
+			&:hover {
+				span {
 					text-decoration: underline;
 				}
 			}
