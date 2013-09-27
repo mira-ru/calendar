@@ -75,10 +75,10 @@ var Calendar = function () { 'use strict';
 				}
 			});
 
-			$('.cross', balloon).bind('click', function(){
-				var clk = $(this);
-				balloon.hide('fast');
-			});
+			// $('.pencil', balloon).bind('click', function(){
+			// 	var clk = $(this);
+			// 	balloon.hide('fast');
+			// });
 		});
 
 		$('body').on('click', function(){

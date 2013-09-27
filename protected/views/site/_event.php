@@ -3,7 +3,7 @@
  * @var $event Event
  */
 ?>
-<strong><?php echo $event->direction->name; ?></strong>
+<strong><?php echo $event->direction->name; ?><a href="http://calendar.local" target="_blank" class="pencil"></a></strong>
 <span><i>Мастер:</i><?php echo $event->user->name; ?></span>
 <span><i>Зал:</i><?php echo $event->hall->name; ?></span>
 <?php $dow = date('w', $event->start_time); ?>
