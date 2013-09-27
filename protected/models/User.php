@@ -7,6 +7,7 @@
  * @property integer $id
  * @property integer $status
  * @property string $name
+ * @property string $url
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -41,6 +42,11 @@ class User extends CActiveRecord
 //			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
+			array('url', 'url', 'allowEmpty' => true,
+				'message' => 'Неправильный URL страницы',
+				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
+			),
+			array('url', 'length', 'max'=>512),
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, name', 'safe', 'on'=>'search'),
 		);
@@ -64,6 +70,7 @@ class User extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'name' => 'ФИО',
+			'url' => 'URL страницы',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
