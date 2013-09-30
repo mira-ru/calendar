@@ -170,9 +170,9 @@ class EventController extends AdminController
 					$event->save(false);
 
 					$template->type = $currentTemplate->type;
-//					$this->redirect(
-//						Yii::app()->getUser()->getReturnUrl(array('index'))
-//					);
+					$this->redirect(
+						Yii::app()->getUser()->getReturnUrl(array('index'))
+					);
 				}
 			}
 
