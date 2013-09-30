@@ -50,11 +50,12 @@
 							echo '<i>'.$service->name."</i>\n";
 
 							echo CHtml::openTag('ul', array('class'=>'list-unstyled'));
+							echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
+
 							/** @var $direction Direction */
 							foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
 								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 							}
-								echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
 
 							echo CHtml::closeTag('ul');
 						echo CHtml::closeTag('span');
