@@ -16,3 +16,4 @@
 <span><i>Зал:</i><?php echo $event->hall->name; ?></span>
 <?php $dow = date('w', $event->start_time); ?>
 <span><i>Время:</i><?php echo DateMap::$smallDayMap[$dow].', '.date('H:i', $event->start_time).'-'.date('H:i', $event->end_time); ?></span>
+<div><?php echo nl2br($event->desc); ?></div>

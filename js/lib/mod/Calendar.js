@@ -47,42 +47,38 @@ var Calendar = function () { 'use strict';
 			_filterEvents(li.text(), id, 0);
 		});
 		
-		$('.timeline-wrapper').on('click', 'span', function(){
+		$('.timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
+			e.stopImmediatePropagation();
 			var toggler = $(this),
-			    div = toggler.parent(),
-			    pos = div.offset(),
-			    balloon = $('.event-balloon'),
-			    left = pos.left - (balloon.outerWidth() / 2) + (div.outerWidth() / 2),
-			    top = pos.top - (balloon.outerHeight() / 2) + (div.outerHeight() / 2);
+			    pos = toggler.offset(),
+			    balloon = $('.event-balloon');
 
 			// Получаем данные
 			var request = $.ajax({
 				url: '/site/axEvent',
 				type: 'POST',
 				data: {
-					event_id: div.data('event')
+					event_id: toggler.data('event')
 				},
 				dataType: 'json'
 			});
 			request.done(function(msg) {
-				if (balloon.is(':visible')) {
-					balloon.hide('fast', function(){
-						balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
-					});
-				}
-				else {
-					balloon.find('div').html(msg.html).end().css({top: top, left: left}).fadeIn('fast');
-				}
+				balloon.find('div').html(msg.html).end().css({opacity: 0, display: 'block'});
+				var left = pos.left - (balloon.outerWidth() / 2) + (toggler.outerWidth() / 2),
+			    	    top = pos.top - (balloon.outerHeight() / 2) + (toggler.outerHeight() / 2),
+				    bw = balloon.outerWidth(), row = toggler.parent(), ol = row.offset().left, or = ol + row.outerWidth(),
+				    bl = bw + left, 
+				    o = (ol > left) ? ol : (or < bl) ? or - bw : left ;
+				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
 			});
-
-			// $('.pencil', balloon).bind('click', function(){
-			// 	var clk = $(this);
-			// 	balloon.hide('fast');
-			// });
 		});
 
-		$('body').on('click', function(){
-			$('.event-balloon').hide('fast');
+		$('body').on('click', function(e){
+			if (typeof $(e.target).data('sub') === 'undefined') {
+				$('.event-balloon').hide('fast', function(){
+					$(this).removeAttr('style').children('div').empty();
+				});
+			}
 		});
 
 		function _filterEvents(text, id, sid) {
