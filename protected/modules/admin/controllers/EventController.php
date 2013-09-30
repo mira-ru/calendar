@@ -177,7 +177,6 @@ class EventController extends AdminController
 						throw new CHttpException(500, 'Invalid action');
 					}
 					$template->type = $currentTemplate->type;
-					$this->redirect(array('index'));
 					$this->redirect(
 						Yii::app()->getUser()->getReturnUrl(array('index'))
 					);
