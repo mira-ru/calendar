@@ -48,7 +48,9 @@ class EventController extends AdminController
 
 			if ($template->validate()) { // Создание событий
 				$template->save(false);
-				$this->redirect(array('index'));
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
 			}
 		}
 
@@ -62,7 +64,6 @@ class EventController extends AdminController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
 		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
-
 		$this->render('create',array(
 			'template' => $template,
 			'centers' => $centers,
@@ -117,30 +118,27 @@ class EventController extends AdminController
 				else
 					$event->day_of_week = -1;
 
-
 				if ($event->validate() && !$hasErrors) {
 					$currentTemplate = $event->getTemplate();
 					// осталось одиночное событие или регулярное и изменяем только текущее
-					if (
-						($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)
-						|| ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)
-					) {
-						// Установка времени самого события
-						$event->start_time += $initTime;
-						$event->end_time += $initTime;
-
-						$event->save(false);
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
-						// Сменили тип на одиночное событие, прибиваем младшие копии события
-						$currentTemplate->type = EventTemplate::TYPE_SINGLE;
+					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
+						// обновляем шаблон
+						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
 						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
-						// Установка времени самого события
-						$event->start_time += $initTime;
-						$event->end_time += $initTime;
+						$currentTemplate->save(false);
 
-						$event->save(false);
+					} elseif (($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
+						// ok
+					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
+						// Сменили тип на одиночное событие, прибиваем младшие копии события
+
+						// обновляем шаблон
+						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
+						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
+
 						$event->removeYoungEvents();
+						$currentTemplate->save(false);
 
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
 						// Событие стало регулярным
@@ -149,13 +147,8 @@ class EventController extends AdminController
 						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
 						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
-						// Установка времени самого события
-						$event->start_time += $initTime;
-						$event->end_time += $initTime;
-
 						// Сохраняем и создаем линки на событие
 						$currentTemplate->save(false);
-						$event->save(false);
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
 						// Обновляем все события
 						$event->removeYoungEvents();
@@ -164,19 +157,22 @@ class EventController extends AdminController
 						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
 						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
-						// Установка времени самого события
-						$event->start_time += $initTime;
-						$event->end_time += $initTime;
-
 						// Сохраняем и создаем линки на событие
 						$currentTemplate->save(false);
-						$event->save(false);
 
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}
+
+					// Установка времени самого события
+					$event->start_time += $initTime;
+					$event->end_time += $initTime;
+					$event->save(false);
+
 					$template->type = $currentTemplate->type;
-					$this->redirect(array('index'));
+					$this->redirect(
+						Yii::app()->getUser()->getReturnUrl(array('index'))
+					);
 				}
 			}
 
@@ -189,6 +185,7 @@ class EventController extends AdminController
 			$date = date('d.m.Y', $event->start_time);
 			$startTime = date('H.i', $event->start_time);
 			$endTime = date('H.i', $event->end_time);
+			$changeAll = true;
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
@@ -250,6 +247,8 @@ class EventController extends AdminController
 	 */
 	public function actionIndex()
 	{
+		Yii::app()->getUser()->setReturnUrl(Yii::app()->request->getRequestUri());
+
 		$model=new Event('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Event']))

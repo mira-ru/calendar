@@ -27,4 +27,11 @@ class TestController extends AdminController
 		phpinfo();
 		die();
 	}
+
+	public function actionUrl()
+	{
+		FirePHP::getInstance()->fb($this->createUrl('test', array('lol[test]'=>1)));
+
+		die();
+	}
 }
