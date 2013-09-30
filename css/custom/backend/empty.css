@@ -1,9 +1,56 @@
+@import url(http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic&subset=latin,cyrillic);
+
 body {
 	padding-top: 40px;
 	padding-bottom: 40px;
 	background-color: #eee;
 }
-
+body.error {
+	background-color: #fff;
+}
+body.error .container {
+	text-align: center;
+}
+body.error .container img {
+	display: inline-block;
+	margin-left: -7%;
+}
+body.error .container img.error {
+	margin-left: -25%;
+}
+body.error .container h1 {
+	font-family: 'PT Sans';
+	font-weight: 700;
+}
+@media (max-width: 991px) {
+	body.error .container .col-lg-8 h1 {
+		font-size: 32px;
+	}	
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+	body.error .container .col-lg-8 h1 {
+		font-size: 40px;
+	}	
+}
+@media (min-width: 1200px) {
+	body.error .container .col-lg-8 h1 {
+		font-size: 48px;
+	}
+}
+body.error .container h1 a {
+	color: #8cc507;
+	display: block;
+	font-size: 20px;
+	font-weight: 400;
+	margin-top: 15px;
+	text-decoration: none;
+}
+body.error .container h1.error a i {
+	text-decoration: underline;
+}
+body.error .container h1.error a i:hover {
+	text-decoration: none;
+}
 .form-signin {
 	max-width: 330px;
 	padding: 15px;

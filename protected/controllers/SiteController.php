@@ -170,6 +170,7 @@ class SiteController extends FrontController
 	 */
 	public function actionError()
 	{
+		$this->layout = '//layouts/error';
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if ( empty($error['message']) && isset(Config::$errors[ $error['code'] ]) ) {
