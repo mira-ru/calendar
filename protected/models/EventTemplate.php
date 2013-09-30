@@ -3,9 +3,8 @@
 /**
  * This is the model class for table "event_template".
  *
- * The followings are the available columns in table 'hall':
+ * The followings are the available columns in table 'EventTemplate':
  * @property integer $id
- * @property integer $parent_id
  * @property integer $type
  * @property integer $status
  * @property integer $user_id
@@ -140,13 +139,13 @@ class EventTemplate extends CActiveRecord
 			$initTime = $this->init_time; // время начала события
 		} else {
 			$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
-			$initTime = $this->init_time + 7*24*3600; // время начала события
+			$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
 		}
 
 		for ($i=0; $i<$count; $i++) {
 
 			Event::createEvent($this, $initTime);
-			$initTime += 7*24*3600; // интервал событий - неделя
+			$initTime += DateMap::TIME_WEEK; // интервал событий - неделя
 		}
 
 	}
@@ -181,15 +180,6 @@ class EventTemplate extends CActiveRecord
 	{
 		return parent::model($className);
 	}
-
-	/**
-	 * Получение ID ветки событий (ссылается на первый event в цепочке)
-	 */
-	public function getBranchId()
-	{
-		return empty($this->parent_id) ? $this->id : $this->parent_id;
-	}
-
 
 	public function updateFromEvent($event, $type, $initTime)
 	{

@@ -1,6 +1,10 @@
 <?php
 
 class DateMap {
+	const TIME_HOUR = 3600;
+	const TIME_DAY = 86400;
+	const TIME_WEEK = 604800;
+
 	public static $smallDayMap = array(
 		0 => 'вс',
 		1 => 'пн',
