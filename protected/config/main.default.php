@@ -112,5 +112,6 @@ return CMap::mergeArray(array(
 	'params'=>array(
 		'users' => array('admin'=>'123qwe'),
 		'adminEmail'=>'webmaster@example.com',
+		'closeMain' => false, // закрытие главной страницы
 	),
 ), require(dirname(__FILE__) . '/main.php'));
