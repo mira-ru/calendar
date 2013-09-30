@@ -176,6 +176,7 @@ class Service extends CActiveRecord
 			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul{border-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul:before{background-color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.' ul li:first-child{color:'.$color.' !important}';
 			$content .= ':not(.touch) .item-'.$clearCode.' ul li:hover{color:'.$color.' !important}';
 		}
 

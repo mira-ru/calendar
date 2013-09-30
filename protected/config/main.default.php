@@ -112,5 +112,7 @@ return CMap::mergeArray(array(
 	'params'=>array(
 		'users' => array('admin'=>'123qwe'),
 		'adminEmail'=>'webmaster@example.com',
+		'closeMain' => true, // закрытие главной страницы
+		'allowIp' => array('127.0.0.1', '195.239.212.54', '37.193.244.157', '89.189.191.1'),
 	),
 ), require(dirname(__FILE__) . '/main.php'));
