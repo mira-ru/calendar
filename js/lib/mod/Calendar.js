@@ -28,7 +28,7 @@ var Calendar = function () { 'use strict';
 			$('.event-balloon').hide('fast');
 		});
 
-		$('[data-service]').on('click', function(){
+		$('.sub-menu').on('click', '[data-service]', function(){
 			var li = $(this),
 			    sid = li.data('service'),
 			    text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
@@ -36,17 +36,24 @@ var Calendar = function () { 'use strict';
 			_moduleOptions.activity_id = 0;
 			_updateTimelineDays(_moduleOptions);
 			_filterEvents(text, 0, sid);
-		});
-
-		$('[data-id]').on('click', function(){
+			li.parent().hide();
+		}).on('click', '[data-id]', function(){
 			var li = $(this),
 			    id = li.data('id');
 			_moduleOptions.activity_id = id;
 			_moduleOptions.service_id = 0;
 		 	_updateTimelineDays(_moduleOptions);
 			_filterEvents(li.text(), id, 0);
+			li.parent().hide();
+		}).on('click', 'i', function(e){
+			e.stopImmediatePropagation();
+			_resetFilter();
+		}).on('mouseover', 'span', function(){
+			$('ul', $(this)).show();
+		}).on('mouseout', 'span', function(){
+			$('ul', $(this)).hide();
 		});
-		
+
 		$('.timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
 			e.stopImmediatePropagation();
 			var toggler = $(this),
@@ -182,26 +189,30 @@ var Calendar = function () { 'use strict';
 
 		function _setFilterLabel(text) {
 			$('.filter-items').empty();
-			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', function(){
-				if ($('.warning-empty').is(':visible')) {
-					$('.warning-empty').fadeOut('fast').promise().done(function(){
-						$('.timeline-wrapper > div > div').slideDown('fast', function(){
-							$('div', $(this)).fadeIn('fast');
-						});
-						$('.filter-items').empty();
-					});
-				}
-				else {
+			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
+		}
+
+		// Сброс фильтра
+
+		function _resetFilter() {
+			if ($('.warning-empty').is(':visible')) {
+				$('.warning-empty').fadeOut('fast').promise().done(function(){
 					$('.timeline-wrapper > div > div').slideDown('fast', function(){
 						$('div', $(this)).fadeIn('fast');
 					});
 					$('.filter-items').empty();
-				}
-				_moduleOptions.activity_id = 0;
-				_moduleOptions.service_id = 0;
-				// Обновляем таймлайн
-				_updateTimelineDays(_moduleOptions);
-			});
+				});
+			}
+			else {
+				$('.timeline-wrapper > div > div').slideDown('fast', function(){
+					$('div', $(this)).fadeIn('fast');
+				});
+				$('.filter-items').empty();
+			}
+			_moduleOptions.activity_id = 0;
+			_moduleOptions.service_id = 0;
+			// Обновляем таймлайн
+			_updateTimelineDays(_moduleOptions);
 		}
 	}
 
