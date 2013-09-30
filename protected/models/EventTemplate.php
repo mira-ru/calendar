@@ -140,7 +140,7 @@ class EventTemplate extends CActiveRecord
 			$initTime = $this->init_time; // время начала события
 		} else {
 			$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
-			$initTime = $this->init_time + 7*24*3500; // время начала события
+			$initTime = $this->init_time + 7*24*3600; // время начала события
 		}
 
 		for ($i=0; $i<$count; $i++) {

@@ -6,7 +6,7 @@ class EventCommand extends CConsoleCommand{
 		Yii::import('application.models.*');
 		$templates = EventTemplate::model()->findAllByAttributes(array('status'=>EventTemplate::STATUS_ACTIVE, 'type'=>EventTemplate::TYPE_REGULAR));
 
-		$time = time();
+		$time = time()+28*86400;
 
 		$count = 0;
 		foreach ($templates as $template) {
@@ -16,7 +16,7 @@ class EventCommand extends CConsoleCommand{
 			}
 		}
 
-		echo date('[Y-m-d H:i:s]', $time).' TOTAL CREATED EVENTS: '.$count."\n";
+		echo date('[Y-m-d H:i:s]', time()).' TOTAL CREATED EVENTS: '.$count."\n";
 	}
 
 	/**
