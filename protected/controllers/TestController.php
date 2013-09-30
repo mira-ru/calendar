@@ -18,8 +18,7 @@ class TestController extends AdminController
 ////		fclose($file);
 //		file_put_contents($path, $content);
 //		FirePHP::getInstance()->fb($path);
-//		Service::generateCss();
-		FirePHP::getInstance()->fb($_GET);
+		Service::generateCss();
 		die();
 	}
 

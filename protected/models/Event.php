@@ -259,6 +259,7 @@ class Event extends CActiveRecord
 		$initTime = strtotime('TODAY', $time);
 
 		$event = new Event();
+		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
 		$event->hall_id = $template->hall_id;
 		$event->user_id = $template->user_id;
