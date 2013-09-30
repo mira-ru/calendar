@@ -123,6 +123,7 @@ class Event extends CActiveRecord
 			'desc' => 'Описание',
 			'start_time' => 'Дата начала',
 			'end_time' => 'Дата окончания',
+			'day_of_week' => 'День недели',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
@@ -154,10 +155,23 @@ class Event extends CActiveRecord
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
 			$criteria->compare('start_time', '>=' . strtotime($dateFrom));
+		} else {
+			$criteria->compare('start_time', '>=' . DateMap::currentDay(time()));
 		}
+		if (($dateTo = $request->getParam('date_to'))) {
+			$criteria->compare('start_time', '<' . (strtotime($dateTo)+86400));
+		}
+
+		$sort = new CSort();
+		$sort->defaultOrder = array('start_time' => CSort::SORT_ASC);
+
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'sort'=>$sort,
+			'pagination'=>array(
+				'pageSize'=>20,
+			),
 		));
 	}
 
@@ -245,6 +259,7 @@ class Event extends CActiveRecord
 		$initTime = strtotime('TODAY', $time);
 
 		$event = new Event();
+		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
 		$event->hall_id = $template->hall_id;
 		$event->user_id = $template->user_id;

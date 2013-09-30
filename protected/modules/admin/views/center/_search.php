@@ -36,7 +36,7 @@
 	</div>
 
 	<div class="form-group">
-		<?php echo $form->label($model,'create_time', array('class'=>'col-lg-2 control-label')); ?>
+		<?php echo CHtml::label('Время от', '', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -56,7 +56,7 @@
 	</div>
 
 	<div class="form-group">
-		<?php echo $form->label($model,'create_time', array('class'=>'col-lg-2 control-label')); ?>
+		<?php echo CHtml::label('Время до', '', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiDatePicker', array(

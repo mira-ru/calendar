@@ -12,12 +12,6 @@ $('.search-button').click(function(){
 	$('.search-form').toggle();
 	return false;
 });
-$('.search-form form').submit(function(){
-	$('#user-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
 ");
 
 
@@ -47,6 +41,7 @@ $('.search-form form').submit(function(){
 	'id'=>'user-grid',
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
+	'ajaxUpdate' => false,
 	'columns'=>array(
 		array(
 			'name'=>'id',
