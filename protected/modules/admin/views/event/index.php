@@ -54,7 +54,7 @@ $('.search-button').click(function(){
 			'name'=>'user_id',
 			'sortable' => false,
 			'type' => 'raw',
-			'value' => 'empty($data->user) ? \'Мастер не указан\' : CHtml::link($data->user->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[user_id]\'=> $data->user->id) )) $data->user->name',
+			'value' => 'empty($data->user) ? \'Мастер не указан\' : CHtml::link($data->user->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[user_id]\'=> $data->user->id) ))',
 		),
 		array(
 			'name'=>'service_id',

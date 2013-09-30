@@ -216,8 +216,24 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group">
-		<div class="col-lg-offset-2 col-lg-10">
+		<div class="col-lg-offset-2 col-lg-2">
 			<?php echo CHtml::submitButton('Обновить', array('class'=>'btn btn-default')); ?>
+		</div>
+		<div class="col-lg-2">
+			<?php echo CHtml::button('Удалить',
+				array('class'=>'btn btn-warning',
+					'onclick'=>'if (confirm(\'Удалить это событие?\')) {document.location = \''
+					.$this->createUrl($this->id.'/delete', array('id'=>$event->id)).'\';}'
+				)); ?>
+		</div>
+
+		<div class="col-lg-2">
+			<?php echo CHtml::button('Удалить все',
+				array('class'=>'btn btn-danger',
+					'onclick'=>'if (confirm(\'Удалить это и последующие события?\')) { document.location = \''
+					.$this->createUrl($this->id.'/deleteall', array('id'=>$event->id))
+					.'\';}'
+				)); ?>
 		</div>
 	</div>
 

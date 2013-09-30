@@ -225,6 +225,7 @@ class EventController extends AdminController
 		$template = $event->getTemplate();
 		if ($template->type == EventTemplate::TYPE_SINGLE) {
 			$event->delete();
+			$template->delete();
 		} elseif ($template->type == EventTemplate::TYPE_REGULAR) {
 			/**
 			 * Для регулярных - проверяем число линков, ставин неактивность шаблону, если дропнули все линки
@@ -238,8 +239,39 @@ class EventController extends AdminController
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
+		if(!isset($_GET['ajax'])) {
+			$url = isset($_POST['returnUrl']) ? $_POST['returnUrl'] : Yii::app()->getUser()->getReturnUrl(array('index'));
+			$this->redirect($url);
+		}
+	}
+
+	/**
+	 * Удаление всех связанных событий после текущего
+	 * (и отключение создания копий регулярного)
+	 * @param $id
+	 * @throws CHttpException
+	 */
+	public function actionDeleteall($id)
+	{
+		/** @var $event Event */
+		$event = Event::model()->findByPk(intval($id));
+		if ($event===null)
+			throw new CHttpException(404);
+
+		$template = $event->getTemplate();
+		if ($template->type == EventTemplate::TYPE_SINGLE) {
+			$event->delete();
+			$template->delete();
+		} elseif ($template->type == EventTemplate::TYPE_REGULAR) {
+			$event->removeYoungEvents();
+			$event->delete();
+			$template->status = EventTemplate::STATUS_DISABLED;
+			$template->save(false);
+		}
+
+		$this->redirect(
+			Yii::app()->getUser()->getReturnUrl(array('index'))
+		);
 	}
 
 	/**
