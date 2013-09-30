@@ -53,27 +53,32 @@ $('.search-button').click(function(){
 		array(
 			'name'=>'user_id',
 			'sortable' => false,
-			'value' => 'empty($data->user) ? \'Мастер не указан\' : $data->user->name',
+			'type' => 'raw',
+			'value' => 'empty($data->user) ? \'Мастер не указан\' : CHtml::link($data->user->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[user_id]\'=> $data->user->id) )) $data->user->name',
 		),
 		array(
 			'name'=>'service_id',
 			'sortable' => false,
-			'value' => 'empty($data->service) ? \'Услуги не указаны\' : $data->service->name',
+			'type' => 'raw',
+			'value' => 'empty($data->service) ? \'Услуги не указаны\' : CHtml::link($data->service->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[service_id]\'=> $data->service->id) ))',
 		),
 		array(
 			'name'=>'hall_id',
 			'sortable' => false,
-			'value' => 'empty($data->hall) ? \'Зал не указан\' : $data->hall->name',
+			'type' => 'raw',
+			'value' => 'empty($data->hall) ? \'Зал не указан\' : CHtml::link($data->hall->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[hall_id]\'=> $data->hall->id) ))',
 		),
 		array(
 			'name'=>'center_id',
 			'sortable' => false,
-			'value' => 'empty($data->center) ? \'Центр не выбран\' : $data->center->name',
+			'type' => 'raw',
+			'value' => 'empty($data->center) ? \'Центр не выбран\' : CHtml::link($data->center->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[center_id]\'=> $data->center->id) ))',
 		),
 		array(
 			'name'=>'direction_id',
 			'sortable' => false,
-			'value' => 'empty($data->direction) ? \'Направление не выбрано\' : $data->direction->name',
+			'type' => 'raw',
+			'value' => 'empty($data->direction) ? \'Направление не выбрано\' : CHtml::link($data->direction->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[direction_id]\'=> $data->direction->id) ))',
 		),
 		array(
 			'name'=>'day_of_week',

@@ -48,7 +48,9 @@ class EventController extends AdminController
 
 			if ($template->validate()) { // Создание событий
 				$template->save(false);
-				$this->redirect(array('index'));
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
 			}
 		}
 
@@ -62,7 +64,6 @@ class EventController extends AdminController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
 		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
-FirePHP::getInstance()->fb(Yii::app()->getUser()->getReturnUrl());
 		$this->render('create',array(
 			'template' => $template,
 			'centers' => $centers,
@@ -177,6 +178,9 @@ FirePHP::getInstance()->fb(Yii::app()->getUser()->getReturnUrl());
 					}
 					$template->type = $currentTemplate->type;
 					$this->redirect(array('index'));
+					$this->redirect(
+						Yii::app()->getUser()->getReturnUrl(array('index'))
+					);
 				}
 			}
 
@@ -189,6 +193,7 @@ FirePHP::getInstance()->fb(Yii::app()->getUser()->getReturnUrl());
 			$date = date('d.m.Y', $event->start_time);
 			$startTime = date('H.i', $event->start_time);
 			$endTime = date('H.i', $event->end_time);
+			$changeAll = true;
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
