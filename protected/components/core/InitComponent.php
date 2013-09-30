@@ -32,7 +32,18 @@ class InitComponent extends CComponent
 		if (empty(Yii::app()->params->closeMain))
 			return true;
 
-		$allowIp = array('127.0.0.1', '195.239.212.54');
+		/** @var $request CHttpRequest */
+		$request = Yii::app()->getRequest();
+		$uri = $request->getRequestUri();
+
+		$allowUrl = array('/admin', '/site/login', '/site/logout');
+		foreach ($allowUrl as $url) {
+			if (!is_bool( strpos($uri, $url) ) ) {
+				return true;
+			}
+		}
+
+		$allowIp = empty(Yii::app()->params->allowIp) || !is_array(Yii::app()->params->allowIp) ? array() : Yii::app()->params->allowIp;
 		$ip = Yii::app()->request->userHostAddress;
 
 		if (in_array($ip, $allowIp)) {
