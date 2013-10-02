@@ -8,6 +8,7 @@
  * @property string $name
  * @property string $color
  * @property string $status
+ * @property integer $position
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -53,7 +54,11 @@ class Center extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'PositionBehavior' => array(
+				'class'     => 'application.components.behaviors.PositionBehavior',
+				'whereLimitField' => 'status',
+			),
 		);
 	}
 
@@ -106,6 +111,7 @@ class Center extends CActiveRecord
 		if (($dateTo = $request->getParam('update_to'))) {
 			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
+		$criteria->order = 'position ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
