@@ -32,16 +32,27 @@ $('.search-button').click(function(){
 )); ?>
 </div><!-- search-form -->
 
+<?php // Подключаем скрипт для смены позиций элементов в списке
+Yii::app()->clientScript->registerScriptFile('/js/lib/mod/backend/arrowsUpDown.js'); ?>
+
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'center-grid',
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
-	'ajaxUpdate' => false,
+//	'ajaxUpdate' => false,
+	'selectionChanged' => 'js:function(event){
+		arrowsUpDown.showArrows();
+		arrowsUpDown.moveToCursor();
+	}',
+	'afterAjaxUpdate' => 'js:function(){
+		arrowsUpDown.selectLastElement();
+	}',
 	'columns'=>array(
 		array(
 			'name'=>'id',
 			'sortable' => false,
 			'value' => '$data->id',
+			'htmlOptions' => array("class" => 'elementId')
 		),
 		array(
 			'name'=>'status',
@@ -75,3 +86,11 @@ $('.search-button').click(function(){
 		),
 	),
 )); ?>
+<script type="text/javascript">
+	// Инициализируем стрелки перемещения позиции
+	arrowsUpDown.init("center-grid", "/admin/center/");
+</script>
+<style type="text/css">
+	.adminArrows { position: fixed; width : 65px; height : auto; top : 50%; right : 10px; padding : 3px 3px 5px; background-color : white; border : 3px solid #999; border-radius: 8px;}
+</style>
+
