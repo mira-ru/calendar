@@ -28,6 +28,9 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'image'=>array(
+			'class'=>'ext.imgLoader.ImageComponent',
+		),
 		'widgetFactory'=>array(
 			'widgets'=>array(
 				'CJuiDatePicker'=>array(
