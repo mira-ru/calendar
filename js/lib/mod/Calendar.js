@@ -5,6 +5,7 @@ lib.include('mod.Common');
 
 // Class definition
 var Calendar = function () { 'use strict';
+
 	var _moduleOptions = {
 		'day': 0,
 		'activity_id': 0,
@@ -12,6 +13,7 @@ var Calendar = function () { 'use strict';
 		'service_id': 0,
 		'month': 0
 	};
+
 	// Public method
 	function initialize (options) {
 		$.extend(true, _moduleOptions, options)
