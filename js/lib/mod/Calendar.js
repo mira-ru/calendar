@@ -229,7 +229,7 @@ var Calendar = function () { 'use strict';
 	// замена url
 	function _changeUrl(data) {
 		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
-			urlWithoutCenter = '/'+data.service_id+'/'+data.activity_id+'/'+data.day,
+			urlWithoutCenter = '/0/0/'+data.day,
 			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
