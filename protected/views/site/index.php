@@ -37,7 +37,7 @@
 						$url = $this->createUrl('/site/index', array('center_id'=>$center->id, 'time'=>$checkedTime));
 					}
 					echo CHtml::tag('li', array('class'=>$class),
-						CHtml::link($center->name, $url)
+						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";
 					$cnt++;
 				}
@@ -88,7 +88,7 @@
 			$prevMonthTime = DateMap::prevMonth($checkedTime);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
 				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevMonthTime, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
-				array('class'=>'prev-month')
+				array('class'=>'prev-month', 'data-time'=>$prevMonthTime)
 			);
 			echo CHtml::tag('strong',
 				array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
@@ -96,7 +96,7 @@
 			);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
 				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextMonth, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
-				array('class'=>'next-month')
+				array('class'=>'next-month', 'data-time'=>$nextMonth)
 			);
 			?>
 		</div>
