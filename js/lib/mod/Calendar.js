@@ -36,6 +36,7 @@ var Calendar = function () { 'use strict';
 			_moduleOptions.service_id = sid;
 			_moduleOptions.activity_id = 0;
 			_updateTimelineDays(_moduleOptions);
+			_changeUrl(_moduleOptions);
 			_filterEvents(text, 0, sid);
 			li.parent().hide();
 		}).on('click', '[data-id]', function(){
@@ -44,6 +45,7 @@ var Calendar = function () { 'use strict';
 			_moduleOptions.activity_id = id;
 			_moduleOptions.service_id = 0;
 		 	_updateTimelineDays(_moduleOptions);
+			_changeUrl(_moduleOptions);
 			_filterEvents(li.text(), id, 0);
 			li.parent().hide();
 		}).on('click', 'i', function(e){
@@ -191,7 +193,7 @@ var Calendar = function () { 'use strict';
 
 		function _changeUrl(data) {
 			var     date = data.day ? data.day : data.month,
-				url = '/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+date;
+				url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+date;
 			if(window.history && history.pushState){
 				history.pushState(null, null, url);
 			}else{

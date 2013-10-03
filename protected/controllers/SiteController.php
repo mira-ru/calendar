@@ -11,10 +11,13 @@ class SiteController extends FrontController
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex($id=null, $time=null)
+	public function actionIndex($center_id, $service_id, $direction_id, $time)
 	{
 		$time = intval($time);
 		$checkedTime = empty($time) ? time() : $time;
+		$checkedTime = DateMap::currentDay($checkedTime);
+		$serviceId = intval($service_id);
+		$directionId = intval($direction_id);
 
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
@@ -28,24 +31,25 @@ class SiteController extends FrontController
 //				'order'=>'position ASC',
 			)
 		);
-		$id = intval($id);
+		$center_id = intval($center_id);
 
-		if (empty($id)) {
+		if (empty($center_id)) {
 			$current = @reset($centers);
 		} else {
-			if (empty($centers[$id])) {
+			if (empty($centers[$center_id])) {
 				throw new CHttpException(404);
 			}
-			$current = $centers[$id];
+			$current = $centers[$center_id];
 		}
+		if ($serviceId) { $directionId = null; }
+
+
 		$this->bodyClass[] = 'center-'.$current->id;
 
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
-		$dayStart = strtotime('TODAY', $checkedTime);
-		$dayEnd = $dayStart + 86400;
-
-		$events = Event::getByTime($dayStart, $dayEnd, $current->id);
+		$dayEnd = $checkedTime + 86400;
+		$events = Event::getByTime($checkedTime, $dayEnd, $current->id);
 
 		// Список активных дней в месяце
 		$currentMonth = DateMap::currentMonth($checkedTime);
@@ -58,6 +62,8 @@ class SiteController extends FrontController
 		$this->render('index', array(
 
 			'current' => $current,
+			'directionId' => $directionId,
+			'serviceId' => $serviceId,
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,

@@ -9,6 +9,8 @@
  * @var $activeDays array
  * @var $currentMonth integer
  * @var $nextMonth integer
+ * @var $serviceId integer
+ * @var $directionId integer
  */
 ?>
 <!-- PAGE CONTENT -->
@@ -32,7 +34,7 @@
 						$class .= ' current';
 						$url = 'javascript:void(0)';
 					} else {
-						$url = $this->createUrl('/site/index', array('id'=>$center->id));
+						$url = $this->createUrl('/site/index', array('center_id'=>$center->id, 'time'=>$checkedTime));
 					}
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url)
@@ -85,7 +87,7 @@
 			$yearNumber = date('Y', $checkedTime);
 			$prevMonthTime = DateMap::prevMonth($checkedTime);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevMonthTime, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
 				array('class'=>'prev-month')
 			);
 			echo CHtml::tag('strong',
@@ -93,7 +95,7 @@
 				DateMap::$monthMap[$monthNumber].', '.$yearNumber
 			);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonth)),
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextMonth, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
 				array('class'=>'next-month')
 			);
 			?>
@@ -168,7 +170,13 @@
 					<td colspan="15" class="timeline-wrapper">
 						<div>
 						<?php
-						$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
+						$this->renderPartial('_events', array(
+							'halls'=>$halls,
+							'events'=>$events,
+							'services'=>$services,
+							'directionId'=>$directionId,
+							'serviceId'=>$serviceId,
+						));
 						?>
 						</div>
 						<?php
@@ -195,6 +203,9 @@
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
 			'month'=>$currentMonth,
+			'activity_id'=>$directionId,
+			'service_id'=>$serviceId,
+			'day'=>$checkedTime,
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>
