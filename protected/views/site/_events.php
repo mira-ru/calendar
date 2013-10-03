@@ -4,11 +4,14 @@
  * @var $events array
  * @var $services array
  * @var $halls array
+ * @var $serviceId integer
+ * @var $directionId integer
  */
-$totalHasEvents = false;
+
 foreach ($halls as $hall) {
 	$tmp = '';
-	$hasEvents = false;
+	$hasEvents = false; // Наличие событий в принципе
+	$hasEnEvents = false; // Наличие отображаемых событий
 
 	$tmp .= CHtml::tag('div', array('class'=>'text-center'), $hall->name);
 	$tmp .= CHtml::openTag('div', array('class'=>'row timeline-row'));
@@ -16,8 +19,17 @@ foreach ($halls as $hall) {
 	/** @var $event Event */
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
-			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
 			$hasEvents = true;
+			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
+			// Если указано направление - скрываем не подходящие элементы
+			if (
+			    (!empty($directionId) && $directionId != $event->direction_id)
+			    || (!empty($serviceId) && $serviceId != $event->service_id)
+			) {
+				$htmlOptions['style'] = 'display:none;';
+			} else {
+				$hasEnEvents = true;
+			}
 
 			$timeStart = date('H-i', $event->start_time);
 			// Продолжительность в минутах
@@ -51,7 +63,8 @@ foreach ($halls as $hall) {
 	if (!$hasEvents) {
 		continue;
 	}
-	$totalHasEvents = true;
+	if (!$hasEnEvents) {
+		$htmlOptions['style'] = 'display:none;';
+	}
 	echo CHtml::tag('div', $htmlOptions, $tmp);
-
 }
