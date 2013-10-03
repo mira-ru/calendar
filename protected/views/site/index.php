@@ -202,7 +202,6 @@
 	$(function () {
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
-			'month'=>$currentMonth,
 			'activity_id'=>$directionId,
 			'service_id'=>$serviceId,
 			'day'=>$checkedTime,

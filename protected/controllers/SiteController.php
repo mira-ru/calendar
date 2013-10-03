@@ -154,7 +154,7 @@ class SiteController extends FrontController
 			throw new CHttpException(400);
 		}
 
-		$monthTime = intval($request->getParam('month'));
+		$dayTime = intval($request->getParam('day'));
 		$centerId = intval($request->getParam('center_id'));
 		$directionId = intval($request->getParam('activity_id'));
 		$serviceId = intval($request->getParam('service_id'));
@@ -168,7 +168,7 @@ class SiteController extends FrontController
 			throw new CHttpException(404);
 		}
 
-		$monthTime = DateMap::currentMonth($monthTime);
+		$monthTime = DateMap::currentMonth($dayTime);
 		$nextMonthTime = DateMap::nextMonth($monthTime);
 
 		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
