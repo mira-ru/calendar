@@ -9,7 +9,7 @@ var Calendar = function () { 'use strict';
 		'day': 0,
 		'activity_id': 0,
 		'center_id': 0,
-		'service_id': 0,
+		'service_id': 0
 	};
 	// Public method
 	function initialize (options) {

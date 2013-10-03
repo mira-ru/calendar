@@ -31,8 +31,9 @@ class SiteController extends FrontController
 //				'order'=>'position ASC',
 			)
 		);
-		$center_id = intval($center_id);
 
+		// Находим текущий центр
+		$center_id = intval($center_id);
 		if (empty($center_id)) {
 			$current = @reset($centers);
 		} else {
@@ -41,11 +42,8 @@ class SiteController extends FrontController
 			}
 			$current = $centers[$center_id];
 		}
-		if ($serviceId) { $directionId = null; }
-
 
 		$this->bodyClass[] = 'center-'.$current->id;
-
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 		$dayEnd = $checkedTime + 86400;
@@ -58,6 +56,22 @@ class SiteController extends FrontController
 		// Список активных услуг на месяц
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $current->id);
 
+		// проверка наличия выбранной услуги
+		if (!empty($serviceId)) {
+			$directionId = null;
+			if (empty($services[$serviceId])) {
+				throw new CHttpException(404);
+			}
+		}
+		// проверка наличия выбранного направления
+		$direction = null;
+		if (!empty($directionId)) {
+			$direction = Direction::model()->findByPk($directionId);
+			if ($direction===null) {
+				throw new CHttpException(404);
+			}
+		}
+
 
 		$this->render('index', array(
 
@@ -67,6 +81,7 @@ class SiteController extends FrontController
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,
+			'direction' => $direction,
 
 			'checkedTime' => $checkedTime,
 			'events' => $events,

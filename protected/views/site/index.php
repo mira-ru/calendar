@@ -11,6 +11,7 @@
  * @var $nextMonth integer
  * @var $serviceId integer
  * @var $directionId integer
+ * @var $direction Direction
  */
 ?>
 <!-- PAGE CONTENT -->
@@ -76,6 +77,14 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<ul class="list-inline filter-items">
+				<?php
+				if (!empty($serviceId)) {
+					$service = $services[$serviceId];
+					echo CHtml::tag('li', array(), $service->name.' (все направления)<i></i>');
+				} elseif (!empty($direction)) {
+					echo CHtml::tag('li', array(), $direction->name.'<i></i>');
+				}
+				?>
 				<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
 			</ul>
 		</div>
