@@ -21,7 +21,13 @@ class SiteController extends FrontController
 		$this->moduleId = array('Calendar');
 		$this->bodyClass = array('calendar');
 
-		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
+		$centers = Center::model()->findAllByAttributes(
+			array('status'=>Center::STATUS_ACTIVE),
+			array(
+				'index'=>'id',
+//				'order'=>'position ASC',
+			)
+		);
 		$id = intval($id);
 
 		if (empty($id)) {
