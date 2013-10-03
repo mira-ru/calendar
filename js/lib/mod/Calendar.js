@@ -86,6 +86,12 @@ var Calendar = function () { 'use strict';
 			}
 		});
 
+		window.setTimeout(function() {
+			window.addEventListener("popstate", function(e) {
+				location.reload();
+			}, false);
+		}, 1);
+
 		function _filterEvents(text, id, sid) {
 			var row = $('.timeline-row'),
 				sub = $('div', row),
@@ -233,6 +239,8 @@ var Calendar = function () { 'use strict';
 			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
+
+
 		}else{
 			location.hash = url;
 		}

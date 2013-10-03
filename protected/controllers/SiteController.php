@@ -58,7 +58,7 @@ class SiteController extends FrontController
 
 		// проверка наличия выбранной услуги
 		if (!empty($serviceId)) {
-			$directionId = null;
+			$directionId = 0;
 			if (empty($services[$serviceId])) {
 				throw new CHttpException(404);
 			}
