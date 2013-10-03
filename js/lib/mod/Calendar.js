@@ -190,7 +190,7 @@ var Calendar = function () { 'use strict';
 			$('.filter-items').empty();
 			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
 		}
-
+		$('.filter-items i').bind('click', _resetFilter);
 		// Сброс фильтра
 
 		function _resetFilter() {
