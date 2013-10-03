@@ -25,6 +25,7 @@ var Calendar = function () { 'use strict';
 			span.add(current).toggleClass('current');
 			_moduleOptions.day = day;
 			_getEvents(_moduleOptions);
+			_changeUrl(_moduleOptions);
 			$('.event-balloon').hide('fast');
 		});
 
@@ -185,6 +186,24 @@ var Calendar = function () { 'use strict';
 			});			
 		}
 
+
+		// замена url
+
+		function _changeUrl(data) {
+			var     date = data.day ? data.day : data.month,
+				url = '/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+date;
+			if(window.history && history.pushState){
+				history.pushState(null, null, url);
+			}else{
+				location.hash = url;
+			}
+			var links = $('.top-menu li:not(.current) a');
+			links.each(function(){
+				var href= $(this).attr('href');
+				$(this).attr('href',href+'/'+date);
+			});
+		}
+
 		// Установка фильтра
 
 		function _setFilterLabel(text) {
@@ -216,8 +235,15 @@ var Calendar = function () { 'use strict';
 		}
 	}
 
+	function reloadWithHash(){
+		var hash = location.hash;
+		if(hash.length > 0){
+			location = hash.replace('#','');
+		}
+	}
 	// Mapping
 	return {
-		initialize:initialize
+		initialize:initialize,
+		reloadWithHash:reloadWithHash
 	};
 }();

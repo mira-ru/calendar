@@ -12,6 +12,9 @@
  */
 ?>
 <!-- PAGE CONTENT -->
+<script>
+	Calendar.reloadWithHash();
+</script>
 <div id="wrap">
 <div class="container">
 	<div class="row">
