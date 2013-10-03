@@ -8,7 +8,10 @@
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
 		Yii::app()->less->register();
-		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
+
+		$colorFile = Yii::getPathOfAlias('application.runtime.assets') . '/color.css';
+		if (!file_exists($colorFile)) { Service::generateCss(); }
+		$url = Yii::app()->getAssetManager()->publish($colorFile);
 		/** @var $cs EClientScript */
 		$cs = Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
