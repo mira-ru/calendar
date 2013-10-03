@@ -11,7 +11,7 @@
  * @var $nextMonth integer
  * @var $serviceId integer
  * @var $directionId integer
- * @var $direction Direction
+ * @var $checkedDirection Direction
  */
 ?>
 <!-- PAGE CONTENT -->
@@ -81,8 +81,8 @@
 				if (!empty($serviceId)) {
 					$service = $services[$serviceId];
 					echo CHtml::tag('li', array(), $service->name.' (все направления)<i></i>');
-				} elseif (!empty($direction)) {
-					echo CHtml::tag('li', array(), $direction->name.'<i></i>');
+				} elseif (!empty($checkedDirection)) {
+					echo CHtml::tag('li', array(), $checkedDirection->name.'<i></i>');
 				}
 				?>
 				<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->

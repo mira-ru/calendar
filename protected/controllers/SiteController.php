@@ -52,7 +52,7 @@ class SiteController extends FrontController
 		// Список активных дней в месяце
 		$currentMonth = DateMap::currentMonth($checkedTime);
 		$nextMonth = DateMap::nextMonth($checkedTime);
-		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id);
+
 		// Список активных услуг на месяц
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $current->id);
 
@@ -64,13 +64,14 @@ class SiteController extends FrontController
 			}
 		}
 		// проверка наличия выбранного направления
-		$direction = null;
+		$checkedDirection = null;
 		if (!empty($directionId)) {
-			$direction = Direction::model()->findByPk($directionId);
-			if ($direction===null) {
+			$checkedDirection = Direction::model()->findByPk($directionId);
+			if ($checkedDirection===null) {
 				throw new CHttpException(404);
 			}
 		}
+		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id, $directionId, $serviceId);
 
 
 		$this->render('index', array(
@@ -81,7 +82,7 @@ class SiteController extends FrontController
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,
-			'direction' => $direction,
+			'checkedDirection' => $checkedDirection,
 
 			'checkedTime' => $checkedTime,
 			'events' => $events,
