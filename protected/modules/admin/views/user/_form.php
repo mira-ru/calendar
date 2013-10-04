@@ -84,6 +84,7 @@ $image = Yii::app()->image;
 				'language'=>'ru',
 			),
 		));
+		echo $form->error($model,'desc', array('class'=>'text-danger'));
 		?>
 		</div>
 	</div>

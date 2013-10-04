@@ -55,7 +55,7 @@ class User extends CActiveRecord
 			),
 			array('url', 'length', 'max'=>512),
 			array('desc', 'length', 'max'=>2048),
-			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 104857600000, 'allowEmpty' => true),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, name', 'safe', 'on'=>'search'),
 		);

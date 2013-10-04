@@ -1,15 +1,16 @@
 <?php
 
 /**
- * This is the model class for table "hall".
+ * This is the model class for table "event".
  *
- * The followings are the available columns in table 'hall':
+ * The followings are the available columns in table 'event':
  * @property integer $id
  * @property integer $template_id
  * @property integer $hall_id
  * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
+ * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
  * @property integer $user_id
@@ -20,6 +21,8 @@ class Event extends CActiveRecord
 {
 	// для поиска по типам
 	public $event_type;
+	// Загруженный файл
+	public $file;
 
 	private $_template = null;
 
@@ -55,6 +58,7 @@ class Event extends CActiveRecord
 			array('desc', 'length', 'max'=>1024),
 
 			array('start_time, end_time', 'timeCheck'),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
@@ -104,7 +108,11 @@ class Event extends CActiveRecord
 				'attributes' => array('desc'),
 				'options' => array(
 					'HTML.AllowedElements' => array(
+						'span' => true,
+						'em' => true,
 						'a' => true,
+						'strong' => true,
+						'br' => true,
 					),
 				),
 			),
@@ -270,6 +278,7 @@ class Event extends CActiveRecord
 		$initTime = strtotime('TODAY', $time);
 
 		$event = new Event();
+		$event->image_id = $template->image_id;
 		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
 		$event->hall_id = $template->hall_id;

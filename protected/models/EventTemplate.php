@@ -12,6 +12,7 @@
  * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
+ * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
  * @property integer $init_time - день первого события(timestamp)
@@ -22,6 +23,9 @@
  */
 class EventTemplate extends CActiveRecord
 {
+	// Загруженный файл
+	public $file;
+
 	const STATUS_ACTIVE = 1;
 	const STATUS_DISABLED = 2;
 
@@ -73,6 +77,7 @@ class EventTemplate extends CActiveRecord
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
 			array('start_time, end_time', 'timeCheck'),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 
 			// The following rule is used by search().
 //			array('id, status, type, name', 'safe', 'on'=>'search'),
@@ -111,7 +116,11 @@ class EventTemplate extends CActiveRecord
 				'attributes' => array('desc'),
 				'options' => array(
 					'HTML.AllowedElements' => array(
+						'span' => true,
+						'em' => true,
 						'a' => true,
+						'strong' => true,
+						'br' => true,
 					),
 				),
 			),
@@ -187,6 +196,7 @@ class EventTemplate extends CActiveRecord
 			throw new CHttpException(500);
 
 //		$this->name = $event->name;
+		$this->image_id = $event->image_id;
 		$this->desc = $event->desc;
 		$this->direction_id = $event->direction_id;
 		$this->hall_id = $event->hall_id;

@@ -4,7 +4,9 @@
  * @var $template EventTemplate
  * @var $event Event
  * @var $date string
+ * @var $image ImageComponent
  */
+$image = Yii::app()->image;
 
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
@@ -23,6 +25,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		'method' =>'post',
 		'htmlOptions' => array(
 			'class'=>'form-horizontal',
+			'enctype'=>'multipart/form-data',
 		),
 	)); ?>
 
@@ -174,6 +177,52 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group">
+		<?php echo $form->label($event,'image_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo CHtml::image($image->getPreview($event->image_id, 'crop_150', User::DEFAULT_IMG), '', array('width'=>150, 'height'=>150)); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-lg-2"></div>
+		<div class="col-lg-5">
+			<?php
+			echo CHtml::activeFileField($event, 'file');
+			if ($event->hasErrors('file')) {
+				echo CHtml::tag('p', array('class'=>'help-block'), $event->getError('file'));
+			}
+			?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($event->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($event, 'desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			$this->widget('application.extensions.tinymce.ETinyMce', array(
+				'model'=>$event,
+				'attribute'=>'desc',
+				'htmlOptions' => array('maxlength'=>1024),
+				'options'=>array(
+					'theme'=>'advanced',
+					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
+					'theme_advanced_buttons2' => "",
+					'theme_advanced_buttons3' => "",
+					'forced_root_block' => false,
+					'force_br_newlines' => true,
+					'force_p_newlines' => false,
+					'height'=>'200px',
+					'theme_advanced_toolbar_location'=>'top',
+					'theme_advanced_toolbar_align'=> "left",
+					'language'=>'ru',
+				),
+			));
+			echo $form->error($event,'desc', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($template->hasErrors('type')) echo 'has-error'; ?>">
 		<?php echo $form->label($template,'type', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
@@ -206,14 +255,6 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		});
 
 	</script>
-
-	<div class="form-group <?php if ($event->hasErrors('desc')) echo 'has-error'; ?>">
-		<?php echo $form->label($event,'desc', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
-			<?php echo $form->textArea($event, 'desc', array('maxlength'=>1024, 'class'=>'form-control', 'rows'=>10)); ?>
-			<?php echo $form->error($event,'desc', array('class'=>'text-danger')); ?>
-		</div>
-	</div>
 
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-2">

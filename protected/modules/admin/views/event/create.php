@@ -3,7 +3,9 @@
  * @var $this UserController
  * @var $template EventTemplate
  * @var $date string
+ * @var $image ImageComponent
  */
+$image = Yii::app()->image;
 
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
@@ -23,6 +25,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		'method' =>'post',
 		'htmlOptions' => array(
 			'class'=>'form-horizontal',
+			'enctype'=>'multipart/form-data',
 		),
 	)); ?>
 
@@ -175,20 +178,57 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group">
+		<?php echo $form->label($template,'image_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo CHtml::image($image->getPreview($template->image_id, 'crop_150', User::DEFAULT_IMG), '', array('width'=>150, 'height'=>150)); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-lg-2"></div>
+		<div class="col-lg-5">
+			<?php
+			echo CHtml::activeFileField($template, 'file');
+			if ($template->hasErrors('file')) {
+				echo CHtml::tag('p', array('class'=>'help-block'), $template->getError('file'));
+			}
+			?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($template, 'desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			$this->widget('application.extensions.tinymce.ETinyMce', array(
+				'model'=>$template,
+				'attribute'=>'desc',
+				'htmlOptions' => array('maxlength'=>1024),
+				'options'=>array(
+					'theme'=>'advanced',
+					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
+					'theme_advanced_buttons2' => "",
+					'theme_advanced_buttons3' => "",
+					'forced_root_block' => false,
+					'force_br_newlines' => true,
+					'force_p_newlines' => false,
+					'height'=>'200px',
+					'theme_advanced_toolbar_location'=>'top',
+					'theme_advanced_toolbar_align'=> "left",
+					'language'=>'ru',
+				),
+			));
+			echo $form->error($template,'desc', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($template->hasErrors('type')) echo 'has-error'; ?>">
 		<?php echo $form->label($template,'type', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'type', EventTemplate::$typeNames, array('class'=>'form-control', 'id'=>'typeSelect')); ?>
 			<?php echo $form->error($template,'type', array('class'=>'text-danger')); ?>
-
-		</div>
-	</div>
-
-	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
-		<?php echo $form->label($template,'desc', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
-			<?php echo $form->textArea($template, 'desc', array('class'=>'form-control', 'maxlength'=>1024, 'rows'=>10)); ?>
-			<?php echo $form->error($template,'desc', array('class'=>'text-danger')); ?>
 
 		</div>
 	</div>
