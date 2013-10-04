@@ -57,7 +57,7 @@ class EventTemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id, direction_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, user_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
 			array('user_id', 'required', 'message'=>'Укажите мастера'),
@@ -173,6 +173,7 @@ class EventTemplate extends CActiveRecord
 			'direction_id' => 'Направление',
 			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
+			'image_id' => 'Фото',
 			'desc' => 'Описание',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',

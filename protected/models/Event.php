@@ -42,7 +42,7 @@ class Event extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id, direction_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, user_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 
 			array('user_id', 'required', 'message'=>'Укажите мастера'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
@@ -137,6 +137,7 @@ class Event extends CActiveRecord
 			'day_of_week' => 'День недели',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
+			'image_id' => 'Фото',
 
 			'event_type' => 'Тип события',
 		);

@@ -50,9 +50,6 @@ class UserController extends AdminController
 	{
 		$model=new User;
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
@@ -86,9 +83,6 @@ class UserController extends AdminController
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['User']))
 		{
