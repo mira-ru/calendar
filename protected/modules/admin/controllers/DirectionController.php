@@ -53,8 +53,21 @@ class DirectionController extends AdminController
 		if(isset($_POST['Direction']))
 		{
 			$model->attributes=$_POST['Direction'];
-			if($model->save())
+
+			$model->file = CUploadedFile::getInstance($model, 'file');
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
 				$this->redirect(array('index','id'=>$model->id));
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
@@ -79,8 +92,21 @@ class DirectionController extends AdminController
 		if(isset($_POST['Direction']))
 		{
 			$model->attributes=$_POST['Direction'];
-			if($model->save())
+			$model->file = CUploadedFile::getInstance($model, 'file');
+
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
 				$this->redirect(array('index','id'=>$model->id));
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));

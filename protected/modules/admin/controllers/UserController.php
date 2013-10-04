@@ -50,14 +50,24 @@ class UserController extends AdminController
 	{
 		$model=new User;
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			if($model->save())
+
+			$model->file = CUploadedFile::getInstance($model, 'file');
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
 				$this->redirect(array('index','id'=>$model->id));
+			}
 		}
 
 		$this->render('create',array(
@@ -74,14 +84,23 @@ class UserController extends AdminController
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
-			if($model->save())
+			$model->file = CUploadedFile::getInstance($model, 'file');
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
 				$this->redirect(array('index','id'=>$model->id));
+			}
 		}
 
 		$this->render('update',array(
