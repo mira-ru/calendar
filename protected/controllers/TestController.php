@@ -27,4 +27,13 @@ class TestController extends AdminController
 		phpinfo();
 		die();
 	}
+
+
+	// тестовые. для разработки с canjs
+	
+	public function actionIndex()
+	{
+		$this->layout = "//layouts/test";
+		$this->render('/test/index');
+	}
 }
