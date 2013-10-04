@@ -47,6 +47,8 @@ Yii::app()->clientScript->registerScriptFile('/js/lib/mod/backend/arrowsUpDown.j
 	'afterAjaxUpdate' => 'js:function(){
 		arrowsUpDown.selectLastElement();
 	}',
+	'pager' => array('class'=>'application.components.widgets.CustomListPager'),
+	'pagerCssClass' => '',
 	'columns'=>array(
 		array(
 			'name'=>'id',
