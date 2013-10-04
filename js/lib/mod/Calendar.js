@@ -88,11 +88,13 @@ var Calendar = function () { 'use strict';
 			}
 		});
 
-		window.setTimeout(function() {
-			window.addEventListener("popstate", function(e) {
-				location.reload();
-			}, false);
-		}, 1);
+		$( window ).bind( 'load', function( event ) {
+			setTimeout( function(){
+				$( window ).bind( 'popstate', function( event ) {
+					location.reload();
+				});
+			},0);
+		});
 
 		function _filterEvents(text, id, sid) {
 			var row = $('.timeline-row'),
@@ -267,3 +269,4 @@ var Calendar = function () { 'use strict';
 		setOptions:setOptions
 	};
 }();
+
