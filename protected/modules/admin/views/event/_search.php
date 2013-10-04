@@ -47,6 +47,15 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group">
+		<?php echo $form->label($model,'event_type', array('class'=>'col-lg-2 control-label')); ?>
+<!--		--><?php //echo CHtml::label('Тип события', '', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'event_type', array(''=>'Все')+EventTemplate::$typeNames, array('class'=>'form-control')); ?>
+<!--			--><?php //echo CHtml::dropDownList('event_type', $eventType, array(''=>'Все')+EventTemplate::$typeNames, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($model->getError('user_id')) echo 'has-error';?>">
 		<?php echo $form->label($model, 'user_id', array('class'=>'col-lg-2 control-label')); ?>
 
@@ -77,6 +86,26 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 				'htmlOptions' => array('class'=>'form-control'),
 				'name'=>'date_from',
 				'value'=> $dateFrom,
+				'options' => array(
+					'autoLanguage' => false,
+					'dateFormat' => 'dd.mm.yy',
+					'timeFormat' => 'hh:mm',
+					'changeMonth' => true,
+					'changeYear' => true,
+				),
+			));
+			?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'end_time', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+				'htmlOptions' => array('class'=>'form-control'),
+				'name'=>'date_to',
+				'value'=> $dateTo,
 				'options' => array(
 					'autoLanguage' => false,
 					'dateFormat' => 'dd.mm.yy',

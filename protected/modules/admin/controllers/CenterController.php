@@ -9,7 +9,7 @@ class CenterController extends AdminController
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-//			'postOnly + delete', // we only allow deletion via POST request
+//			'ajaxOnly + up, down', // we only allow deletion via POST request
 		);
 	}
 
@@ -22,7 +22,7 @@ class CenterController extends AdminController
 	{
 		return array(
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('index', 'create', 'update', 'view' ,'delete'),
+				'actions'=>array('index', 'create', 'update', 'view' ,'delete', 'up', 'down'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -132,4 +132,46 @@ class CenterController extends AdminController
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
 	}
+
+
+	/**
+	 * Move up item position
+	 * @return JSON
+	 * @author Alexey Shvedov
+	 */
+	public function actionUp()
+	{
+		$request = Yii::app()->getRequest();
+		$id = intval( $request->getParam('id') );
+		if ( !$request->getIsAjaxRequest() || empty($id) )
+			throw new CHttpException(404);
+
+		$model = $this->loadModel($id);
+
+		$model->position -= 1;
+		$model->save(false);
+
+		die( json_encode(array(), JSON_NUMERIC_CHECK) );
+	}
+
+	/**
+	 * Move down item position
+	 * @return JSON
+	 * @author Alexey Shvedov
+	 */
+	public function actionDown()
+	{
+		$request = Yii::app()->getRequest();
+		$id = intval( $request->getParam('id') );
+		if ( !$request->getIsAjaxRequest() || empty($id) )
+			throw new CHttpException(404);
+
+		$model = $this->loadModel($id);
+		$model->position += 1;
+		$model->save(false);
+
+		die( json_encode(array(), JSON_NUMERIC_CHECK) );
+
+	}
+
 }

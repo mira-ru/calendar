@@ -18,6 +18,9 @@
  */
 class Event extends CActiveRecord
 {
+	// для поиска по типам
+	public $event_type;
+
 	private $_template = null;
 
 	/**
@@ -54,7 +57,7 @@ class Event extends CActiveRecord
 			array('start_time, end_time', 'timeCheck'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, direction_id, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
+			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -123,8 +126,11 @@ class Event extends CActiveRecord
 			'desc' => 'Описание',
 			'start_time' => 'Дата начала',
 			'end_time' => 'Дата окончания',
+			'day_of_week' => 'День недели',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
+
+			'event_type' => 'Тип события',
 		);
 	}
 
@@ -144,20 +150,39 @@ class Event extends CActiveRecord
 	{
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('user_id', $this->user_id);
-		$criteria->compare('service_id', $this->service_id);
-		$criteria->compare('hall_id', $this->hall_id);
-		$criteria->compare('center_id', $this->center_id);
-		$criteria->compare('direction_id', $this->direction_id);
+		$criteria->select = 't.*';
+		$criteria->compare('t.id',$this->id);
+		$criteria->compare('t.user_id', $this->user_id);
+		$criteria->compare('t.service_id', $this->service_id);
+		$criteria->compare('t.hall_id', $this->hall_id);
+		$criteria->compare('t.center_id', $this->center_id);
+		$criteria->compare('t.direction_id', $this->direction_id);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('start_time', '>=' . strtotime($dateFrom));
+			$criteria->compare('t.start_time', '>=' . strtotime($dateFrom));
+		} else {
+			$criteria->compare('t.start_time', '>=' . DateMap::currentDay(time()));
 		}
+		if (($dateTo = $request->getParam('date_to'))) {
+			$criteria->compare('t.start_time', '<' . (strtotime($dateTo)+86400));
+		}
+
+		if (!empty($this->event_type)) {
+			$criteria->join = 'INNER JOIN event_template as et ON et.id=t.template_id';
+			$criteria->compare('et.type', $this->event_type);
+		}
+
+		$sort = new CSort();
+		$sort->defaultOrder = array('start_time' => CSort::SORT_ASC);
+
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'sort'=>$sort,
+			'pagination'=>array(
+				'pageSize'=>20,
+			),
 		));
 	}
 
@@ -245,6 +270,7 @@ class Event extends CActiveRecord
 		$initTime = strtotime('TODAY', $time);
 
 		$event = new Event();
+		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
 		$event->hall_id = $template->hall_id;
 		$event->user_id = $template->user_id;

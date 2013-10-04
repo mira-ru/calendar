@@ -12,12 +12,6 @@ $('.search-button').click(function(){
 	$('.search-form').toggle();
 	return false;
 });
-$('.search-form form').submit(function(){
-	$('#hall-grid').yiiGridView('update', {
-		data: $(this).serialize()
-	});
-	return false;
-});
 ");
 ?>
 
@@ -42,6 +36,7 @@ $('.search-form form').submit(function(){
 	'id'=>'hall-grid',
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
+	'ajaxUpdate' => false,
 	'columns'=>array(
 		array(
 			'name'=>'id',

@@ -11,50 +11,78 @@ class SiteController extends FrontController
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex($id=null, $time=null)
+	public function actionIndex($center_id, $service_id, $direction_id, $time)
 	{
 		$time = intval($time);
 		$checkedTime = empty($time) ? time() : $time;
+		$checkedTime = DateMap::currentDay($checkedTime);
+		$serviceId = intval($service_id);
+		$directionId = intval($direction_id);
 
 		$this->layout = '//layouts/front';
 		$this->pageTitle = 'Расписание';
 		$this->moduleId = array('Calendar');
 		$this->bodyClass = array('calendar');
 
-		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
-		$id = intval($id);
+		$centers = Center::model()->findAllByAttributes(
+			array('status'=>Center::STATUS_ACTIVE),
+			array(
+				'index'=>'id',
+//				'order'=>'position ASC',
+			)
+		);
 
-		if (empty($id)) {
+		// Находим текущий центр
+		$center_id = intval($center_id);
+		if (empty($center_id)) {
 			$current = @reset($centers);
 		} else {
-			if (empty($centers[$id])) {
+			if (empty($centers[$center_id])) {
 				throw new CHttpException(404);
 			}
-			$current = $centers[$id];
+			$current = $centers[$center_id];
 		}
-		$this->bodyClass[] = 'center-'.$current->id;
 
+		$this->bodyClass[] = 'center-'.$current->id;
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
-		$dayStart = strtotime('TODAY', $checkedTime);
-		$dayEnd = $dayStart + 86400;
-
-		$events = Event::getByTime($dayStart, $dayEnd, $current->id);
+		$dayEnd = $checkedTime + 86400;
+		$events = Event::getByTime($checkedTime, $dayEnd, $current->id);
 
 		// Список активных дней в месяце
 		$currentMonth = DateMap::currentMonth($checkedTime);
 		$nextMonth = DateMap::nextMonth($checkedTime);
-		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id);
+
 		// Список активных услуг на месяц
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $current->id);
+
+		// проверка наличия выбранной услуги
+		if (!empty($serviceId)) {
+			$directionId = 0;
+			if (empty($services[$serviceId])) {
+				throw new CHttpException(404);
+			}
+		}
+		// проверка наличия выбранного направления
+		$checkedDirection = null;
+		if (!empty($directionId)) {
+			$checkedDirection = Direction::model()->findByPk($directionId);
+			if ($checkedDirection===null) {
+				throw new CHttpException(404);
+			}
+		}
+		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id, $directionId, $serviceId);
 
 
 		$this->render('index', array(
 
 			'current' => $current,
+			'directionId' => $directionId,
+			'serviceId' => $serviceId,
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,
+			'checkedDirection' => $checkedDirection,
 
 			'checkedTime' => $checkedTime,
 			'events' => $events,
@@ -142,7 +170,7 @@ class SiteController extends FrontController
 			throw new CHttpException(400);
 		}
 
-		$monthTime = intval($request->getParam('month'));
+		$dayTime = intval($request->getParam('day'));
 		$centerId = intval($request->getParam('center_id'));
 		$directionId = intval($request->getParam('activity_id'));
 		$serviceId = intval($request->getParam('service_id'));
@@ -156,7 +184,7 @@ class SiteController extends FrontController
 			throw new CHttpException(404);
 		}
 
-		$monthTime = DateMap::currentMonth($monthTime);
+		$monthTime = DateMap::currentMonth($dayTime);
 		$nextMonthTime = DateMap::nextMonth($monthTime);
 
 		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
@@ -170,6 +198,7 @@ class SiteController extends FrontController
 	 */
 	public function actionError()
 	{
+		$this->layout = '//layouts/error';
 		if($error=Yii::app()->errorHandler->error)
 		{
 			if ( empty($error['message']) && isset(Config::$errors[ $error['code'] ]) ) {

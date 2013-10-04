@@ -4,20 +4,6 @@ class TestController extends AdminController
 {
 	public function actionTest()
 	{
-//		$path = Yii::getPathOfAlias('application.runtime').'/assets';
-//		if (!file_exists($path)) {
-//			mkdir($path, 0700, true);
-//		}
-//		$path .= '/color.css';
-//
-//		$content = 'kahsgdilsudfgh osaiudhgsiudfhgo OAIETHAIOUSFGHOAI UHIASUDGAOISUD GHIASUDG IALSDUG';
-//
-//
-////		$file = fopen($path, 'W');
-////		fwrite($file, $content);
-////		fclose($file);
-//		file_put_contents($path, $content);
-//		FirePHP::getInstance()->fb($path);
 		Service::generateCss();
 		die();
 	}
@@ -28,12 +14,32 @@ class TestController extends AdminController
 		die();
 	}
 
-
 	// тестовые. для разработки с canjs
 	
 	public function actionIndex()
 	{
 		$this->layout = "//layouts/test";
 		$this->render('/test/index');
+
+	public function actionUrl()
+	{
+		FirePHP::getInstance()->fb($this->createUrl('test', array('lol[test]'=>1)));
+
+		die();
+	}
+
+	public function actionImage()
+	{
+		$src = 'images/break.png';
+		/** @var $image ImageComponent */
+		$image = Yii::app()->image;
+//		$id = $image->putImage($src, 'trololo', 'sdjfgasdgbfisdbfg');
+//
+//		$preview = $image->getPreview($id, 'crop_200');
+
+//		FirePHP::getInstance()->fb($preview);
+//		$image->deleteOrigin(6);
+//		$image->deleteOrigin(5);
+//		$image->deleteOrigin(7);
 	}
 }

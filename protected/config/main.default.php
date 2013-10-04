@@ -28,6 +28,9 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'image'=>array(
+			'class'=>'ext.imgLoader.ImageComponent',
+		),
 		'widgetFactory'=>array(
 			'widgets'=>array(
 				'CJuiDatePicker'=>array(
@@ -55,9 +58,9 @@ return CMap::mergeArray(array(
 			'urlFormat'=>'path',
 			'showScriptName' => false,
 			'rules'=>array(
-				'<id:\d+>/<time:\d+>' => 'site/index',
-				'<id:\d{0,}>' => 'site/index',
-				'/' => 'site/index',
+				array(
+					'class' => 'application.components.urlRules.IndexUrlRule',
+				),
 
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -112,5 +115,7 @@ return CMap::mergeArray(array(
 	'params'=>array(
 		'users' => array('admin'=>'123qwe'),
 		'adminEmail'=>'webmaster@example.com',
+		'closeMain' => true, // закрытие главной страницы
+		'allowIp' => array('127.0.0.1', '195.239.212.54', '37.193.244.157', '89.189.191.1'),
 	),
 ), require(dirname(__FILE__) . '/main.php'));
