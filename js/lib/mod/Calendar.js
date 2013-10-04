@@ -3,6 +3,8 @@ lib.module('mod.Calendar');
 
 lib.include('mod.Common');
 
+lib.include('plugins.bootstrap.Modal');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
@@ -37,7 +39,7 @@ var Calendar = function () { 'use strict';
 			li.parent().hide();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
-					id = li.data('id');
+				    id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
 				_updateTimelineDays(_moduleOptions);
