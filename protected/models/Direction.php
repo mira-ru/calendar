@@ -15,6 +15,8 @@
 class Direction extends CActiveRecord
 {
 	public $center_id;
+	// Загруженный файл
+	public $file;
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
@@ -41,7 +43,7 @@ class Direction extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
 			array('center_id', 'required'),
@@ -51,6 +53,9 @@ class Direction extends CActiveRecord
 				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
 			),
 			array('url', 'length', 'max'=>512),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
+			array('desc', 'length', 'max'=>2048),
+			array('price', 'length', 'max'=>512),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -78,7 +83,20 @@ class Direction extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'CSafeContentBehavor' => array(
+				'class' => 'application.components.behaviors.CSafeContentBehavior',
+				'attributes' => array('desc', 'price'),
+				'options' => array(
+					'HTML.AllowedElements' => array(
+						'span' => true,
+						'em' => true,
+						'a' => true,
+						'strong' => true,
+						'br' => true,
+					),
+				),
+			),
 		);
 	}
 
@@ -106,6 +124,9 @@ class Direction extends CActiveRecord
 			'service_id' => 'Услуга',
 			'name' => 'Название',
 			'url' => 'URL страницы',
+			'image_id' => 'Фото',
+			'desc' => 'Описание',
+			'price' => 'Цена',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);

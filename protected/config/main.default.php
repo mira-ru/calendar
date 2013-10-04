@@ -28,6 +28,9 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'image'=>array(
+			'class'=>'ext.imgLoader.ImageComponent',
+		),
 		'widgetFactory'=>array(
 			'widgets'=>array(
 				'CJuiDatePicker'=>array(
@@ -55,9 +58,9 @@ return CMap::mergeArray(array(
 			'urlFormat'=>'path',
 			'showScriptName' => false,
 			'rules'=>array(
-				'<id:\d+>/<time:\d+>' => 'site/index',
-				'<id:\d{0,}>' => 'site/index',
-				'/' => 'site/index',
+				array(
+					'class' => 'application.components.urlRules.IndexUrlRule',
+				),
 
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

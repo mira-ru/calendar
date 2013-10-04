@@ -45,8 +45,20 @@ class EventController extends AdminController
 
 				$template->status = EventTemplate::STATUS_ACTIVE;
 			}
+			$template->file = CUploadedFile::getInstance($template, 'file');
 
 			if ($template->validate()) { // Создание событий
+				// сохраняем картинку
+				if ($template->file instanceof CUploadedFile) {
+					$file = $template->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $template->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$template->image_id = $fileId;
+				}
+
 				$template->save(false);
 				$this->redirect(
 					Yii::app()->getUser()->getReturnUrl(array('index'))
@@ -103,6 +115,7 @@ class EventController extends AdminController
 
 			$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
 			$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
+			$event->file = CUploadedFile::getInstance($event, 'file');
 
 			if (isset($_POST['Event'])) {
 				$event->attributes = $_POST['Event'];
@@ -120,6 +133,18 @@ class EventController extends AdminController
 
 				if ($event->validate() && !$hasErrors) {
 					$currentTemplate = $event->getTemplate();
+
+					// сохраняем картинку
+					if ($event->file instanceof CUploadedFile) {
+						$file = $event->file->getTempName();
+						$fileId = Yii::app()->image->putImage($file, $event->file->getName());
+						if (empty($fileId)) {
+							throw new CHttpException(500);
+						}
+
+						$event->image_id = $fileId;
+					}
+
 					// осталось одиночное событие или регулярное и изменяем только текущее
 					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
@@ -170,14 +195,12 @@ class EventController extends AdminController
 					$event->save(false);
 
 					$template->type = $currentTemplate->type;
+					$template->image_id = $currentTemplate->image_id;
 					$this->redirect(
 						Yii::app()->getUser()->getReturnUrl(array('index'))
 					);
 				}
 			}
-
-
-
 		}
 
 		if (!$request->getIsPostRequest()) {

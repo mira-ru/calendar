@@ -9,9 +9,15 @@
  * @var $activeDays array
  * @var $currentMonth integer
  * @var $nextMonth integer
+ * @var $serviceId integer
+ * @var $directionId integer
+ * @var $checkedDirection Direction
  */
 ?>
 <!-- PAGE CONTENT -->
+<script>
+	Calendar.reloadWithHash();
+</script>
 <div id="wrap">
 <div class="container">
 	<div class="row">
@@ -29,10 +35,10 @@
 						$class .= ' current';
 						$url = 'javascript:void(0)';
 					} else {
-						$url = $this->createUrl('/site/index', array('id'=>$center->id));
+						$url = $this->createUrl('/site/index', array('center_id'=>$center->id, 'time'=>$checkedTime));
 					}
 					echo CHtml::tag('li', array('class'=>$class),
-						CHtml::link($center->name, $url)
+						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";
 					$cnt++;
 				}
@@ -71,6 +77,14 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<ul class="list-inline filter-items">
+				<?php
+				if (!empty($serviceId)) {
+					$service = $services[$serviceId];
+					echo CHtml::tag('li', array(), $service->name.' (все направления)<i></i>');
+				} elseif (!empty($checkedDirection)) {
+					echo CHtml::tag('li', array(), $checkedDirection->name.'<i></i>');
+				}
+				?>
 				<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
 			</ul>
 		</div>
@@ -82,16 +96,16 @@
 			$yearNumber = date('Y', $checkedTime);
 			$prevMonthTime = DateMap::prevMonth($checkedTime);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$prevMonthTime)),
-				array('class'=>'prev-month')
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevMonthTime, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'prev-month', 'data-time'=>$prevMonthTime)
 			);
 			echo CHtml::tag('strong',
 				array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
 				DateMap::$monthMap[$monthNumber].', '.$yearNumber
 			);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-				$this->createUrl('/site/index', array('id'=>$current->id, 'time'=>$nextMonth)),
-				array('class'=>'next-month')
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextMonth, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'next-month', 'data-time'=>$nextMonth)
 			);
 			?>
 		</div>
@@ -143,25 +157,6 @@
 	</div>
 	<div class="table-responsive second-table">
 		<table class="table timeline-hours">
-<!-- 			<thead>
-				<tr>
-					<td><span>07<sup>00</sup></span></td>
-					<td><span>08<sup>00</sup></span></td>
-					<td><span>09<sup>00</sup></span></td>
-					<td><span>10<sup>00</sup></span></td>
-					<td><span>11<sup>00</sup></span></td>
-					<td><span>12<sup>00</sup></span></td>
-					<td><span>13<sup>00</sup></span></td>
-					<td><span>14<sup>00</sup></span></td>
-					<td><span>15<sup>00</sup></span></td>
-					<td><span>16<sup>00</sup></span></td>
-					<td><span>17<sup>00</sup></span></td>
-					<td><span>18<sup>00</sup></span></td>
-					<td><span>19<sup>00</sup></span></td>
-					<td><span>20<sup>00</sup></span></td>
-					<td><span>21<sup>00</sup></span></td>
-				</tr>
-			</thead> -->
 			<tbody>
 				<tr>
 					<td><span>07<sup>00</sup></span></td>
@@ -184,7 +179,13 @@
 					<td colspan="15" class="timeline-wrapper">
 						<div>
 						<?php
-						$this->renderPartial('_events', array('halls'=>$halls, 'events'=>$events, 'services'=>$services));
+						$this->renderPartial('_events', array(
+							'halls'=>$halls,
+							'events'=>$events,
+							'services'=>$services,
+							'directionId'=>$directionId,
+							'serviceId'=>$serviceId,
+						));
 						?>
 						</div>
 						<?php
@@ -210,7 +211,9 @@
 	$(function () {
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
-			'month'=>$currentMonth,
+			'activity_id'=>$directionId,
+			'service_id'=>$serviceId,
+			'day'=>$checkedTime,
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>
