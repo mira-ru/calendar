@@ -28,6 +28,8 @@ class User extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	const DEFAULT_IMG = '/images/nophoto_man.svg';
+
 	/**
 	 * @return string the associated database table name
 	 */

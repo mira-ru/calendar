@@ -46,7 +46,7 @@ $image = Yii::app()->image;
 	<div class="form-group">
 		<?php echo $form->label($model,'image_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo CHtml::image($image->getPreview($model->image_id, 'crop_150'), '', array('width'=>150, 'height'=>150)); ?>
+			<?php echo CHtml::image($image->getPreview($model->image_id, 'crop_150', User::DEFAULT_IMG), '', array('width'=>150, 'height'=>150)); ?>
 		</div>
 	</div>
 

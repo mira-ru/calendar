@@ -114,11 +114,11 @@ class ImageComponent extends CApplicationComponent
 		return $image;
 	}
 
-	public function getPreview($id, $configName)
+	public function getPreview($id, $configName, $default = self::DEFAULT_IMG)
 	{
 		$id = intval($id);
 		// если пустой ключ - дефолтна пикча
-		if (empty($id)) { return self::DEFAULT_IMG; }
+		if (empty($id)) { return $default; }
 
 		if ( !isset(self::$preview[$configName]) )
 			throw new CException('Invalid config key', 500);
@@ -131,7 +131,7 @@ class ImageComponent extends CApplicationComponent
 
 		$originName = self::PREFIX_ORIGIN.'/'.$filePath.'/'.$fileName.'.'.self::DEFAULT_EXT;
 		// нет оригинала
-		if (!file_exists($originName)) { return self::DEFAULT_IMG; }
+		if (!file_exists($originName)) { return $default; }
 
 		$this->makePreview($id, array($configName), false);
 

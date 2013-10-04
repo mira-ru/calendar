@@ -29,7 +29,7 @@ $image = Yii::app()->image;
 		array(
 			'name'=>'image_id',
 			'type'=>'raw',
-			'value'=>CHtml::image($image->getPreview($model->image_id, 'crop_150'), '', array('width'=>150, 'height'=>150))
+			'value'=>CHtml::image($image->getPreview($model->image_id, 'crop_150', User::DEFAULT_IMG), '', array('width'=>150, 'height'=>150))
 		),
 		array(
 			'name'=>'name',
