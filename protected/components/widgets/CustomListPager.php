@@ -48,7 +48,7 @@ class CustomListPager extends CBasePager
 	/**
 	 * @var int Определяет сколько ссылок подряд выводит в пагинации.
 	 */
-	private $stepLinks = 5;
+	public $stepLinks = 5;
 
 	/**
 	 * Initializes the pager by setting some default property values.
