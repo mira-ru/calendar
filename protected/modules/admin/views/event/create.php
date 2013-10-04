@@ -30,13 +30,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	)); ?>
 
 	<div class="form-group <?php if ($template->hasErrors('center_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('center_id'),
-			$this->createUrl('/admin/center/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'center_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'center_id', $centerList,
 				array(
@@ -55,13 +49,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('service_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('service_id'),
-			$this->createUrl('/admin/service/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'service_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'service_id', $serviceList,
 				array(
@@ -81,13 +69,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('direction_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('direction_id'),
-			$this->createUrl('/admin/direction/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'direction_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'direction_id', $directionList,
 				array(
@@ -102,14 +84,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 
 	<div class="form-group <?php if ($template->getError('user_id')) echo 'has-error';?>">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('user_id'),
-			$this->createUrl('/admin/user/index'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
-
+		<?php echo $form->label($template, 'user_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php
 			$this->widget('application.components.widgets.EAutoComplete', array(
@@ -130,13 +105,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('hall_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('hall_id'),
-			$this->createUrl('/admin/hall/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'hall_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'hall_id', $hallList, array('class'=>'form-control')); ?>
 			<?php echo $form->error($template,'hall_id', array('class'=>'text-danger')); ?>
