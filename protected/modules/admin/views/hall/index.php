@@ -37,6 +37,8 @@ $('.search-button').click(function(){
 	'dataProvider'=>$model->search(),
 	'itemsCssClass' => 'table table-striped',
 	'ajaxUpdate' => false,
+	'pager' => array('class'=>'application.components.widgets.CustomListPager'),
+	'pagerCssClass' => '',
 	'columns'=>array(
 		array(
 			'name'=>'id',

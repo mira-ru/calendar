@@ -35,11 +35,10 @@ $('.search-button').click(function(){
 <?php // Подключаем скрипт для смены позиций элементов в списке
 Yii::app()->clientScript->registerScriptFile('/js/lib/mod/backend/arrowsUpDown.js'); ?>
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('widgets.CustomGridView', array(
 	'id'=>'center-grid',
 	'dataProvider'=>$model->search(),
-	'itemsCssClass' => 'table table-striped',
-//	'ajaxUpdate' => false,
+	'ajaxUpdate' => true,
 	'selectionChanged' => 'js:function(event){
 		arrowsUpDown.showArrows();
 		arrowsUpDown.moveToCursor();

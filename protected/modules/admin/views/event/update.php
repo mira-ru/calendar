@@ -31,11 +31,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
 		<?php
-		echo CHtml::link(
-			$event->getAttributeLabel('center_id'),
-			$this->createUrl('/admin/center/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
+		if (empty($event->center_id)) {
+			echo $form->label($event, 'center_id', array('class'=>'col-lg-2 control-label'));
+		} else {
+			echo CHtml::link(
+				$event->getAttributeLabel('center_id'),
+				$this->createUrl('/admin/event/index', array('Event[center_id]'=>$event->center_id)),
+				array('class'=>'col-lg-2 control-label')
+			);
+		}
 		?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($event, 'center_id', $centerList,
@@ -56,11 +60,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($event->hasErrors('service_id')) echo 'has-error'; ?>"">
 		<?php
-		echo CHtml::link(
-			$event->getAttributeLabel('service_id'),
-			$this->createUrl('/admin/service/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
+		if (empty($event->service_id)) {
+			echo $form->label($event, 'service_id', array('class'=>'col-lg-2 control-label'));
+		} else {
+			echo CHtml::link(
+				$event->getAttributeLabel('service_id'),
+				$this->createUrl('/admin/event/index', array('Event[service_id]'=>$event->service_id)),
+				array('class'=>'col-lg-2 control-label')
+			);
+		}
 		?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($event, 'service_id', $serviceList,
@@ -82,11 +90,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($event->hasErrors('direction_id')) echo 'has-error'; ?>"">
 		<?php
-		echo CHtml::link(
-			$event->getAttributeLabel('direction_id'),
-			$this->createUrl('/admin/direction/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
+		if (empty($event->direction_id)) {
+			echo $form->label($event, 'direction_id', array('class'=>'col-lg-2 control-label'));
+		} else {
+			echo CHtml::link(
+				$event->getAttributeLabel('direction_id'),
+				$this->createUrl('/admin/event/index', array('Event[direction_id]'=>$event->direction_id)),
+				array('class'=>'col-lg-2 control-label')
+			);
+		}
 		?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($event, 'direction_id', $directionList,
@@ -102,11 +114,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($event->getError('user_id')) echo 'has-error';?>">
 		<?php
-		echo CHtml::link(
-			$event->getAttributeLabel('user_id'),
-			$this->createUrl('/admin/user/index'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
+		if (empty($event->user_id)) {
+			echo $form->label($event, 'user_id', array('class'=>'col-lg-2 control-label'));
+		} else {
+			echo CHtml::link(
+				$event->getAttributeLabel('user_id'),
+				$this->createUrl('/admin/event/index', array('Event[user_id]'=>$event->user_id)),
+				array('class'=>'col-lg-2 control-label')
+			);
+		}
 		?>
 
 		<div class="col-lg-5">
@@ -130,11 +146,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($event->hasErrors('hall_id')) echo 'has-error'; ?>"">
 		<?php
-		echo CHtml::link(
-			$event->getAttributeLabel('hall_id'),
-			$this->createUrl('/admin/hall/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
+		if (empty($event->hall_id)) {
+			echo $form->label($event, 'hall_id', array('class'=>'col-lg-2 control-label'));
+		} else {
+			echo CHtml::link(
+				$event->getAttributeLabel('hall_id'),
+				$this->createUrl('/admin/event/index', array('Event[hall_id]'=>$event->hall_id)),
+				array('class'=>'col-lg-2 control-label')
+			);
+		}
 		?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($event, 'hall_id', $hallList, array('class'=>'form-control')); ?>
