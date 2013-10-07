@@ -5,6 +5,8 @@ lib.include('mod.Common');
 
 lib.include('plugins.bootstrap.Modal');
 
+lib.include('plugins.bootstrap.Transition');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
@@ -81,7 +83,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof $(e.target).data('sub') === 'undefined') {
+			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
