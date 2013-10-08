@@ -4,14 +4,15 @@
  * @var $events array
  * @var $services array
  * @var $halls array
- * @var $serviceId integer
- * @var $directionId integer
  */
+if (empty($events)) {
+	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
+	return;
+}
 
 foreach ($halls as $hall) {
 	$tmp = '';
 	$hasEvents = false; // Наличие событий в принципе
-	$hasEnEvents = false; // Наличие отображаемых событий
 
 	$tmp .= CHtml::tag('div', array('class'=>'text-center'), $hall->name);
 	$tmp .= CHtml::openTag('div', array('class'=>'row timeline-row'));
@@ -21,15 +22,6 @@ foreach ($halls as $hall) {
 		if ($event->hall_id == $hall->id) {
 			$hasEvents = true;
 			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
-			// Если указано направление - скрываем не подходящие элементы
-			if (
-			    (!empty($directionId) && $directionId != $event->direction_id)
-			    || (!empty($serviceId) && $serviceId != $event->service_id)
-			) {
-				$htmlOptions['style'] = 'display:none;';
-			} else {
-				$hasEnEvents = true;
-			}
 
 			$timeStart = date('H-i', $event->start_time);
 			// Продолжительность в минутах
@@ -38,7 +30,6 @@ foreach ($halls as $hall) {
 			if ($eventTime < 60) {
 				$eventTime = 60;
 			}
-//			$eventTime = floor($eventTime / 60) * 60;
 
 			$colorClass = isset($services[$event->service_id]) ?
 			    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
@@ -55,16 +46,9 @@ foreach ($halls as $hall) {
 			$tmp .= CHtml::closeTag('div');
 		}
 	}
-
-
 	$tmp .= CHtml::closeTag('div');
 
 	$htmlOptions = array();
-	if (!$hasEvents) {
-		continue;
-	}
-	if (!$hasEnEvents) {
-		$htmlOptions['style'] = 'display:none;';
-	}
+	if (!$hasEvents) { continue; }
 	echo CHtml::tag('div', $htmlOptions, $tmp);
 }

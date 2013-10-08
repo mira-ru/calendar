@@ -47,7 +47,7 @@ class SiteController extends FrontController
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 		$dayEnd = $checkedTime + 86400;
-		$events = Event::getByTime($checkedTime, $dayEnd, $current->id);
+		$events = Event::getByTime($checkedTime, $dayEnd, $current->id, $directionId, $serviceId);
 
 		// Список активных дней в месяце
 		$currentMonth = DateMap::currentMonth($checkedTime);
@@ -121,8 +121,7 @@ class SiteController extends FrontController
 
 		$dayStart = strtotime('TODAY', $day);
 
-		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
-
+		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id, $directionId, $serviceId);
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
 
@@ -130,11 +129,15 @@ class SiteController extends FrontController
 			'halls'=>$halls,
 			'events'=>$events,
 			'services'=>$services,
-			'directionId'=>$directionId,
-			'serviceId'=>$serviceId,
 		), true);
 
-		Yii::app()->end( json_encode(array('html'=>$html)) );
+		$monthTime = DateMap::currentMonth($dayStart);
+		$nextMonthTime = DateMap::nextMonth($monthTime);
+		$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
+
+		$days = $this->renderPartial('_daysMonth', array('checkedTime'=>$day, 'activeDays'=>$activeDays), true);
+
+		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days)) );
 	}
 
 	/**

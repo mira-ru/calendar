@@ -114,43 +114,7 @@
 		<table class="table timeline-days">
 			<thead>
 				<tr>
-					<?php
-					$daysOfMonth = date('t', $checkedTime);
-					$dayNumber = date('j', $checkedTime);
-					for ($n=1; $n<=$daysOfMonth; $n++) {
-						echo CHtml::openTag('td');
-
-						$htmlOptions = array('class'=>'');
-						if ($n == $dayNumber) {
-							$htmlOptions['class'] = 'current';
-						}
-						$dayTime = $currentMonth + ($n-1)*86400;
-						$dow = date('w', $dayTime);
-
-						// нет событий в дне
-						if (empty($activeDays[$dayTime])) {
-							$htmlOptions['class'] .= ' disabled';
-						}
-
-						echo CHtml::openTag('span', $htmlOptions);
-
-						$htmlOptions = array(
-							'data-weekday'=>DateMap::$smallDayMap[$dow],
-							'data-day'=>$dayTime,
-						);
-						if ($dow == 0 || $dow == 6) {
-							$htmlOptions['class'] = 'weekend';
-						}
-
-						echo CHtml::tag('i', $htmlOptions, $n);
-
-						echo CHtml::closeTag('span');
-						echo CHtml::closeTag('td');
-					}
-
-
-
-					?>
+				<?php $this->renderPartial('_daysMonth', array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)); ?>
 				</tr>
 			</thead>
 		</table>
@@ -177,24 +141,13 @@
 				</tr>
 				<tr>
 					<td colspan="15" class="timeline-wrapper">
-						<div>
-						<?php
-						$this->renderPartial('_events', array(
-							'halls'=>$halls,
-							'events'=>$events,
-							'services'=>$services,
-							'directionId'=>$directionId,
-							'serviceId'=>$serviceId,
-						));
-						?>
-						</div>
-						<?php
-						$htmlOptions = array('class'=>'warning-empty');
-						if ( empty($halls) || empty($events) ) {
-							$htmlOptions['style'] = 'display:block';
-						}
-						echo CHtml::tag('p', $htmlOptions, 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
-						?>
+					<?php
+					$this->renderPartial('_events', array(
+						'halls'=>$halls,
+						'events'=>$events,
+						'services'=>$services,
+					));
+					?>
 					</td>
 				</tr>
 			</tbody>
