@@ -54,4 +54,18 @@ class DateMap {
 	{
 		return strtotime('TODAY', $timestamp);
 	}
+
+	/**
+	 * Timestamp понедельника текущей недели
+	 * @param $timestamp
+	 */
+	public static function currentWeek($timestamp)
+	{
+		return strtotime("Monday this week", $timestamp);
+	}
+
+	public static function nextWeek($timestamp)
+	{
+		return strtotime("Monday next week", $timestamp);
+	}
 }

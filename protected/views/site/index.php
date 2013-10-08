@@ -114,7 +114,9 @@
 		<table class="table timeline-days">
 			<thead>
 				<tr>
-				<?php $this->renderPartial('_daysMonth', array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)); ?>
+					<div>
+					<?php $this->renderPartial('_daysMonth', array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)); ?>
+					</div>
 				</tr>
 			</thead>
 		</table>
@@ -141,13 +143,15 @@
 				</tr>
 				<tr>
 					<td colspan="15" class="timeline-wrapper">
-					<?php
-					$this->renderPartial('_events', array(
-						'halls'=>$halls,
-						'events'=>$events,
-						'services'=>$services,
-					));
-					?>
+						<div>
+						<?php
+						$this->renderPartial('_events', array(
+							'halls'=>$halls,
+							'events'=>$events,
+							'services'=>$services,
+						));
+						?>
+						</div>
 					</td>
 				</tr>
 			</tbody>

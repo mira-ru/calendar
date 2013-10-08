@@ -186,4 +186,13 @@ class User extends CActiveRecord
 		return $model===null ? '' : $model->name;
 	}
 
+	/**
+	 * Проверка на необходимость выводить линк на масетра на фронте
+	 * @return bool
+	 */
+	public function checkShowLink()
+	{
+		return !empty($this->url);
+	}
+
 }

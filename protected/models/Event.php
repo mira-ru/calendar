@@ -241,6 +241,7 @@ class Event extends CActiveRecord
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'start_time >= :start AND end_time < :end AND center_id=:cid';
 		$criteria->order = 'start_time ASC';
+//		$criteria->index = 'id'; // DO NOT USE INDEX
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId);
 
 		if ( !empty($directionId) ) {
