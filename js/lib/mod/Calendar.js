@@ -35,18 +35,21 @@ var Calendar = function () { 'use strict';
 			var li = $(this),
 				sid = li.data('service'),
 				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+
 			setOptions({'service_id':sid, 'activity_id':0});
 			_getEvents(_moduleOptions);
-			//_filterEvents(text, 0, sid);
+			_setFilterLabel(text);
 			li.parent().hide();
+			$('body').removeClass('week-view');
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
 				    id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
 				_getEvents(_moduleOptions);
-				//_filterEvents(li.text(), id, 0);
+				_setFilterLabel(li.text());
 				li.parent().hide();
+				$('body').addClass('week-view');
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
 				_resetFilter();
@@ -111,86 +114,12 @@ var Calendar = function () { 'use strict';
 				$(this).removeData('bs.modal').empty();
 			});
 
-		function _filterEvents(text, id, sid) {
-			var row = $('.timeline-row'),
-				sub = $('div', row),
-				val = (sid == 0) ? id : sid ;
-
-			// Делаем маппинг занятий
-			sub.map(function(){
-				var key = (sid == 0) ? $(this).data('sub') : $(this).data('sid') ;
-				if (key == val) {
-					return this;
-				}
-			}).promise().done(function(){
-					var elems = $(this);
-					if (elems.length != 0) {
-						$('.warning-empty').fadeOut();
-					}
-					if (filter) {
-						// Здесь нужно:
-						// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-						var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-						arr.fadeToggle('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children('[style="display: block;"], :visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-								else {
-									$(this).parent().slideDown('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-					else {
-						sub.not(elems).fadeOut('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children(':visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-				});
-		}
-
-		// Обновление .timeline-wrapper
-
-		function _updateTimelineDays(data) {
-			var     days = $('.timeline-days span'),
-				request = $.ajax({
-					url: '/site/axActiveDays',
-					type: 'POST',
-					data: data,
-					dataType: 'json'
-				});
-			request.done(function(msg) {
-				days.each(function(){
-					var day = $(this).children('i').data('day');
-					if (jQuery.inArray(day, msg.days) == -1) {
-						$(this).addClass('disabled');
-					} else {
-						$(this).removeClass('disabled');
-					}
-				});
-			});
-		}
-
 		// Загрузка событий в .timeline-wrapper
 
 		function _getEvents(data) {
-			var     content = $('.timeline-wrapper'),
+			var     content = $('.timeline-wrapper>div'),
 				days = $('.timeline-days tr');
+
 			content.addClass('-loading');
 			var request = $.ajax({
 				url: '/site/axEvents',
@@ -209,37 +138,22 @@ var Calendar = function () { 'use strict';
 				if(msg.days.length > 0){
 					days.html(msg.days);
 				}
-
-
 			});
 		}
 
 
 		// Установка фильтра
-
 		function _setFilterLabel(text) {
 			$('.filter-items').empty();
 			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
 		}
 		$('.filter-items i').bind('click', _resetFilter);
-		// Сброс фильтра
 
+		// Сброс фильтра
 		function _resetFilter() {
-			/*if ($('.warning-empty').is(':visible')) {
-				$('.warning-empty').fadeOut('fast').promise().done(function(){
-					$('.timeline-wrapper > div > div').slideDown('fast', function(){
-						$('div', $(this)).fadeIn('fast');
-					});
-					$('.filter-items').empty();
-				});
-			}else {
-				$('.timeline-wrapper > div > div').slideDown('fast', function(){
-					$('div', $(this)).fadeIn('fast');
-				});
-				$('.filter-items').empty();
-			}*/
+			$('.filter-items').empty();
 			setOptions({'activity_id':0, 'service_id':0});
-			// Обновляем таймлайн
+			// Обновляем таймлайн и расписание
 			_getEvents(_moduleOptions);
 		}
 	}

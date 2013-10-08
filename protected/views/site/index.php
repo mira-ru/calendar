@@ -141,13 +141,16 @@
 				</tr>
 				<tr>
 					<td colspan="15" class="timeline-wrapper">
-					<?php
-					$this->renderPartial('_events', array(
-						'halls'=>$halls,
-						'events'=>$events,
-						'services'=>$services,
-					));
-					?>
+						<div class="">
+							<?php
+							$this->renderPartial('_events', array(
+								'halls'=>$halls,
+								'events'=>$events,
+								'services'=>$services,
+							));
+							?>
+						</div>
+
 					</td>
 				</tr>
 			</tbody>
