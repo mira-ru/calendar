@@ -41,6 +41,7 @@ var Calendar = function () { 'use strict';
 			_setFilterLabel(text);
 			li.parent().hide();
 			$('body').removeClass('week-view');
+			$('.timeline-hours tr:first').show();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
 				    id = li.data('id');
@@ -50,6 +51,7 @@ var Calendar = function () { 'use strict';
 				_setFilterLabel(li.text());
 				li.parent().hide();
 				$('body').addClass('week-view');
+				$('.timeline-hours tr:first').hide();
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
 				_resetFilter();
