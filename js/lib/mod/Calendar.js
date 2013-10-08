@@ -189,9 +189,8 @@ var Calendar = function () { 'use strict';
 		// Загрузка событий в .timeline-wrapper
 
 		function _getEvents(data) {
-			var     content = $('.timeline-wrapper > div'),
-				days = $('.timeline-days tr'),
-				timeLine,className;
+			var     content = $('.timeline-wrapper'),
+				days = $('.timeline-days tr');
 			content.addClass('-loading');
 			var request = $.ajax({
 				url: '/site/axEvents',
@@ -203,12 +202,9 @@ var Calendar = function () { 'use strict';
 				content.removeClass('-loading');
 				if (msg.html.length == 0) {
 					content.html(msg.html);
-					$('.warning-empty').fadeIn();
 				}
 				else {
-					$('.warning-empty').fadeOut(function(){
-						content.html(msg.html);
-					});
+					content.html(msg.html);
 				}
 				if(msg.days.length > 0){
 					days.html(msg.days);
