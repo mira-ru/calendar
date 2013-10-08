@@ -3,6 +3,10 @@ lib.module('mod.Calendar');
 
 lib.include('mod.Common');
 
+lib.include('plugins.bootstrap.Modal');
+
+//lib.include('plugins.bootstrap.Transition');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
@@ -31,18 +35,23 @@ var Calendar = function () { 'use strict';
 			var li = $(this),
 				sid = li.data('service'),
 				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+
 			setOptions({'service_id':sid, 'activity_id':0});
 			_getEvents(_moduleOptions);
-			//_filterEvents(text, 0, sid);
+			_setFilterLabel(text);
 			li.parent().hide();
+			$('body').removeClass('week-view');
+			$('.timeline-hours tr:first').show();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
-					id = li.data('id');
+				    id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
 				_getEvents(_moduleOptions);
-				//_filterEvents(li.text(), id, 0);
+				_setFilterLabel(li.text());
 				li.parent().hide();
+				$('body').addClass('week-view');
+				$('.timeline-hours tr:first').hide();
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
 				_resetFilter();
@@ -79,7 +88,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof $(e.target).data('sub') === 'undefined') {
+			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
@@ -94,86 +103,25 @@ var Calendar = function () { 'use strict';
 			},0);
 		});
 
-		function _filterEvents(text, id, sid) {
-			var row = $('.timeline-row'),
-				sub = $('div', row),
-				val = (sid == 0) ? id : sid ;
-
-			// Делаем маппинг занятий
-			sub.map(function(){
-				var key = (sid == 0) ? $(this).data('sub') : $(this).data('sid') ;
-				if (key == val) {
-					return this;
-				}
-			}).promise().done(function(){
-					var elems = $(this);
-					if (elems.length != 0) {
-						$('.warning-empty').fadeOut();
-					}
-					if (filter) {
-						// Здесь нужно:
-						// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-						var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-						arr.fadeToggle('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children('[style="display: block;"], :visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-								else {
-									$(this).parent().slideDown('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-					else {
-						sub.not(elems).fadeOut('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children(':visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-				});
-		}
-
-		// Обновление .timeline-wrapper
-
-		function _updateTimelineDays(data) {
-			var     days = $('.timeline-days span'),
-				request = $.ajax({
-					url: '/site/axActiveDays',
-					type: 'POST',
-					data: data,
-					dataType: 'json'
-				});
-			request.done(function(msg) {
-				days.each(function(){
-					var day = $(this).children('i').data('day');
-					if (jQuery.inArray(day, msg.days) == -1) {
-						$(this).addClass('disabled');
-					} else {
-						$(this).removeClass('disabled');
-					}
-				});
+		$('.modal')
+			.on('shown.bs.modal', function(e) {
+				var ev = $(e.relatedTarget),
+				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'e='+ev.data('eventid') : null ;
+				_changeUrl(_moduleOptions, str);
+			})
+			.on('hide.bs.modal', function() {
+				_changeUrl(_moduleOptions);
+			})
+			.on('hidden.bs.modal', function() {
+				$(this).removeData('bs.modal').empty();
 			});
-		}
 
 		// Загрузка событий в .timeline-wrapper
 
 		function _getEvents(data) {
-			var     content = $('.timeline-wrapper'),
+			var     content = $('.timeline-wrapper>div'),
 				days = $('.timeline-days tr');
+
 			content.addClass('-loading');
 			var request = $.ajax({
 				url: '/site/axEvents',
@@ -192,37 +140,22 @@ var Calendar = function () { 'use strict';
 				if(msg.days.length > 0){
 					days.html(msg.days);
 				}
-
-
 			});
 		}
 
 
 		// Установка фильтра
-
 		function _setFilterLabel(text) {
 			$('.filter-items').empty();
 			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
 		}
 		$('.filter-items i').bind('click', _resetFilter);
-		// Сброс фильтра
 
+		// Сброс фильтра
 		function _resetFilter() {
-			/*if ($('.warning-empty').is(':visible')) {
-				$('.warning-empty').fadeOut('fast').promise().done(function(){
-					$('.timeline-wrapper > div > div').slideDown('fast', function(){
-						$('div', $(this)).fadeIn('fast');
-					});
-					$('.filter-items').empty();
-				});
-			}else {
-				$('.timeline-wrapper > div > div').slideDown('fast', function(){
-					$('div', $(this)).fadeIn('fast');
-				});
-				$('.filter-items').empty();
-			}*/
+			$('.filter-items').empty();
 			setOptions({'activity_id':0, 'service_id':0});
-			// Обновляем таймлайн
+			// Обновляем таймлайн и расписание
 			_getEvents(_moduleOptions);
 		}
 	}
@@ -240,10 +173,11 @@ var Calendar = function () { 'use strict';
 	}
 
 	// замена url
-	function _changeUrl(data) {
+	function _changeUrl(data, get) {
 		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
 			urlWithoutCenter = '/0/0/'+data.day,
-			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id;
+			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
+			url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
 
@@ -273,3 +207,12 @@ var Calendar = function () { 'use strict';
 	};
 }();
 
+$(function(){
+	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'e') {
+		var m = $('.modal');
+		m.modal({
+			show: true,
+			remote: '/site/axMasterInfo' + location.search
+		});
+	}
+});

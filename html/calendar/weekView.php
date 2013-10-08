@@ -148,6 +148,23 @@
 				<table class="table timeline-hours">
 					<tbody>
 					<tr>
+						<td><span>07<sup>00</sup></span></td>
+						<td><span>08<sup>00</sup></span></td>
+						<td><span>09<sup>00</sup></span></td>
+						<td><span>10<sup>00</sup></span></td>
+						<td><span>11<sup>00</sup></span></td>
+						<td><span>12<sup>00</sup></span></td>
+						<td><span>13<sup>00</sup></span></td>
+						<td><span>14<sup>00</sup></span></td>
+						<td><span>15<sup>00</sup></span></td>
+						<td><span>16<sup>00</sup></span></td>
+						<td><span>17<sup>00</sup></span></td>
+						<td><span>18<sup>00</sup></span></td>
+						<td><span>19<sup>00</sup></span></td>
+						<td><span>20<sup>00</sup></span></td>
+						<td><span>21<sup>00</sup></span></td>
+					</tr>
+					<tr>
 						<td colspan="15" class="timeline-wrapper">
 							<div>
 								<div class="row current timeline-row">
