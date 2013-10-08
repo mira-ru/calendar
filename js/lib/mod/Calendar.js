@@ -32,16 +32,16 @@ var Calendar = function () { 'use strict';
 				sid = li.data('service'),
 				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
 			setOptions({'service_id':sid, 'activity_id':0});
-			_updateTimelineDays(_moduleOptions);
-			_filterEvents(text, 0, sid);
+			_getEvents(_moduleOptions);
+			//_filterEvents(text, 0, sid);
 			li.parent().hide();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
 					id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
-				_updateTimelineDays(_moduleOptions);
-				_filterEvents(li.text(), id, 0);
+				_getEvents(_moduleOptions);
+				//_filterEvents(li.text(), id, 0);
 				li.parent().hide();
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
@@ -150,7 +150,7 @@ var Calendar = function () { 'use strict';
 		// Обновление .timeline-wrapper
 
 		function _updateTimelineDays(data) {
-			var days = $('.timeline-days span'),
+			var     days = $('.timeline-days span'),
 				request = $.ajax({
 					url: '/site/axActiveDays',
 					type: 'POST',
@@ -172,6 +172,10 @@ var Calendar = function () { 'use strict';
 		// Загрузка событий в .timeline-wrapper
 
 		function _getEvents(data) {
+			var     content = $('.timeline-wrapper > div'),
+				days = $('.timeline-days tr'),
+				timeLine,className;
+			content.addClass('-loading');
 			var request = $.ajax({
 				url: '/site/axEvents',
 				type: 'POST',
@@ -179,15 +183,21 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function(msg) {
+				content.removeClass('-loading');
 				if (msg.html.length == 0) {
-					$('.timeline-wrapper > div').html(msg.html);
+					content.html(msg.html);
 					$('.warning-empty').fadeIn();
 				}
 				else {
 					$('.warning-empty').fadeOut(function(){
-						$('.timeline-wrapper > div').html(msg.html);
+						content.html(msg.html);
 					});
 				}
+				if(msg.days.length > 0){
+					days.html(msg.days);
+				}
+
+
 			});
 		}
 
@@ -202,23 +212,22 @@ var Calendar = function () { 'use strict';
 		// Сброс фильтра
 
 		function _resetFilter() {
-			if ($('.warning-empty').is(':visible')) {
+			/*if ($('.warning-empty').is(':visible')) {
 				$('.warning-empty').fadeOut('fast').promise().done(function(){
 					$('.timeline-wrapper > div > div').slideDown('fast', function(){
 						$('div', $(this)).fadeIn('fast');
 					});
 					$('.filter-items').empty();
 				});
-			}
-			else {
+			}else {
 				$('.timeline-wrapper > div > div').slideDown('fast', function(){
 					$('div', $(this)).fadeIn('fast');
 				});
 				$('.filter-items').empty();
-			}
+			}*/
 			setOptions({'activity_id':0, 'service_id':0});
 			// Обновляем таймлайн
-			_updateTimelineDays(_moduleOptions);
+			_getEvents(_moduleOptions);
 		}
 	}
 

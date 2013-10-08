@@ -18,232 +18,140 @@
 	include('../common/_header.php');
 ?>
 		<!-- PAGE CONTENT -->
-		<div id="wrap">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12 text-center">
-						<h1>Расписание</h1>
-					</div>
-					<div class="col-lg-12">
-						<ul class="list-inline list-justified top-menu">
-							<li class="item-1 current"><a href="#">Центр физического развития</a></li>
-							<li class="item-2"><a href="creative.php">Творческий центр</a></li>
-							<li class="item-3"><a href="knowledge.php">Центр знаний</a></li>
-						</ul>
-						<ul class="list-inline list-justified sub-menu">
-							<li>
-								<span class="item-a">Боевые искусства
-									<ul class="list-unstyled">
-										<li data-id="1">Рукопашный бой</li>
-										<li data-id="2">Русское боевое искусство</li>
-										<li data-id="3">Капоэйра</li>
-										<li data-id="4">Капоэйра для детей</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-							<li>
-								<span class="item-b">Гимнастика
-									<ul class="list-unstyled">
-										<li data-id="5">Пилатес</li>
-										<li data-id="6">Волновая гимнастика</li>
-										<li data-id="7">Гимнастика для лица</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-							<li>
-								<span class="item-c">Йога
-									<ul class="list-unstyled">
-										<li data-id="8">Йога дервишей</li>
-										<li data-id="9">Анахатха-йога</li>
-										<li data-id="10">Хатха-йога для начинающих</li>
-										<li data-id="11">Хатха-йога</li>
-										<li data-id="12">Кундалини-йога</li>
-										<li data-id="13">Шри-шри йога</li>
-										<li data-id="14">Йога 23</li>
-										<li data-id="15">Йога-фитнесс</li>
-										<li data-id="16">Гималайская йога для начинающих</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-							<li>
-								<span class="item-d">Танцы
-									<ul class="list-unstyled">
-										<li data-id="17">Трайбл</li>
-										<li data-id="18">Танец мандала</li>
-										<li data-id="19">Индийские танцы для детей 11-14 лет</li>
-										<li data-id="20">Танцы рагги для детей 6-9 лет</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-							<li>
-								<span class="item-e">Мамина школа
-									<ul class="list-unstyled">
-										<li data-id="21">Детская йога от 3 до 6 лет</li>
-										<li data-id="22">Беби-йога от 1,5 месяцев до 7 месяцев</li>
-										<li data-id="23">Беби-йога от 7 месяцев до 2 лет</li>
-										<li data-id="24">Детская йога от 3 до 10 лет</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-							<li>
-								<span class="item-f">Медитация
-									<ul class="list-unstyled">
-										<li data-id="25">Сахаджа-Йога</li>
-										<li data-id="26">Йога Нидра</li>
-										<li data-id="27">Ошо медитации</li>
-										<li data-id="28">Холотропное дыхание</li>
-										<li data-id="29">Медитации по методу Сахаджа</li>
-										<li data-id="0">Все направления</li>
-									</ul>
-								</span>
-							</li>
-						</ul>
-					</div>
+	<div id="wrap">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<h1>Расписание</h1>
 				</div>
-				<div class="row">
-					<div class="col-lg-12">
-						<ul class="list-inline filter-items">
-							<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
-						</ul>
-					</div>
-				</div>
-				<div class="table-responsive">
-					<a href="javascript:void(0);" class="prev-month" data-month="10" data-year="2013">Октябрь</a>
-					<strong class="current" data-month="11" data-year="2013">Ноябрь, 2013</strong>
-					<a href="javascript:void(0);" class="next-month" data-month="12" data-year="2013">Декабрь</a>
-					<table class="table timeline-days">
-						<thead>
-							<tr>
-								<td><span><i data-weekday="пн" data-day="1">1</i></span></td>
-								<td><span><i data-weekday="вт" data-day="2">2</i></span></td>
-								<td><span><i data-weekday="ср" data-day="3">3</i></span></td>
-								<td><span class="current"><i data-weekday="чт" data-day="4">4</i></span></td>
-								<td><span><i data-weekday="пт" data-day="5">5</i></span></td>
-								<td><span><i data-weekday="сб" data-day="6" class="weekend">6</i></span></td>
-								<td><span><i data-weekday="вс" data-day="7" class="weekend">7</i></span></td>
-								<td><span><i data-weekday="пн" data-day="8">8</i></span></td>
-								<td><span><i data-weekday="вт" data-day="9">9</i></span></td>
-								<td><span><i data-weekday="ср" data-day="10">10</i></span></td>
-								<td><span><i data-weekday="чт" data-day="11">11</i></span></td>
-								<td><span><i data-weekday="пт" data-day="12">12</i></span></td>
-								<td><span><i data-weekday="сб" data-day="13" class="weekend">13</i></span></td>
-								<td><span><i data-weekday="вс" data-day="14" class="weekend">14</i></span></td>
-								<td><span><i data-weekday="пн" data-day="15">15</i></span></td>
-								<td><span><i data-weekday="вт" data-day="16">16</i></span></td>
-								<td><span><i data-weekday="ср" data-day="17">17</i></span></td>
-								<td><span><i data-weekday="чт" data-day="18">18</i></span></td>
-								<td><span><i data-weekday="пт" data-day="19">19</i></span></td>
-								<td><span><i data-weekday="сб" data-day="20" class="weekend">20</i></span></td>
-								<td><span><i data-weekday="вс" data-day="21" class="weekend">21</i></span></td>
-								<td><span><i data-weekday="пн" data-day="22">22</i></span></td>
-								<td><span><i data-weekday="вт" data-day="23">23</i></span></td>
-								<td><span><i data-weekday="ср" data-day="24">24</i></span></td>
-								<td><span><i data-weekday="чт" data-day="25">25</i></span></td>
-								<td><span><i data-weekday="пт" data-day="26">26</i></span></td>
-								<td><span><i data-weekday="сб" data-day="27" class="weekend">27</i></span></td>
-								<td><span><i data-weekday="вс" data-day="28" class="weekend">28</i></span></td>
-								<td><span><i data-weekday="пн" data-day="29">29</i></span></td>
-								<td><span><i data-weekday="вт" data-day="30">30</i></span></td>
-								<td><span><i data-weekday="ср" data-day="31">31</i></span></td>
-							</tr>
-						</thead>
-					</table>
-					<table class="table timeline-hours">
-						<thead>
-							<tr>
-								<td><span>07<sup>00</sup></span></td>
-								<td><span>08<sup>00</sup></span></td>
-								<td><span>09<sup>00</sup></span></td>
-								<td><span>10<sup>00</sup></span></td>
-								<td><span>11<sup>00</sup></span></td>
-								<td><span>12<sup>00</sup></span></td>
-								<td><span>13<sup>00</sup></span></td>
-								<td><span>14<sup>00</sup></span></td>
-								<td><span>15<sup>00</sup></span></td>
-								<td><span>16<sup>00</sup></span></td>
-								<td><span>17<sup>00</sup></span></td>
-								<td><span>18<sup>00</sup></span></td>
-								<td><span>19<sup>00</sup></span></td>
-								<td><span>20<sup>00</sup></span></td>
-								<td><span>21<sup>00</sup></span></td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td colspan="15" class="timeline-wrapper">
-									<div>
-										<div class="text-center">Зал «Энергия Земли»</div>
-										<div class="row timeline-row">
-											<div class="col-90 a" data-sub="1"><span>Рукопашный бой (Алексей&nbsp;Вербицкий)</span></div>
-											<div class="col-90 start-08-30 b" data-sub="5"><span>Пилатес</span></div>
-											<div class="col-90 start-10-00 a" data-sub="2"><span>Русское боевое искусство</span></div>
-											<div class="col-90 start-16-00 a" data-sub="4"><span>Капоэйра для детей</span></div>
-											<div class="col-90 start-17-30 a" data-sub="2"><span>Русское боевое искусство</span></div>
-											<div class="col-90 start-19-00 c" data-sub="10"><span>Хатха для начинающих</span></div>
-											<div class="col-90 start-20-30 a" data-sub="3"><span>Капоэйра (Екатерина&nbsp;Полетаева)</span></div>
-										</div>
-									</div>
-									<div>
-										<div class="text-center">Зал «Энергия Воды»</div>
-										<div class="row timeline-row">
-											<div class="col-90 c" data-sub="12"><span>Кундалини йога</span></div>
-											<div class="col-90 start-17-30 c" data-sub="14"><span>Йога 23</span></div>
-											<div class="col-90 start-19-00 c" data-sub="12"><span>Кундалини йога</span></div>
-											<div class="col-90 start-20-30 c" data-sub="15"><span>Йога-фитнесс</span></div>
-										</div>
-									</div>
-									<div>
-										<div class="text-center">Зал «Энергия Огня»</div>
-										<div class="row timeline-row">
-											<div class="col-90 c" data-sub="11"><span>Хатха-йога (Силкачева&nbsp;Наталья)</span></div>
-											<div class="col-90 start-14-00 a" data-sub="4"><span>Капоэйра для детей</span></div>
-											<div class="col-90 start-16-30 a" data-sub="2"><span>Русское боевое искусство</span></div>
-											<div class="col-120 start-18-00 d" data-sub="17"><span>Трайбл (Екатерина&nbsp;Поздняк)</span></div>
-											<div class="col-120 start-20-00 d" data-sub="17"><span>Трайбл (Екатерина&nbsp;Поздняк)</span></div>
-										</div>
-									</div>
-									<div>
-										<div class="text-center">Зал «Энергия Солнца»</div>
-										<div class="row timeline-row">
-											<div class="col-90 start-11-00 b" data-sub="6"><span>Волновая гимнастика</span></div>
-											<div class="col-120 start-14-00 d" data-sub="19"><span>Индийские танцы для детей 11-14&nbsp;лет</span></div>
-											<div class="col-90 start-16-00 d" data-sub="20"><span>Танцы рагги для детей 6-9&nbsp;лет</span></div>
-											<div class="col-90 start-19-00 c" data-sub="10"><span>Хатха для начинающих</span></div>
-										</div>
-									</div>
-									<div>
-										<div class="text-center">Зал «Энергия Ветра»</div>
-										<div class="row timeline-row">
-											<div class="col-60 c" data-sub="11"><span>Хатха-йога</span></div>
-											<div class="col-60 start-12-00 e" data-sub="21"><span>Детская йога от 3 до 6 лет</span></div>
-											<div class="col-90 start-13-00 e" data-sub="22"><span>Беби-йога от 1,5&nbsp;месяцев до 7&nbsp;месяцев</span></div>
-											<div class="col-90 start-14-30 e" data-sub="23"><span>Беби-йога от 7&nbsp;месяцев до 2&nbsp;лет</span></div>
-											<div class="col-60 start-16-00 e" data-sub="24"><span>Детская йога от 3 до 10&nbsp;лет</span></div>
-											<div class="col-90 start-17-30 b" data-sub="7"><span>Гимнастика для лица</span></div>
-											<div class="col-120 start-19-00 d" data-sub="18"><span>Танец мандала</span></div>
-										</div>
-									</div>
-									<p class="warning-empty">К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!</p>
-								</td>
-							</tr>
-						</tbody>
-					</table>				
+				<div class="col-lg-12">
+					<ul class="list-inline list-justified top-menu">
+						<li class="item-1 current"><a data-center="4" href="javascript:void(0)">Центр физического развития</a></li>
+						<li class="item-2"><a data-center="6" href="/c/6/0/0/1381096800">Творческий центр</a></li>
+						<li class="item-3"><a data-center="7" href="/c/7/0/0/1381096800">Центр знаний</a></li>
+					</ul>
+					<ul class="list-inline list-justified sub-menu">
+
+						<li><span class="item-ff5114"><i>Боевые искусства</i>
+							<ul class="list-unstyled"><li data-service="2">Все направления</li>
+								<li data-id="32">Рукопашный бой </li>
+								<li data-id="65">Капоэйра</li>
+								<li data-id="54">Прикладной рукопашный бой </li>
+								<li data-id="36">Капоэйра для детей</li>
+								<li data-id="34">Айкидо для детей</li>
+								<li data-id="37">Кёкусинкай каратэ</li>
+								<li data-id="66">Айкидо</li>
+								<li data-id="67">Айкидо для семьи</li>
+								<li data-id="42">Тайцзицюань</li>
+							</ul></span></li>
+													<li><span class="item-ffa12d"><i>Йога</i>
+							<ul class="list-unstyled"><li data-service="30">Все направления</li>
+								<li data-id="38">Хатха</li>
+								<li data-id="39">Кундалини-йога</li>
+								<li data-id="43">Йога 23</li>
+								<li data-id="45">Хатха йога с элементами аштанга йоги</li>
+								<li data-id="46">Нидра-йога</li>
+								<li data-id="55">Хатха-йога</li>
+								<li data-id="40">Хатха для начинающих  </li>
+								<li data-id="33">Аэро-йога</li>
+								<li data-id="35"> Айенгара-йога </li>
+								<li data-id="41">Ишвара-йога</li>
+								<li data-id="53">Анахатха йога</li>
+								<li data-id="57">Йога для детей</li>
+								<li data-id="68">Йога для беременных</li>
+								<li data-id="44">Женская йога </li>
+								<li data-id="58">Шри-шри йога </li>
+								<li data-id="59">Гималайская йога </li>
+								<li data-id="48">Йога дервишей </li>
+							</ul></span></li>
+													<li><span class="item-ffbd03"><i>Танцы</i>
+							<ul class="list-unstyled"><li data-service="33">Все направления</li>
+								<li data-id="50">Танцевальное направление Ragga/Dancehall </li>
+								<li data-id="70">Арабский терапевтический  танец для детей</li>
+								<li data-id="49">Фламенко</li>
+								<li data-id="51">Арабский терапевтический танец (Мама+дочь)</li>
+								<li data-id="52">АТС (АмериканТрайблСтайл)</li>
+								<li data-id="64">Арабский терапевтический  танец</li>
+								<li data-id="63"> Танец мандала </li>
+								<li data-id="47">Гурджиевские танцы</li>
+							</ul></span></li>
+													<li><span class="item-ff8947"><i>Гимнастика</i>
+							<ul class="list-unstyled"><li data-service="29">Все направления</li>
+								<li data-id="62">Гимнастика для лица</li>
+								<li data-id="56">Дыхательная суставная гимнастика </li>
+							</ul></span></li>
+													<li><span class="item-ffa88d"><i>Мамина школа</i>
+							<ul class="list-unstyled"><li data-service="31">Все направления</li>
+								<li data-id="61"> baby-йога</li>
+								<li data-id="60">Курсы по подготовке к беременности и ГВ </li>
+							</ul></span></li>
+													<li><span class="item-ff795f"><i>Медитации</i>
+							<ul class="list-unstyled"><li data-service="34">Все направления</li>
+								<li data-id="69">ошо медитация</li>
+							</ul></span></li>
+													<li><span class="item-e06104"><i>Гармонизация звуком</i>
+							<ul class="list-unstyled"><li data-service="35">Все направления</li>
+								<li data-id="71">Гармонизация звуком (тибетские чаши)</li>
+							</ul></span></li>
+					</ul>
 				</div>
 			</div>
-			<div class="event-balloon">
-				<div>
-					<strong>Русское боевое искусство для детей 7-12 лет</strong>
-					<span><i>Мастер:</i>Денис Вербицкий</span>
-					<span><i>Зал:</i>Энергия Земли</span>
-					<span><i>Время:</i>пн, 17:00-19:00</span>
+
+			<div class="row">
+				<div class="col-lg-12">
+					<ul class="list-inline filter-items">
+						<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
+					</ul>
 				</div>
-			<i class="cross"></i></div>
+			</div>
+			<div class="row">
+				<div class="col-lg-12">
+					<a class="prev-month" data-time="1377986400" href="/c/4/0/0/1377986400">Сентябрь</a><strong class="current" data-month="10" data-year="2013">Октябрь, 2013</strong><a class="next-month" data-time="1383260400" href="/c/4/0/0/1383260400">Ноябрь</a>		</div>
+			</div>
+			<div class="table-responsive first-table">
+				<table class="table timeline-days">
+					<thead>
+					<tr>
+						<td><span class=" disabled"><i data-weekday="вт" data-day="1380578400">1</i></span></td><td><span class=" disabled"><i data-weekday="ср" data-day="1380664800">2</i></span></td><td><span class=" disabled"><i data-weekday="чт" data-day="1380751200">3</i></span></td><td><span class=" disabled"><i data-weekday="пт" data-day="1380837600">4</i></span></td><td><span class=" disabled"><i data-weekday="сб" data-day="1380924000" class="weekend">5</i></span></td><td><span class=" disabled"><i data-weekday="вс" data-day="1381010400" class="weekend">6</i></span></td><td><span class="current"><i data-weekday="пн" data-day="1381096800">7</i></span></td><td><span class=""><i data-weekday="вт" data-day="1381183200">8</i></span></td><td><span class=""><i data-weekday="ср" data-day="1381269600">9</i></span></td><td><span class=""><i data-weekday="чт" data-day="1381356000">10</i></span></td><td><span class=""><i data-weekday="пт" data-day="1381442400">11</i></span></td><td><span class=""><i data-weekday="сб" data-day="1381528800" class="weekend">12</i></span></td><td><span class=""><i data-weekday="вс" data-day="1381615200" class="weekend">13</i></span></td><td><span class=""><i data-weekday="пн" data-day="1381701600">14</i></span></td><td><span class=""><i data-weekday="вт" data-day="1381788000">15</i></span></td><td><span class=""><i data-weekday="ср" data-day="1381874400">16</i></span></td><td><span class=""><i data-weekday="чт" data-day="1381960800">17</i></span></td><td><span class=""><i data-weekday="пт" data-day="1382047200">18</i></span></td><td><span class=""><i data-weekday="сб" data-day="1382133600" class="weekend">19</i></span></td><td><span class=""><i data-weekday="вс" data-day="1382220000" class="weekend">20</i></span></td><td><span class=""><i data-weekday="пн" data-day="1382306400">21</i></span></td><td><span class=""><i data-weekday="вт" data-day="1382392800">22</i></span></td><td><span class=""><i data-weekday="ср" data-day="1382479200">23</i></span></td><td><span class=""><i data-weekday="чт" data-day="1382565600">24</i></span></td><td><span class=""><i data-weekday="пт" data-day="1382652000">25</i></span></td><td><span class=""><i data-weekday="сб" data-day="1382738400" class="weekend">26</i></span></td><td><span class=""><i data-weekday="вс" data-day="1382824800" class="weekend">27</i></span></td><td><span class=" disabled"><i data-weekday="вс" data-day="1382911200" class="weekend">28</i></span></td><td><span class=" disabled"><i data-weekday="пн" data-day="1382997600">29</i></span></td><td><span class=" disabled"><i data-weekday="вт" data-day="1383084000">30</i></span></td><td><span class=" disabled"><i data-weekday="ср" data-day="1383170400">31</i></span></td>				</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="table-responsive second-table">
+				<table class="table timeline-hours">
+					<tbody>
+					<tr>
+						<td><span>07<sup>00</sup></span></td>
+						<td><span>08<sup>00</sup></span></td>
+						<td><span>09<sup>00</sup></span></td>
+						<td><span>10<sup>00</sup></span></td>
+						<td><span>11<sup>00</sup></span></td>
+						<td><span>12<sup>00</sup></span></td>
+						<td><span>13<sup>00</sup></span></td>
+						<td><span>14<sup>00</sup></span></td>
+						<td><span>15<sup>00</sup></span></td>
+						<td><span>16<sup>00</sup></span></td>
+						<td><span>17<sup>00</sup></span></td>
+						<td><span>18<sup>00</sup></span></td>
+						<td><span>19<sup>00</sup></span></td>
+						<td><span>20<sup>00</sup></span></td>
+						<td><span>21<sup>00</sup></span></td>
+					</tr>
+					<tr>
+						<td colspan="15" class="timeline-wrapper">
+							<div>
+								<div><div class="text-center">Энергия Земли</div><div class="row timeline-row"><div data-sub="32" data-event="780" data-sid="2" class="col-210 start-02-00 c-ff5114"><span>Рукопашный бой </span></div><div data-sub="36" data-event="832" data-sid="2" class="col-90 start-11-00 c-ff5114"><span>Капоэйра для детей</span></div><div data-sub="38" data-event="784" data-sid="30" class="col-90 start-14-00 c-ffa12d"><span>Хатха</span></div><div data-sub="65" data-event="788" data-sid="2" class="col-90 start-15-30 c-ff5114"><span>Капоэйра</span></div></div></div><div><div class="text-center">Энергия Воды</div><div class="row timeline-row"><div data-sub="39" data-event="792" data-sid="30" class="col-90 start-02-00 c-ffa12d"><span>Кундалини-йога</span></div><div data-sub="43" data-event="796" data-sid="30" class="col-90 start-12-30 c-ffa12d"><span>Йога 23</span></div></div></div><div><div class="text-center">Энергия Солнца</div><div class="row timeline-row"><div data-sub="45" data-event="800" data-sid="30" class="col-90 start-03-30 c-ffa12d"><span>Хатха йога с элементами аштанга йоги</span></div><div data-sub="46" data-event="804" data-sid="30" class="col-60 start-07-00 c-ffa12d"><span>Нидра-йога</span></div><div data-sub="50" data-event="808" data-sid="33" class="col-60 start-11-00 c-ffbd03"><span>Танцевальное направление Ragga/Dancehall </span></div><div data-sub="54" data-event="812" data-sid="2" class="col-90 start-15-00 c-ff5114"><span>Прикладной рукопашный бой </span></div></div></div><div><div class="text-center">Энергия Света</div><div class="row timeline-row"><div data-sub="55" data-event="816" data-sid="30" class="col-120 start-02-30 c-ffa12d"><span>Хатха-йога</span></div><div data-sub="62" data-event="820" data-sid="29" class="col-90 start-12-30 c-ff8947"><span>Гимнастика для лица</span></div></div></div><div><div class="text-center">Энергия Ветра</div><div class="row timeline-row"><div data-sub="70" data-event="824" data-sid="33" class="col-60 start-05-00 c-ffbd03"><span>Арабский терапевтический  танец для детей</span></div><div data-sub="40" data-event="828" data-sid="30" class="col-60 start-14-00 c-ffa12d"><span>Хатха для начинающих  </span></div></div></div>						</div>
+							<p class="warning-empty">К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!</p>					</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
+		<div class="event-balloon">
+			<div></div>
+			<!-- <i class="cross"></i> -->
+		</div>
+	</div>
+	</div>
 <style>
 
 </style>

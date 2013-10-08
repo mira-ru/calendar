@@ -1,5 +1,5 @@
 .gFontImport (@name, @weights, @subsets) {
-	@import url('http://fonts.googleapis.com/css?family=@{name}:@{weights}&subset=@{subsets}');
+	@import url('http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin');
 }
 .gFontImport("PT+Sans","400,700","cyrillic,latin");
 
@@ -12,6 +12,21 @@
 html,
 body {
 	height: 100%;
+}
+.-loading {
+	position: relative;
+	opacity:0.60;
+	&:after {
+		background: url('/images/src/loader.gif') 50% 50% no-repeat;
+		content: '';
+		display: block;
+		height: 32px;
+		left: 50%;
+		margin: -16px 0 0 -16px;
+		position: absolute;
+		top: 50%;
+		width: 32px;
+	}
 }
 #wrap {
 	min-height: 100%;
@@ -845,6 +860,97 @@ body {
 				}
 			}
 		}		
+	}
+	&.week-view{
+		table{
+			&.timeline-days{
+				thead{
+					tr{
+
+						td{
+							span{
+								width: 115px;
+								height:50px;
+								&.current{
+									background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHMAAAAyCAYAAABvR+QvAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjA5MEZERUUxMkVGRDExRTNBRDE5QTNCQUM1RUVGQzNFIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjA5MEZERUUyMkVGRDExRTNBRDE5QTNCQUM1RUVGQzNFIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6MDkwRkRFREYyRUZEMTFFM0FEMTlBM0JBQzVFRUZDM0UiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6MDkwRkRFRTAyRUZEMTFFM0FEMTlBM0JBQzVFRUZDM0UiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4kVPPkAAAC0ElEQVR42uyczWsTURTFX8aoxY/gQrupqYgfEIsLEQrqStOFYBfqQv8FN+LepfoPiBv/BTeCUFy1upZu2mJb8INKY6GtuDDWUEub8dzkTn2dJjUU1Hm35weHecnMtOWc3LxXeHNzcRy7NDdvD7oOyUF5aC/UpdoHHYAKqj3QIT130Bsf0XuFw/ozhIsuu1S88TL0xXst4xVoXo9f9Zrv0BL0E/oGrUFVqKbv1/Q6uacOxc+fDW3rj8t3cM1u6ChUgvr0eB46raHsJIqp16f+wu+ooZgmcRyH3kLvoSnoM0Je3bKy2lRmhMMl6D501ZGs8BJ6CL1BsPEfw0SQZ/SmY/Qus8xAgwh0yn8zSgVZxmGSQWae45KT5rU5TJyQRcswfQqKYc1tU2XepTdBcm/DnKkLnh87cHVqAfm3Zj/mz3pSmScZZLB0aX7rX7NlehI0ZT/MO/QjaBr55W7cuiaBrtGP4NklQRbogwkKEmaRPpigKGH20gcT9LIyWZkkq5VZog8mKEmY3fTBBN0SZg99MEGPhBnRBxNEXM0aW80SK6Xpmlv8SPisSJgL9MEECxJmnT6YoLHTYI4+mGBOwlykDyZYlDCn6YMJpiXMWfpgglkJs0IfTFBhZbIySVYrs0ofTFCNZFs7BhP0Imgm/McTntKPoGnkl4Q5Qj+CZsQP84NrPk1EwmNZ82uGqfPmA/oSJI80vw1bRp7QlyB5nAzWw0S60pNmgN4ExYDm5tKVKYHKRCoPbn6kT5lGuo30aV6uZZgaqAQpzYr6oRf0LVNIS58L0Il02xihXYcuaQ40Cl3Xa2QHHzt0/Ruk/dq2OnR10m5tVct6Rj8ZPuyd95ukV95/653Xst1aSLRo2ngZerXFLUs6jcx7U4uJkra4b/Y1dKXNOfn0n/WDtITVTdDtApUgP1mdbC3vaE8Heg56Z3nllHe2SQKVr9cx68vgXwIMACXczM0pkQl5AAAAAElFTkSuQmCC);
+								}
+							}
+						}
+					}
+				}
+
+
+			}
+			&.timeline-hours{
+				margin-top: -25px;
+				&:first-child{
+					td{
+						span{
+							position: static;
+							margin-top: 10px;
+						}
+					}
+				}
+			}
+		}
+		.timeline-wrapper{
+			border:none !important;
+			.timeline-row{
+				background: none;
+				border: none;
+				width: percentage(1 / 7);
+				height: auto;
+				display: inline-block;
+				padding: 10px;
+				vertical-align: top;
+				border-left:1px dotted #ddd;
+				border-radius: 0px;
+				>div{
+					position: static;
+					width: 100%;
+					float: none;
+					margin-bottom: 8px;
+					height: 70px;
+					padding: 0 25px;
+					span{
+						line-height: 1;
+						height: auto;
+						margin: 12px 0 4px;
+					}
+					a{
+						color: #fff;
+					}
+					&:hover{
+						span{
+							text-decoration: none;
+						}
+					}
+					&:last-child{
+						margin-bottom: 0;
+					}
+				}
+				&.current{
+					background: #eeeeee;
+					border-radius: 5px;
+					border: none;
+					&+div{
+						border:none
+					}
+				}
+			}
+		}
+		.table-responsive{
+			margin-bottom: 0;
+		}
+		.filter-items{
+			text-align: center;
+		}
+		.col-lg-6:last-child{
+			text-align: right;
+			a{
+				margin-left: 10px;
+			}
+		}
 	}
 }
 
