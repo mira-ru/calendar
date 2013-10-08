@@ -190,7 +190,7 @@ class Event extends CActiveRecord
 			'criteria'=>$criteria,
 			'sort'=>$sort,
 			'pagination'=>array(
-				'pageSize'=>20,
+				'pageSize'=>10,
 			),
 		));
 	}

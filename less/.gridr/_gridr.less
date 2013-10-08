@@ -1,0 +1,312 @@
+@import '_normalize.less';
+@import '_variables.less';
+@import '_mixins.less';
+
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+.grid {
+	width: 100%;
+}
+.flow {
+	background: pink;
+	font-size: 0;
+	list-style: none;
+	margin: 0 auto;
+	padding: (@default-gutter / 2) 0;
+	position: relative;
+}
+[class*="col-"] {
+	display: inline-block;
+	font-size: 13px;
+	padding-left: (@default-gutter / 2);
+	padding-right: (@default-gutter / 2);
+	vertical-align: top;
+	.flow {
+		margin: 0 -(@default-gutter / 2);
+		padding: 0;
+		width: auto;
+	}
+}
+.col-1  { 
+	width: percentage((1 / @default-grid-columns)); 
+}
+.col-2  { 
+	width: percentage((2 / @default-grid-columns)); 
+}
+.col-3  { 
+	width: percentage((3 / @default-grid-columns)); 
+}
+.col-4  { 
+	width: percentage((4 / @default-grid-columns)); 
+}
+.col-5  { 
+	width: percentage((5 / @default-grid-columns)); 
+}
+.col-6  { 
+	width: percentage((6 / @default-grid-columns)); 
+}
+.col-7  { 
+	width: percentage((7 / @default-grid-columns)); 
+}
+.col-8  { 
+	width: percentage((8 / @default-grid-columns)); 
+}
+.col-9  { 
+	width: percentage((9 / @default-grid-columns)); 
+}
+.col-10 { 
+	width: percentage((10/ @default-grid-columns)); 
+}
+.col-11 { 
+	width: percentage((11/ @default-grid-columns)); 
+}
+.col-12 { 
+	width: 100%; 
+}
+
+// Skip columns. Skipping offset BEFORE column
+
+.skip-1  { 
+	margin-left: percentage((1 / @default-grid-columns)); 
+}
+.skip-2  { 
+	margin-left: percentage((2 / @default-grid-columns)); 
+}
+.skip-3  { 
+	margin-left: percentage((3 / @default-grid-columns)); 
+}
+.skip-4  { 
+	margin-left: percentage((4 / @default-grid-columns)); 
+}
+.skip-5  { 
+	margin-left: percentage((5 / @default-grid-columns)); 
+}
+.skip-6  { 
+	margin-left: percentage((6 / @default-grid-columns)); 
+}
+.skip-7  { 
+	margin-left: percentage((7 / @default-grid-columns)); 
+}
+.skip-8  { 
+	margin-left: percentage((8 / @default-grid-columns)); 
+}
+.skip-9  { 
+	margin-left: percentage((9 / @default-grid-columns)); 
+}
+.skip-10 { 
+	margin-left: percentage((10/ @default-grid-columns)); 
+}
+.skip-11 { 
+	margin-left: percentage((11/ @default-grid-columns)); 
+}
+
+// Pass columns. Passing offset AFTER column
+
+.pass-1  { 
+	margin-right: percentage((1 / @default-grid-columns)); 
+}
+.pass-2  { 
+	margin-right: percentage((2 / @default-grid-columns)); 
+}
+.pass-3  { 
+	margin-right: percentage((3 / @default-grid-columns)); 
+}
+.pass-4  { 
+	margin-right: percentage((4 / @default-grid-columns)); 
+}
+.pass-5  { 
+	margin-right: percentage((5 / @default-grid-columns)); 
+}
+.pass-6  { 
+	margin-right: percentage((6 / @default-grid-columns)); 
+}
+.pass-7  { 
+	margin-right: percentage((7 / @default-grid-columns)); 
+}
+.pass-8  { 
+	margin-right: percentage((8 / @default-grid-columns)); 
+}
+.pass-9  { 
+	margin-right: percentage((9 / @default-grid-columns)); 
+}
+.pass-10 { 
+	margin-right: percentage((10/ @default-grid-columns)); 
+}
+.pass-11 { 
+	margin-right: percentage((11/ @default-grid-columns)); 
+}
+
+// @media (max-device-width: 800px) {
+// 	.flow {
+// 		width: 800px;
+// 	}
+// 	[class*="col-"] {
+// 		@media (orientation: portrait) {
+// 			display: block;
+// 			font-size: @font-size-handheld;
+// 			width: 100%;
+// 		}
+// 		@media (orientation: landscape) {
+// 			font-size: @font-size-tablet;
+// 			width: 49.99999999%;
+// 		}
+// 		img {
+// 			width: 100%;
+// 		}
+// 	}
+// }
+// @media (min-device-width: 801px) {
+// 	@media (max-device-width: 1135px) {
+// 		@media (orientation: portrait) {
+// 			.flow {
+// 				width: 480px;
+// 			}
+// 		}
+// 		@media (orientation: landscape) {
+// 			.flow {
+// 				width: 100%;
+// 			}
+// 		}
+// 	}
+// }
+// @media (min-device-width: 1136px) {
+// 	@media (orientation: portrait) {
+// 		.flow {
+// 			width: 100%;
+// 		}
+// 	}
+// 	@media (orientation: landscape) {
+// 		.flow {
+// 			width: 1100px;
+// 		}
+// 	}
+// }
+
+
+.flow {
+	@media screen {
+		@media (min-width: 1200px) {
+			background: blue;
+			width: 1200px;
+		}
+		@media (min-width: 968px) and (max-width: 1199px) {
+			background: green;
+			width: 968px;
+		}
+		@media (min-width: 768px) and (max-width: 967px) {
+			background: yellow;
+			width: 768px;
+		}	
+		@media (min-width: 640px) and (max-width: 767px) {
+			background: red;
+			width: 640px;
+		}
+		@media (min-width: 480px) and (max-width: 639px) {
+			background: pink;
+			width: 480px;
+		}
+		@media (max-width: 479px) {
+			background: gray;
+			width: 100%;
+		}
+	}
+	@media (max-device-width: 800px) {
+		width: 100%;
+	}		
+}
+[class*="col-"] {
+	@media screen {
+		@media (min-width: 480px) and (max-width: 639px) {
+			width: 49.999999999%;
+		}
+		@media (max-width: 479px) {
+			display: block;
+			width: 100%;
+		}
+	}
+	@media (max-device-width: 800px) {
+		@media (orientation: portrait) {
+			display: block;
+			width: 100%;
+		}
+		@media (orientation: landscape) {
+			width: 49.99999999%;
+		}
+	}
+}
+img {
+	@media (max-width: 479px) {
+		width: 100%;
+	}	
+}
+// @media (min-width: 768px) and (max-width: 967px) {
+// 	.flow {
+// 		background: yellow;
+// 		width: 768px;
+// 	}
+// 	@media (orientation: portrait), (orientation: landscape) {
+// 		.flow {
+// 			background: gray;
+// 			width: 100%;
+// 		}
+// 		img {
+// 			width: 100%;
+// 		}		
+// 	}
+// 	@media (orientation: portrait) {
+// 		[class*="col-"] {
+// 			display: block;
+// 			width: 100%;
+// 		}
+// 	}
+// 	@media (orientation: landscape) {
+// 		[class*="col-"] {
+// 			width: 49.999999999%;
+// 		}
+// 	}
+// }
+// @media (min-width: 640px) and (max-width: 767px) {
+// 	.flow {
+// 		background: red;
+// 		width: 640px;
+// 	}
+// }
+// @media (min-width: 480px) and (max-width: 639px) {
+// 	.flow {
+// 		background: pink;
+// 		width: 480px;
+// 	}
+// 	[class*="col-"] {
+// 		width: 49.999999999%;
+// 	}	
+// }
+// @media (max-width: 479px) {
+// 	.flow {
+// 		background: gray;
+// 		width: 100%;
+// 	}
+// 	[class*="col-"] {
+// 		display: block;
+// 		width: 100%;
+// 	}
+// 	img {
+// 		width: 100%;
+// 	}
+// }
+
+img {
+	display: block;
+	font-size: 0;
+	line-height: 0;
+	margin: 0;
+	.img-responsive();
+}

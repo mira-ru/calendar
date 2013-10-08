@@ -193,6 +193,16 @@ class SiteController extends FrontController
 		Yii::app()->end( json_encode(array('days'=>$result), JSON_NUMERIC_CHECK) );
 	}
 
+	public function actionAxMasterInfo()
+	{
+		$this->renderPartial('_master');
+	}
+
+	public function actionAxEventInfo()
+	{
+		$this->renderPartial('_eventinfo');
+	}
+
 	/**
 	 * This is the action to handle external exceptions.
 	 */

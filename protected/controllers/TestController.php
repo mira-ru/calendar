@@ -14,6 +14,13 @@ class TestController extends AdminController
 		die();
 	}
 
+	// тестовые. для разработки с canjs
+	
+	public function actionIndex()
+	{
+		$this->layout = "//layouts/test";
+		$this->render('/test/index');
+
 	public function actionUrl()
 	{
 		FirePHP::getInstance()->fb($this->createUrl('test', array('lol[test]'=>1)));

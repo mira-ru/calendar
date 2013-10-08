@@ -3,6 +3,10 @@ lib.module('mod.Calendar');
 
 lib.include('mod.Common');
 
+lib.include('plugins.bootstrap.Modal');
+
+//lib.include('plugins.bootstrap.Transition');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
@@ -37,7 +41,7 @@ var Calendar = function () { 'use strict';
 			li.parent().hide();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
-					id = li.data('id');
+				    id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
 				_getEvents(_moduleOptions);
@@ -79,7 +83,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof $(e.target).data('sub') === 'undefined') {
+			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
@@ -93,6 +97,19 @@ var Calendar = function () { 'use strict';
 				});
 			},0);
 		});
+
+		$('.modal')
+			.on('shown.bs.modal', function(e) {
+				var ev = $(e.relatedTarget),
+				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'e='+ev.data('eventid') : null ;
+				_changeUrl(_moduleOptions, str);
+			})
+			.on('hide.bs.modal', function() {
+				_changeUrl(_moduleOptions);
+			})
+			.on('hidden.bs.modal', function() {
+				$(this).removeData('bs.modal').empty();
+			});
 
 		function _filterEvents(text, id, sid) {
 			var row = $('.timeline-row'),
@@ -244,10 +261,11 @@ var Calendar = function () { 'use strict';
 	}
 
 	// замена url
-	function _changeUrl(data) {
+	function _changeUrl(data, get) {
 		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
 			urlWithoutCenter = '/0/0/'+data.day,
-			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id;
+			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
+			url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
 
@@ -277,3 +295,12 @@ var Calendar = function () { 'use strict';
 	};
 }();
 
+$(function(){
+	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'e') {
+		var m = $('.modal');
+		m.modal({
+			show: true,
+			remote: '/site/axMasterInfo' + location.search
+		});
+	}
+});
