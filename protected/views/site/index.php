@@ -115,7 +115,19 @@
 			<thead>
 				<tr>
 					<div>
-					<?php $this->renderPartial('_daysMonth', array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)); ?>
+					<?php
+					// выбрано направление - недельный вид
+					if (!empty($directionId)) {
+						$this->renderPartial('_daysWeek',
+							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
+						);
+					} else {
+						$this->renderPartial('_daysMonth',
+							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
+						);
+					}
+
+					?>
 					</div>
 				</tr>
 			</thead>
@@ -145,11 +157,21 @@
 					<td colspan="15" class="timeline-wrapper">
 						<div>
 						<?php
-						$this->renderPartial('_events', array(
-							'halls'=>$halls,
-							'events'=>$events,
-							'services'=>$services,
-						));
+						// выбрано направление - недельный вид
+						if (!empty($directionId)) {
+							$this->renderPartial('index/_weekEvents', array(
+								'halls'=>$halls,
+								'events'=>$events,
+								'services'=>$services,
+								'checkedTime'=>$checkedTime,
+							));
+						} else {
+							$this->renderPartial('index/_monthEvents', array(
+								'halls'=>$halls,
+								'events'=>$events,
+								'services'=>$services,
+							));
+						}
 						?>
 						</div>
 					</td>

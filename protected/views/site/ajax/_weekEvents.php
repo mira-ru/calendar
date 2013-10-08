@@ -3,6 +3,7 @@
  * @var $events array
  * @var $services array
  * @var $event Event
+ * @var $checkedTime integer
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
@@ -10,7 +11,7 @@ if (empty($events)) {
 }
 
 $weeksData = array();
-
+$dow = date('w', $checkedTime);
 foreach ($events as $event) {
 	$tmp = '';
 	$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
@@ -34,14 +35,18 @@ foreach ($events as $event) {
 }
 
 for ($i = 1; $i<7; $i++) {
-	echo CHtml::openTag('div', array('class'=>'row timeline-row'));
+	$class = 'row timeline-row';
+	if ($i==$dow) { $class .= ' current'; }
+	echo CHtml::openTag('div', array('class'=>$class));
 	if (isset($weeksData[$i])) {
 		echo $weeksData[$i];
 	}
 	echo CHtml::closeTag('div');
 }
 
-echo CHtml::openTag('div', array('class'=>'row timeline-row'));
+$class = 'row timeline-row';
+if (0==$dow) { $class .= ' current'; }
+echo CHtml::openTag('div', array('class'=>$class));
 if (isset($weeksData[0])) {
 	echo $weeksData[0];
 }

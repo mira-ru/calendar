@@ -46,8 +46,7 @@ class SiteController extends FrontController
 		$this->bodyClass[] = 'center-'.$current->id;
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
-		$dayEnd = $checkedTime + 86400;
-		$events = Event::getByTime($checkedTime, $dayEnd, $current->id, $directionId, $serviceId);
+
 
 		// Список активных дней в месяце
 		$currentMonth = DateMap::currentMonth($checkedTime);
@@ -71,7 +70,21 @@ class SiteController extends FrontController
 				throw new CHttpException(404);
 			}
 		}
-		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id, $directionId, $serviceId);
+
+		if (!empty($directionId)) {
+			$timeStart = DateMap::currentWeek($checkedTime);
+			$timeEnd = DateMap::nextWeek($checkedTime);
+
+			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $current->id, $directionId, $serviceId);
+
+		} else { // вид по дням
+			$timeStart = $checkedTime;
+			$timeEnd = $checkedTime + DateMap::TIME_DAY;
+
+			$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id, $directionId, $serviceId);
+		}
+
+		$events = Event::getByTime($timeStart, $timeEnd, $current->id, $directionId, $serviceId);
 
 
 		$this->render('index', array(
@@ -131,9 +144,10 @@ class SiteController extends FrontController
 
 			$events = Event::getByTime($timeStart, $timeEnd, $center->id, $directionId, $serviceId);
 
-			$html = $this->renderPartial('_ajaxWeekEvents', array(
+			$html = $this->renderPartial('ajax/_weekEvents', array(
 				'events'=>$events,
 				'services'=>$services,
+				'checkedTime'=>$dayStart,
 			), true);
 
 		} else { // вид по дням
@@ -149,7 +163,7 @@ class SiteController extends FrontController
 			$events = Event::getByTime($timeStart, $timeEnd, $center->id, $directionId, $serviceId);
 			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
-			$html = $this->renderPartial('_ajaxMonthEvents', array(
+			$html = $this->renderPartial('ajax/_monthEvents', array(
 				'halls'=>$halls,
 				'events'=>$events,
 				'services'=>$services,
@@ -176,7 +190,7 @@ class SiteController extends FrontController
 			throw new CHttpException(404);
 		}
 
-		$html = $this->renderPartial('_event', array('event'=>$event), true);
+		$html = $this->renderPartial('ajax/_event', array('event'=>$event), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
