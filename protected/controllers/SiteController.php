@@ -198,6 +198,11 @@ class SiteController extends FrontController
 		$this->renderPartial('_master');
 	}
 
+	public function actionAxEventInfo()
+	{
+		$this->renderPartial('_eventinfo');
+	}
+
 	/**
 	 * This is the action to handle external exceptions.
 	 */

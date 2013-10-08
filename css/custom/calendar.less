@@ -16,6 +16,16 @@ body {
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'PT Sans' !important;
 }
+.green {
+	color: #75c40f;
+	a& {
+		text-decoration: none;
+		&:hover {
+			color: #75c40f;
+			text-decoration: underline;
+		}
+	}
+}
 #wrap {
 	min-height: 100%;
 	height: auto !important;
@@ -67,7 +77,7 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: 400;
 	#wrap {
 		h1 {
-			color: #95d600;
+			color: #75c40f;
 			font-family: 'PT Sans';
 			font-weight: 400;
 			line-height: 84px;
@@ -376,7 +386,7 @@ h1, h2, h3, h4, h5, h6 {
 			width: 100%;
 		}
 		&.weekview {
-			
+
 		}
 	}
 	.event-balloon {
@@ -656,7 +666,7 @@ h1, h2, h3, h4, h5, h6 {
 		width: 96.666666657%;
 	} 
 	
-	.master-modal {
+	.calendar-modal {
 		font-family: 'PT Sans';
 		.modal-header {
 			border: none;
@@ -671,28 +681,32 @@ h1, h2, h3, h4, h5, h6 {
 		.modal-body {
 			padding: 20px 40px;
 		}
-		div.master-photo {
+		div.master-photo,
+		div.event-photo {
 			background: transparent;
 			border-radius: 50%;
 			box-shadow: -10px -5px 0 0 rgb(150,207,16) inset;
-			height: 240px;
+			height: 242px;
 			position: absolute;
-			width: 240px;
+			width: 242px;
 		}
 		img.img-circle {
-			height: 238px;
 			margin-bottom: 20px;
-			width: 238px;
+			&.master-thumb {
+				margin-bottom: 5px;
+				margin-top: 15px;
+			}
 		}
 		h1 {
 			color: #50564a;
 			font-size: 48px;
-			margin-top: 5px;
 			margin-bottom: 20px;
+			margin-top: 5px;
 		}
 		h2.phone {
-			color: #75c210;
-			margin-top: 0px;
+			font-size: 28px;
+			margin-bottom: 30px;
+			margin-top: 6px;
 		}
 		p {
 			font-size: 15px;
@@ -908,7 +922,7 @@ h1, h2, h3, h4, h5, h6 {
 @media screen and (min-width: 768px) {
 	.modal-dialog {
 		&.modal-lightbox {
-			width: 900px;
+			width: 940px;
 		}
 	}
 }
@@ -955,5 +969,7 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	a {
 		color: #75c210;
+		transition: none !important;
+		-webkit-transition: none !important;
 	}
 }

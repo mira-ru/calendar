@@ -85,6 +85,7 @@
           .emulateTransitionEnd(300) :
         that.$element.focus().trigger(e)
     })
+    //console.log(that);
   }
 
   Modal.prototype.hide = function (e) {
@@ -140,7 +141,7 @@
     this.backdrop(function () {
       that.removeBackdrop()
       that.$element.trigger('hidden.bs.modal')
-    })
+    });
   }
 
   Modal.prototype.removeBackdrop = function () {
