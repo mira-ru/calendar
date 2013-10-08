@@ -26,11 +26,9 @@ $('.search-button').click(function(){
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('widgets.CustomGridView', array(
 	'id'=>'service-grid',
 	'dataProvider'=>$model->search(),
-	'itemsCssClass' => 'table table-striped',
-	'ajaxUpdate' => false,
 	'columns'=>array(
 		array(
 			'name'=>'id',

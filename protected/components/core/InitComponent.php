@@ -9,6 +9,7 @@ class InitComponent extends CComponent
         
         public function init()
 	{
+		Yii::setPathOfAlias('widgets', dirname(__FILE__).'/../widgets');
                 if(!$this->enable)
                         return false;
 
