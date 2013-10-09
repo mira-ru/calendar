@@ -27,13 +27,9 @@
 		<div class="col-lg-12">
 			<ul class="list-inline list-justified top-menu">
 				<?php
-				$cnt = 1;
 				/** @var $center Center */
 				foreach ($centers as $center) {
-					$class = 'item-'.$cnt; // Класс .item-{n} уже не нужен будет. Вместо него - .menu-{HEX}
-
-					// CSS для генерации:
-					// .menu-{HEX}.current{border-color:#{HEX};}.menu-{HEX}.current:after{background-color:#{HEX};}.menu-{HEX}.current a{color:#{HEX}!important;}
+					$class = 'menu-'.ltrim($center->color, '#');
 
 					if ($center->id == $current->id) {
 						$class .= ' current';
@@ -44,7 +40,6 @@
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";
-					$cnt++;
 				}
 				?>
 			</ul>
