@@ -128,6 +128,7 @@ var Calendar = function () { 'use strict';
 			});
 			request.done(function(msg) {
 				content.removeClass('-loading');
+				var week = msg.week;
 				if (msg.html.length == 0) {
 					content.html(msg.html);
 				}
@@ -137,9 +138,11 @@ var Calendar = function () { 'use strict';
 				if(msg.days.length > 0){
 					days.html(msg.days);
 				}
-				if(msg.week.length > 0){
-					period[0].data('time', msg.week.prev);
-					period[1].data('time', msg.week.next);
+
+				if(_moduleOptions.activity_id > 0){
+					var urlWithoutDate = '/c/'+_moduleOptions.center_id+'/'+_moduleOptions.service_id+'/'+_moduleOptions.activity_id;
+					$(period[2]).attr('href',urlWithoutDate + '/' + msg.week.prev).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href',urlWithoutDate + '/' + msg.week.next).attr('data-time', msg.week.next);
 				}
 				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
 				_toggleLayout(layout);
