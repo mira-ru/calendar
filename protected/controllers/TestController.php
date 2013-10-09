@@ -4,7 +4,7 @@ class TestController extends AdminController
 {
 	public function actionTest()
 	{
-		Service::generateCss();
+		Config::generateCss();
 		die();
 	}
 
@@ -20,6 +20,7 @@ class TestController extends AdminController
 	{
 		$this->layout = "//layouts/test";
 		$this->render('/test/index');
+	}
 
 	public function actionUrl()
 	{

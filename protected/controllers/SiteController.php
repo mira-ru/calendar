@@ -28,7 +28,7 @@ class SiteController extends FrontController
 			array('status'=>Center::STATUS_ACTIVE),
 			array(
 				'index'=>'id',
-//				'order'=>'position ASC',
+				'order'=>'position ASC',
 			)
 		);
 
