@@ -8,7 +8,7 @@
 	/**
 	*	Custom body class
 	*/
-	$bodyclass = array('calendar', 'physical');
+	$bodyclass = array('calendar', 'week-view');
 
 	/**
 	 *	Module ID
@@ -100,19 +100,47 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<ul class="list-inline filter-items">
-						<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
+						<li><span>Рукопашный бой </span><i></i></li>
 					</ul>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-lg-12">
-					<a class="prev-month" data-time="1377986400" href="/c/4/0/0/1377986400">Сентябрь</a><strong class="current" data-month="10" data-year="2013">Октябрь, 2013</strong><a class="next-month" data-time="1383260400" href="/c/4/0/0/1383260400">Ноябрь</a>		</div>
+				<div class="col-lg-6">
+					<a class="prev-month" data-time="1377986400"  href="#">Сентябрь</a>
+					<strong class="current" data-month="10" data-year="2013">Октябрь,2013</strong>
+					<a class="next-month" data-time="1383260400" href="#">Ноябрь</a>
+				</div>
+				<div class="col-lg-6 ">
+					<a class="prev-month" data-time="1377986400"  href="#">Предыдущая неделя</a>
+					<a class="next-month" data-time="1383260400" href="#">Следующая неделя</a>
+				</div>
 			</div>
 			<div class="table-responsive first-table">
 				<table class="table timeline-days">
 					<thead>
 					<tr>
-						<td><span class=" disabled"><i data-weekday="вт" data-day="1380578400">1</i></span></td><td><span class=" disabled"><i data-weekday="ср" data-day="1380664800">2</i></span></td><td><span class=" disabled"><i data-weekday="чт" data-day="1380751200">3</i></span></td><td><span class=" disabled"><i data-weekday="пт" data-day="1380837600">4</i></span></td><td><span class=" disabled"><i data-weekday="сб" data-day="1380924000" class="weekend">5</i></span></td><td><span class=" disabled"><i data-weekday="вс" data-day="1381010400" class="weekend">6</i></span></td><td><span class="current"><i data-weekday="пн" data-day="1381096800">7</i></span></td><td><span class=""><i data-weekday="вт" data-day="1381183200">8</i></span></td><td><span class=""><i data-weekday="ср" data-day="1381269600">9</i></span></td><td><span class=""><i data-weekday="чт" data-day="1381356000">10</i></span></td><td><span class=""><i data-weekday="пт" data-day="1381442400">11</i></span></td><td><span class=""><i data-weekday="сб" data-day="1381528800" class="weekend">12</i></span></td><td><span class=""><i data-weekday="вс" data-day="1381615200" class="weekend">13</i></span></td><td><span class=""><i data-weekday="пн" data-day="1381701600">14</i></span></td><td><span class=""><i data-weekday="вт" data-day="1381788000">15</i></span></td><td><span class=""><i data-weekday="ср" data-day="1381874400">16</i></span></td><td><span class=""><i data-weekday="чт" data-day="1381960800">17</i></span></td><td><span class=""><i data-weekday="пт" data-day="1382047200">18</i></span></td><td><span class=""><i data-weekday="сб" data-day="1382133600" class="weekend">19</i></span></td><td><span class=""><i data-weekday="вс" data-day="1382220000" class="weekend">20</i></span></td><td><span class=""><i data-weekday="пн" data-day="1382306400">21</i></span></td><td><span class=""><i data-weekday="вт" data-day="1382392800">22</i></span></td><td><span class=""><i data-weekday="ср" data-day="1382479200">23</i></span></td><td><span class=""><i data-weekday="чт" data-day="1382565600">24</i></span></td><td><span class=""><i data-weekday="пт" data-day="1382652000">25</i></span></td><td><span class=""><i data-weekday="сб" data-day="1382738400" class="weekend">26</i></span></td><td><span class=""><i data-weekday="вс" data-day="1382824800" class="weekend">27</i></span></td><td><span class=" disabled"><i data-weekday="вс" data-day="1382911200" class="weekend">28</i></span></td><td><span class=" disabled"><i data-weekday="пн" data-day="1382997600">29</i></span></td><td><span class=" disabled"><i data-weekday="вт" data-day="1383084000">30</i></span></td><td><span class=" disabled"><i data-weekday="ср" data-day="1383170400">31</i></span></td>				</tr>
+						<td>
+							<span class=""><i data-weekday="пн" data-day="1381096800">7</i></span>
+						</td>
+						<td>
+							<span class=""><i data-weekday="вт" data-day="1381183200">8</i></span>
+						</td>
+						<td>
+							<span class="current"><i data-weekday="ср" data-day="1381269600">9</i></span>
+						</td>
+						<td>
+							<span class=""><i data-weekday="чт" data-day="1381356000">10</i></span>
+						</td>
+						<td>
+							<span class=""><i data-weekday="пт" data-day="1381442400">11</i></span>
+						</td>
+						<td>
+							<span class=""><i data-weekday="сб" data-day="1381528800" class="weekend">12</i></span>
+						</td>
+						<td>
+							<span class=""><i data-weekday="вс" data-day="1381615200" class="weekend">13</i></span>
+						</td>
+					</tr>
 					</thead>
 				</table>
 			</div>
@@ -139,8 +167,131 @@
 					<tr>
 						<td colspan="15" class="timeline-wrapper">
 							<div>
-								<div><div class="text-center">Энергия Земли</div><div class="row timeline-row"><div data-sub="32" data-event="780" data-sid="2" class="col-210 start-02-00 c-ff5114"><span>Рукопашный бой </span></div><div data-sub="36" data-event="832" data-sid="2" class="col-90 start-11-00 c-ff5114"><span>Капоэйра для детей</span></div><div data-sub="38" data-event="784" data-sid="30" class="col-90 start-14-00 c-ffa12d"><span>Хатха</span></div><div data-sub="65" data-event="788" data-sid="2" class="col-90 start-15-30 c-ff5114"><span>Капоэйра</span></div></div></div><div><div class="text-center">Энергия Воды</div><div class="row timeline-row"><div data-sub="39" data-event="792" data-sid="30" class="col-90 start-02-00 c-ffa12d"><span>Кундалини-йога</span></div><div data-sub="43" data-event="796" data-sid="30" class="col-90 start-12-30 c-ffa12d"><span>Йога 23</span></div></div></div><div><div class="text-center">Энергия Солнца</div><div class="row timeline-row"><div data-sub="45" data-event="800" data-sid="30" class="col-90 start-03-30 c-ffa12d"><span>Хатха йога с элементами аштанга йоги</span></div><div data-sub="46" data-event="804" data-sid="30" class="col-60 start-07-00 c-ffa12d"><span>Нидра-йога</span></div><div data-sub="50" data-event="808" data-sid="33" class="col-60 start-11-00 c-ffbd03"><span>Танцевальное направление Ragga/Dancehall </span></div><div data-sub="54" data-event="812" data-sid="2" class="col-90 start-15-00 c-ff5114"><span>Прикладной рукопашный бой </span></div></div></div><div><div class="text-center">Энергия Света</div><div class="row timeline-row"><div data-sub="55" data-event="816" data-sid="30" class="col-120 start-02-30 c-ffa12d"><span>Хатха-йога</span></div><div data-sub="62" data-event="820" data-sid="29" class="col-90 start-12-30 c-ff8947"><span>Гимнастика для лица</span></div></div></div><div><div class="text-center">Энергия Ветра</div><div class="row timeline-row"><div data-sub="70" data-event="824" data-sid="33" class="col-60 start-05-00 c-ffbd03"><span>Арабский терапевтический  танец для детей</span></div><div data-sub="40" data-event="828" data-sid="30" class="col-60 start-14-00 c-ffa12d"><span>Хатха для начинающих  </span></div></div></div>						</div>
-							<p class="warning-empty">К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!</p>					</td>
+								<div class="row  timeline-row">
+									<div data-sub="32" data-event="780"
+									     data-sid="2"
+									     class="col-150 c-ff5114">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="36" data-event="832"
+									     data-sid="2"
+									     class="col-150 c-ff5114">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+									<div data-sub="38" data-event="784"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="65" data-event="788"
+									     data-sid="2"
+									     class="col-150 c-ff5114">
+										<span>07:30 — 09:30</span>
+										<a href="#">Елена Журавлева</a>
+									</div>
+								</div>
+								<div class="row timeline-row">
+									<div data-sub="39" data-event="792"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="43" data-event="796"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+								<div class="row current timeline-row">
+									<div data-sub="45" data-event="800"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="46" data-event="804"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+									<div data-sub="50" data-event="808"
+									     data-sid="33"
+									     class="col-150 c-ffbd03">
+										<span>07:30 — 09:30</span>
+										<a href="#">Елена Журавлева</a>
+									</div>
+									<div data-sub="54" data-event="812"
+									     data-sid="2"
+									     class="col-150 c-ff5114">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+								<div class="row timeline-row">
+									<div data-sub="55" data-event="816"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="62" data-event="820"
+									     data-sid="29"
+									     class="col-150 c-ff8947">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+								<div class="row timeline-row">
+									<div data-sub="70" data-event="824"
+									     data-sid="33"
+									     class="col-150 c-ffbd03">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="40" data-event="828"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+								<div class="row timeline-row">
+									<div data-sub="55" data-event="816"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="62" data-event="820"
+									     data-sid="29"
+									     class="col-150 c-ff8947">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+								<div class="row timeline-row">
+									<div data-sub="70" data-event="824"
+									     data-sid="33"
+									     class="col-150 c-ffbd03">
+										<span>07:30 — 09:30</span>
+										<a href="#">Павел Коноровский</a>
+									</div>
+									<div data-sub="40" data-event="828"
+									     data-sid="30"
+									     class="col-150 c-ffa12d">
+										<span>07:30 — 09:30</span>
+										<a href="#">Света Морозова</a>
+									</div>
+								</div>
+							</div>
+							<p class="warning-empty">К сожалению, в этот день нет занятий.
+								Попробуйте выбрать другой день!</p></td>
 					</tr>
 					</tbody>
 				</table>
@@ -150,7 +301,6 @@
 			<div></div>
 			<!-- <i class="cross"></i> -->
 		</div>
-	</div>
 	</div>
 <style>
 

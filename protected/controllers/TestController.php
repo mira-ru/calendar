@@ -4,7 +4,11 @@ class TestController extends AdminController
 {
 	public function actionTest()
 	{
-		Service::generateCss();
+		$tmp = DateMap::currentWeek(time());
+
+		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
+		$tmp = DateMap::prevWeek(time());
+		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
 		die();
 	}
 
@@ -12,6 +16,14 @@ class TestController extends AdminController
 	{
 		phpinfo();
 		die();
+	}
+
+	// тестовые. для разработки с canjs
+	
+	public function actionIndex()
+	{
+		$this->layout = "//layouts/test";
+		$this->render('/test/index');
 	}
 
 	public function actionUrl()

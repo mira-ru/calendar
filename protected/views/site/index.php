@@ -18,7 +18,7 @@
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap">
+<div id="wrap" class="<?php echo (!empty($directionId)) ? 'week-view' : '';?>">
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12 text-center">
@@ -27,10 +27,10 @@
 		<div class="col-lg-12">
 			<ul class="list-inline list-justified top-menu">
 				<?php
-				$cnt = 1;
 				/** @var $center Center */
 				foreach ($centers as $center) {
-					$class = 'item-'.$cnt;
+					$class = 'menu-'.ltrim($center->color, '#');
+
 					if ($center->id == $current->id) {
 						$class .= ' current';
 						$url = 'javascript:void(0)';
@@ -40,7 +40,6 @@
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";
-					$cnt++;
 				}
 				?>
 			</ul>
@@ -89,8 +88,8 @@
 			</ul>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-lg-12">
+	<div class="row period-links">
+		<div class="col-lg-6">
 			<?php
 			$monthNumber = date('n', $checkedTime);
 			$yearNumber = date('Y', $checkedTime);
@@ -109,48 +108,41 @@
 			);
 			?>
 		</div>
+		<div class="col-lg-6 ">
+			<?php
+			$prevWeek = DateMap::prevWeek($checkedTime);
+			$nextWeek = DateMap::nextWeek($checkedTime);
+			echo CHtml::link('Предыдущая неделя',
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'prev-month', 'data-time'=>$prevWeek)
+			);
+
+			echo CHtml::link('Следующая неделя',
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'next-month', 'data-time'=>$nextWeek)
+			);
+			?>
+		</div>
 	</div>
 	<div class="table-responsive first-table">
 		<table class="table timeline-days">
 			<thead>
 				<tr>
+					<div>
 					<?php
-					$daysOfMonth = date('t', $checkedTime);
-					$dayNumber = date('j', $checkedTime);
-					for ($n=1; $n<=$daysOfMonth; $n++) {
-						echo CHtml::openTag('td');
-
-						$htmlOptions = array('class'=>'');
-						if ($n == $dayNumber) {
-							$htmlOptions['class'] = 'current';
-						}
-						$dayTime = $currentMonth + ($n-1)*86400;
-						$dow = date('w', $dayTime);
-
-						// нет событий в дне
-						if (empty($activeDays[$dayTime])) {
-							$htmlOptions['class'] .= ' disabled';
-						}
-
-						echo CHtml::openTag('span', $htmlOptions);
-
-						$htmlOptions = array(
-							'data-weekday'=>DateMap::$smallDayMap[$dow],
-							'data-day'=>$dayTime,
+					// выбрано направление - недельный вид
+					if (!empty($directionId)) {
+						$this->renderPartial('index/_daysWeek',
+							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
 						);
-						if ($dow == 0 || $dow == 6) {
-							$htmlOptions['class'] = 'weekend';
-						}
-
-						echo CHtml::tag('i', $htmlOptions, $n);
-
-						echo CHtml::closeTag('span');
-						echo CHtml::closeTag('td');
+					} else {
+						$this->renderPartial('index/_daysMonth',
+							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
+						);
 					}
 
-
-
 					?>
+					</div>
 				</tr>
 			</thead>
 		</table>
@@ -179,22 +171,23 @@
 					<td colspan="15" class="timeline-wrapper">
 						<div>
 						<?php
-						$this->renderPartial('_events', array(
-							'halls'=>$halls,
-							'events'=>$events,
-							'services'=>$services,
-							'directionId'=>$directionId,
-							'serviceId'=>$serviceId,
-						));
+						// выбрано направление - недельный вид
+						if (!empty($directionId)) {
+							$this->renderPartial('index/_weekEvents', array(
+								'halls'=>$halls,
+								'events'=>$events,
+								'services'=>$services,
+								'checkedTime'=>$checkedTime,
+							));
+						} else {
+							$this->renderPartial('index/_monthEvents', array(
+								'halls'=>$halls,
+								'events'=>$events,
+								'services'=>$services,
+							));
+						}
 						?>
 						</div>
-						<?php
-						$htmlOptions = array('class'=>'warning-empty');
-						if ( empty($halls) || empty($events) ) {
-							$htmlOptions['style'] = 'display:block';
-						}
-						echo CHtml::tag('p', $htmlOptions, 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
-						?>
 					</td>
 				</tr>
 			</tbody>

@@ -3,6 +3,10 @@ lib.module('mod.Calendar');
 
 lib.include('mod.Common');
 
+lib.include('plugins.bootstrap.Modal');
+
+//lib.include('plugins.bootstrap.Transition');
+
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
@@ -31,17 +35,18 @@ var Calendar = function () { 'use strict';
 			var li = $(this),
 				sid = li.data('service'),
 				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+
 			setOptions({'service_id':sid, 'activity_id':0});
-			_updateTimelineDays(_moduleOptions);
-			_filterEvents(text, 0, sid);
+			_getEvents(_moduleOptions);
+			_setFilterLabel(text);
 			li.parent().hide();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
-					id = li.data('id');
+				    id = li.data('id');
 
 				setOptions({'activity_id':id, 'service_id':0});
-				_updateTimelineDays(_moduleOptions);
-				_filterEvents(li.text(), id, 0);
+				_getEvents(_moduleOptions);
+				_setFilterLabel(li.text());
 				li.parent().hide();
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
@@ -59,12 +64,12 @@ var Calendar = function () { 'use strict';
 				balloon = $('.event-balloon');
 
 			// Получаем данные
+			var data = _moduleOptions;
+			data.event_id = toggler.data('event');
 			var request = $.ajax({
 				url: '/site/axEvent',
 				type: 'POST',
-				data: {
-					event_id: toggler.data('event')
-				},
+				data: data,
 				dataType: 'json'
 			});
 			request.done(function(msg) {
@@ -79,7 +84,7 @@ var Calendar = function () { 'use strict';
 		});
 
 		$('body').on('click', function(e){
-			if (typeof $(e.target).data('sub') === 'undefined') {
+			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
@@ -94,84 +99,27 @@ var Calendar = function () { 'use strict';
 			},0);
 		});
 
-		function _filterEvents(text, id, sid) {
-			var row = $('.timeline-row'),
-				sub = $('div', row),
-				val = (sid == 0) ? id : sid ;
-
-			// Делаем маппинг занятий
-			sub.map(function(){
-				var key = (sid == 0) ? $(this).data('sub') : $(this).data('sid') ;
-				if (key == val) {
-					return this;
-				}
-			}).promise().done(function(){
-					var elems = $(this);
-					if (elems.length != 0) {
-						$('.warning-empty').fadeOut();
-					}
-					if (filter) {
-						// Здесь нужно:
-						// Ко всем видимым добавить новые, кроме видимых новых и сделать toggle
-						var arr = sub.filter(':visible').not(elems.filter(':visible')).add(elems.filter(':hidden'));
-						arr.fadeToggle('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children('[style="display: block;"], :visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-								else {
-									$(this).parent().slideDown('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-					else {
-						sub.not(elems).fadeOut('fast').promise().done(function(){
-							row.each(function(index){
-								var c = $(this).children(':visible').length;
-								if (c == 0) {
-									$(this).parent().slideUp('fast');
-								}
-							});
-							_setFilterLabel(text);
-							if (elems.length == 0) {
-								$('.warning-empty').fadeIn();
-							}
-						});
-					}
-				});
-		}
-
-		// Обновление .timeline-wrapper
-
-		function _updateTimelineDays(data) {
-			var days = $('.timeline-days span'),
-				request = $.ajax({
-					url: '/site/axActiveDays',
-					type: 'POST',
-					data: data,
-					dataType: 'json'
-				});
-			request.done(function(msg) {
-				days.each(function(){
-					var day = $(this).children('i').data('day');
-					if (jQuery.inArray(day, msg.days) == -1) {
-						$(this).addClass('disabled');
-					} else {
-						$(this).removeClass('disabled');
-					}
-				});
+		$('.modal')
+			.on('shown.bs.modal', function(e) {
+				var ev = $(e.relatedTarget),
+				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'a='+ev.data('eventid') : null ;
+				_changeUrl(_moduleOptions, str);
+			})
+			.on('hide.bs.modal', function() {
+				_changeUrl(_moduleOptions);
+			})
+			.on('hidden.bs.modal', function() {
+				$(this).removeData('bs.modal').empty();
 			});
-		}
 
 		// Загрузка событий в .timeline-wrapper
 
 		function _getEvents(data) {
+			var     content = $('.timeline-wrapper>div'),
+				days = $('.timeline-days tr'),
+				period = $('.period-links a');
+
+			content.addClass('-loading');
 			var request = $.ajax({
 				url: '/site/axEvents',
 				type: 'POST',
@@ -179,46 +127,52 @@ var Calendar = function () { 'use strict';
 				dataType: 'json'
 			});
 			request.done(function(msg) {
+				content.removeClass('-loading');
+				var week = msg.week;
 				if (msg.html.length == 0) {
-					$('.timeline-wrapper > div').html(msg.html);
-					$('.warning-empty').fadeIn();
+					content.html(msg.html);
 				}
 				else {
-					$('.warning-empty').fadeOut(function(){
-						$('.timeline-wrapper > div').html(msg.html);
-					});
+					content.html(msg.html);
 				}
+				if(msg.days.length > 0){
+					days.html(msg.days);
+				}
+
+				if(_moduleOptions.activity_id > 0){
+					var urlWithoutDate = '/c/'+_moduleOptions.center_id+'/'+_moduleOptions.service_id+'/'+_moduleOptions.activity_id;
+					$(period[2]).attr('href',urlWithoutDate + '/' + msg.week.prev).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href',urlWithoutDate + '/' + msg.week.next).attr('data-time', msg.week.next);
+				}
+				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
+				_toggleLayout(layout);
 			});
 		}
 
 
-		// Установка фильтра
+		function _toggleLayout(toggle){
+			if(toggle){
+				$('#wrap').addClass('week-view');
+				$('.timeline-hours tr:first').hide();
+			} else {
+				$('#wrap').removeClass('week-view');
+				$('.timeline-hours tr:first').show();
+			}
+		}
 
+		// Установка фильтра
 		function _setFilterLabel(text) {
 			$('.filter-items').empty();
 			filter = $('<li>').appendTo('.filter-items').text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
 		}
 		$('.filter-items i').bind('click', _resetFilter);
-		// Сброс фильтра
 
+		// Сброс фильтра
 		function _resetFilter() {
-			if ($('.warning-empty').is(':visible')) {
-				$('.warning-empty').fadeOut('fast').promise().done(function(){
-					$('.timeline-wrapper > div > div').slideDown('fast', function(){
-						$('div', $(this)).fadeIn('fast');
-					});
-					$('.filter-items').empty();
-				});
-			}
-			else {
-				$('.timeline-wrapper > div > div').slideDown('fast', function(){
-					$('div', $(this)).fadeIn('fast');
-				});
-				$('.filter-items').empty();
-			}
+			$('.filter-items').empty();
 			setOptions({'activity_id':0, 'service_id':0});
-			// Обновляем таймлайн
-			_updateTimelineDays(_moduleOptions);
+			// Обновляем таймлайн и расписание
+			_getEvents(_moduleOptions);
 		}
 	}
 
@@ -235,29 +189,28 @@ var Calendar = function () { 'use strict';
 	}
 
 	// замена url
-	function _changeUrl(data) {
+	function _changeUrl(data, get) {
 		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
 			urlWithoutCenter = '/0/0/'+data.day,
-			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id;
+			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
+			menuLinks = $('.top-menu li:not(.current) a'),
+			periodLinks = $('.period-links a');
+
+		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
-
-
-		}else{
+		} else {
 			location.hash = url;
 		}
-
-		var     menuLinks = $('.top-menu li:not(.current) a'),
-			prevMoth = $('.prev-month'),
-			nextMoth = $('.next-month');
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
 			$(this).attr('href','/c/' + id + urlWithoutCenter);
 		});
-
-		prevMoth.attr('href',urlWithoutDate + '/' + prevMoth.attr('data-time'));
-		nextMoth.attr('href',urlWithoutDate + '/' + nextMoth.attr('data-time'));
+		periodLinks.each(function(){
+			var time = $(this).attr('data-time');
+			$(this).attr('href',urlWithoutDate + '/' + time);
+		});
 	}
 
 	// Mapping
@@ -268,3 +221,12 @@ var Calendar = function () { 'use strict';
 	};
 }();
 
+$(function(){
+	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'a') {
+		var m = $('.modal'), getstr = '?type='+location.search.substr(1).split('=')[0]+'&item='+location.search.substr(1).split('=')[1];
+		m.modal({
+			show: true,
+			remote: '/site/axPopup' + getstr
+		});
+	}
+});
