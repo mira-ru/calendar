@@ -18,7 +18,7 @@
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap" class="<?php echo (!empty($checkedDirection)) ? 'week-view' : '';?>">
+<div id="wrap" class="<?php echo (!empty($directionId)) ? 'week-view' : '';?>">
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12 text-center">
