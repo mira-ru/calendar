@@ -10,7 +10,7 @@
 		Yii::app()->less->register();
 
 		$colorFile = Yii::getPathOfAlias('application.runtime.assets') . '/color.css';
-		if (!file_exists($colorFile)) { Service::generateCss(); }
+		if (!file_exists($colorFile)) { Config::generateCss(); }
 		$url = Yii::app()->getAssetManager()->publish($colorFile);
 		/** @var $cs EClientScript */
 		$cs = Yii::app()->getClientScript();

@@ -27,10 +27,10 @@
 		<div class="col-lg-12">
 			<ul class="list-inline list-justified top-menu">
 				<?php
-				$cnt = 1;
 				/** @var $center Center */
 				foreach ($centers as $center) {
-					$class = 'item-'.$cnt;
+					$class = 'menu-'.ltrim($center->color, '#');
+
 					if ($center->id == $current->id) {
 						$class .= ' current';
 						$url = 'javascript:void(0)';
@@ -40,7 +40,6 @@
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";
-					$cnt++;
 				}
 				?>
 			</ul>
