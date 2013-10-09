@@ -21,7 +21,7 @@ foreach ($halls as $hall) {
 	foreach ($events as $event) {
 		if ($event->hall_id == $hall->id) {
 			$hasEvents = true;
-			$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
+			$htmlOptions = array('data-event'=>$event->id);
 
 			$timeStart = date('H-i', $event->start_time);
 			// Продолжительность в минутах

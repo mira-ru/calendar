@@ -24,6 +24,9 @@ class IndexUrlRule extends CBaseUrlRule
 	 */
 	public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
 	{
+		if ($request->getIsAjaxRequest())
+			return false;
+
 		if (empty($pathInfo)) {
 			$request->redirect(
 				$this->createUrl($manager, 'site/index', array(), '&'),
