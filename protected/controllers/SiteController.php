@@ -169,8 +169,10 @@ class SiteController extends FrontController
 				'services'=>$services,
 			), true);
 		}
+		$nextWeek = DateMap::nextWeek($day);
+		$prevWeek = DateMap::prevWeek($day);
 
-		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days, 'week'=>array('next'=>$timeEnd, 'prev'=>$timeStart))) );
+		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days, 'week'=>array('next'=>$nextWeek, 'prev'=>$prevWeek))) );
 	}
 
 	/**

@@ -61,16 +61,16 @@ class DateMap {
 	 */
 	public static function currentWeek($timestamp)
 	{
-		return strtotime("Monday this week", $timestamp);
+		return strtotime("Monday this week", strtotime('last sunday', $timestamp));
 	}
 
 	public static function nextWeek($timestamp)
 	{
-		return strtotime("Monday next week", $timestamp);
+		return strtotime("Monday next week", strtotime('last sunday', $timestamp));
 	}
 
 	public static function prevWeek($timestamp)
 	{
-		return strtotime("Monday previous week", $timestamp);
+		return strtotime("Monday previous week", strtotime('last sunday', $timestamp));
 	}
 }
