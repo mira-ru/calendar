@@ -114,12 +114,12 @@
 			$nextWeek = DateMap::nextWeek($checkedTime);
 			echo CHtml::link('Следующая неделя',
 				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
-				array('class'=>'prev-month', 'date-time'=>$prevWeek)
+				array('class'=>'prev-month', 'data-time'=>$prevWeek)
 			);
 
 			echo CHtml::link('Предыдущая неделя',
 				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
-				array('class'=>'next-month', 'date-time'=>$nextWeek)
+				array('class'=>'next-month', 'data-time'=>$nextWeek)
 			);
 			?>
 		</div>

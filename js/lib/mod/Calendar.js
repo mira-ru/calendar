@@ -116,7 +116,8 @@ var Calendar = function () { 'use strict';
 
 		function _getEvents(data) {
 			var     content = $('.timeline-wrapper>div'),
-				days = $('.timeline-days tr');
+				days = $('.timeline-days tr'),
+				period = $('.period-links a');
 
 			content.addClass('-loading');
 			var request = $.ajax({
@@ -136,7 +137,10 @@ var Calendar = function () { 'use strict';
 				if(msg.days.length > 0){
 					days.html(msg.days);
 				}
-				console.log(_moduleOptions.activity_id);
+				if(msg.week.length > 0){
+					period[0].data('time', msg.week.prev);
+					period[1].data('time', msg.week.next);
+				}
 				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
 				_toggleLayout(layout);
 			});
@@ -186,17 +190,15 @@ var Calendar = function () { 'use strict';
 		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
 			urlWithoutCenter = '/0/0/'+data.day,
 			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
-			url = (typeof get !== 'undefined') ? url + '?' + get : url;
+			menuLinks = $('.top-menu li:not(.current) a'),
+			periodLinks = $('.period-links a');
+
+		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
-
-
-		}else{
+		} else {
 			location.hash = url;
 		}
-
-		var     menuLinks = $('.top-menu li:not(.current) a'),
-			periodLinks = $('.period-links a');
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
