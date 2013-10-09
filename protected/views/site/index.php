@@ -110,8 +110,19 @@
 			?>
 		</div>
 		<div class="col-lg-6 ">
-			<a class="prev-month" href="/c/4/0/38/1377986400" data-time="1377986400">Предыдущая неделя</a>
-			<a class="next-month" href="/c/4/0/38/1377986800" data-time="1377986800"">Следующая неделя</a>
+			<?php
+			$prevWeek = DateMap::prevWeek($checkedTime);
+			$nextWeek = DateMap::nextWeek($checkedTime);
+			echo CHtml::link('Следующая неделя',
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'prev-month', 'date-time'=>$prevWeek)
+			);
+
+			echo CHtml::link('Предыдущая неделя',
+				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				array('class'=>'next-month', 'date-time'=>$nextWeek)
+			);
+			?>
 		</div>
 	</div>
 	<div class="table-responsive first-table">

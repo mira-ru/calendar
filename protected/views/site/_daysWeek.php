@@ -32,8 +32,9 @@ for ($n=1; $n<=7; $n++) {
 	if ($dow == 0 || $dow == 6) {
 		$htmlOptions['class'] = 'weekend';
 	}
+	$dom = date('j', $dayTime);
 
-	echo CHtml::tag('i', $htmlOptions, $n);
+	echo CHtml::tag('i', $htmlOptions, $dom);
 
 	echo CHtml::closeTag('span');
 	echo CHtml::closeTag('td');

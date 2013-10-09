@@ -7,7 +7,7 @@ class TestController extends AdminController
 		$tmp = DateMap::currentWeek(time());
 
 		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
-		$tmp = DateMap::nextWeek(time());
+		$tmp = DateMap::prevWeek(time());
 		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
 		die();
 	}
@@ -24,6 +24,7 @@ class TestController extends AdminController
 	{
 		$this->layout = "//layouts/test";
 		$this->render('/test/index');
+	}
 
 	public function actionUrl()
 	{

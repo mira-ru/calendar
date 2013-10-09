@@ -68,4 +68,9 @@ class DateMap {
 	{
 		return strtotime("Monday next week", $timestamp);
 	}
+
+	public static function prevWeek($timestamp)
+	{
+		return strtotime("Monday previous week", $timestamp);
+	}
 }
