@@ -288,10 +288,10 @@ var Calendar = function () { 'use strict';
 
 $(function(){
 	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'e') {
-		var m = $('.modal');
+		var m = $('.modal'), getstr = '?type='+location.search.substr(1).split('=')[0]+'&item='+location.search.substr(1).split('=')[1];
 		m.modal({
 			show: true,
-			remote: '/site/axMasterInfo' + location.search
+			remote: '/site/axMasterInfo' + getstr
 		});
 	}
 });
