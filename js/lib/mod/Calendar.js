@@ -64,12 +64,12 @@ var Calendar = function () { 'use strict';
 				balloon = $('.event-balloon');
 
 			// Получаем данные
+			var data = _moduleOptions;
+			data.event_id = toggler.data('event');
 			var request = $.ajax({
 				url: '/site/axEvent',
 				type: 'POST',
-				data: {
-					event_id: toggler.data('event')
-				},
+				data: data,
 				dataType: 'json'
 			});
 			request.done(function(msg) {
@@ -102,7 +102,7 @@ var Calendar = function () { 'use strict';
 		$('.modal')
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
-				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'e='+ev.data('eventid') : null ;
+				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'a='+ev.data('eventid') : null ;
 				_changeUrl(_moduleOptions, str);
 			})
 			.on('hide.bs.modal', function() {
@@ -218,10 +218,10 @@ var Calendar = function () { 'use strict';
 
 $(function(){
 	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'e') {
-		var m = $('.modal');
+		var m = $('.modal'), getstr = '?type='+location.search.substr(1).split('=')[0]+'&item='+location.search.substr(1).split('=')[1];
 		m.modal({
 			show: true,
-			remote: '/site/axMasterInfo' + location.search
+			remote: '/site/axPopup' + getstr
 		});
 	}
 });

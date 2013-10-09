@@ -9,6 +9,8 @@
  * @property integer $service_id
  * @property string $name
  * @property string $url
+ * @property string price
+ * @property integer image_id
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -198,5 +200,14 @@ class Direction extends CActiveRecord
 		$criteria->index = 'id';
 
 		return self::model()->findAll($criteria);
+	}
+
+	/**
+	 * Проверка на необходимость выводить линк на напрвление на фронте
+	 * @return bool
+	 */
+	public function checkShowLink()
+	{
+		return !empty($this->desc);
 	}
 }

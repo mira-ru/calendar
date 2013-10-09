@@ -1,10 +1,25 @@
 <?php
 /**
  * @var $event Event
+ * @var $centerId integer
+ * @var $day integer
+ * @var $directionId integer
+ * @var $serviceId integer
  */
 ?>
 <strong><?php
-	echo empty($event->direction->url) ? CHtml::link($event->direction->name, '/site/axEventInfo', array('data-eventid'=>$event->id, 'data-toggle'=>'modal', 'data-target'=>'#modal', 'class'=>'green')) : CHtml::link($event->direction->name, $event->direction->url);
+	echo $event->direction->checkShowLink()
+	    ? CHtml::link(
+		    $event->direction->name,
+		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
+		    array('data-remote'=>$this->createUrl('/site/axPopup', array('a'=>$event->direction_id)),
+			    'data-eventid'=>$event->id,
+			    'data-toggle'=>'modal',
+			    'data-target'=>'#modal',
+			    'class'=>'green'
+		    )
+	    )
+	    : $event->direction->name, $event->direction->url;
 	if (!Yii::app()->getUser()->getIsGuest()) {
 		echo CHtml::link('',
 			$this->createUrl('/admin/event/update', array('id'=>$event->id)),
@@ -12,7 +27,21 @@
 		);;
 	}
 	?></strong>
-<span><i>Мастер:</i><?php echo empty($event->user->url) ? CHtml::link($event->user->name, '/site/axMasterInfo', array('data-masterid'=>$event->user->id, 'data-toggle'=>'modal', 'data-target'=>'#modal', 'class'=>'green')) : CHtml::link($event->user->name, $event->user->url); ?></span>
+<span><i>Мастер:</i><?php
+	echo $event->user->checkShowLink()
+	    ? CHtml::link(
+		    $event->user->name,
+		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
+		    array(
+			    'data-remote'=>$this->createUrl('/site/axPopup', array('m'=>$event->user_id)),
+			    'data-masterid'=>$event->user->id,
+			    'data-toggle'=>'modal',
+			    'data-target'=>'#modal',
+			    'class'=>'green'
+		    )
+	    )
+	    : $event->user->name;
+	?></span>
 <span><i>Зал:</i><?php echo $event->hall->name; ?></span>
 <?php $dow = date('w', $event->start_time); ?>
 <span><i>Время:</i><?php echo DateMap::$smallDayMap[$dow].', '.date('H:i', $event->start_time).'-'.date('H:i', $event->end_time); ?></span>

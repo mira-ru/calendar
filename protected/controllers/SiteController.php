@@ -140,7 +140,7 @@ class SiteController extends FrontController
 			$timeEnd = DateMap::nextWeek($day);
 
 			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $center->id, $directionId, $serviceId);
-			$days = $this->renderPartial('_daysWeek', array('checkedTime'=>$day, 'activeDays'=>$activeDays), true);
+			$days = $this->renderPartial('index/_daysWeek', array('checkedTime'=>$day, 'activeDays'=>$activeDays), true);
 
 			$events = Event::getByTime($timeStart, $timeEnd, $center->id, $directionId, $serviceId);
 
@@ -158,7 +158,7 @@ class SiteController extends FrontController
 			$nextMonthTime = DateMap::nextMonth($monthTime);
 			$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
 
-			$days = $this->renderPartial('_daysMonth', array('checkedTime'=>$day, 'activeDays'=>$activeDays), true);
+			$days = $this->renderPartial('index/_daysMonth', array('checkedTime'=>$day, 'activeDays'=>$activeDays), true);
 
 			$events = Event::getByTime($timeStart, $timeEnd, $center->id, $directionId, $serviceId);
 			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
@@ -170,7 +170,7 @@ class SiteController extends FrontController
 			), true);
 		}
 
-		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days)) );
+		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days, 'week'=>array('next'=>$timeEnd, 'prev'=>$timeStart))) );
 	}
 
 	/**
@@ -190,19 +190,57 @@ class SiteController extends FrontController
 			throw new CHttpException(404);
 		}
 
-		$html = $this->renderPartial('ajax/_event', array('event'=>$event), true);
+		$centerId = intval($request->getParam('center_id'));
+		$day = intval($request->getParam('day'));
+		$directionId = intval($request->getParam('activity_id'));
+		$serviceId = intval($request->getParam('service_id'));
+
+		$html = $this->renderPartial('ajax/_event', array(
+			'event'=>$event,
+			'centerId'=>$centerId,
+			'day'=>$day,
+			'directionId'=>$directionId,
+			'serviceId'=>$serviceId,
+		), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
 
-	public function actionAxMasterInfo()
+	/**
+	 * Отдача контента для popup мастера и направления
+	 */
+	public function actionAxPopup()
 	{
-		$this->renderPartial('_master');
-	}
+		/** @var $request CHttpRequest */
+		$request = Yii::app()->getRequest();
+		if (!$request->getIsAjaxRequest()) {
+			throw new CHttpException(400);
+		}
 
-	public function actionAxEventInfo()
-	{
-		$this->renderPartial('_eventinfo');
+		$type = $request->getParam('type', '');
+		$itemId = intval($request->getParam('item'));
+
+		switch ($type) {
+			case 'm': $class = 'User'; break;
+			case 'a': $class = 'Direction'; break;
+			default: throw new CHttpException(400);
+		}
+
+		$item = $class::model()->findByPk($itemId);
+		if ($item === null) {
+			throw new CHttpException(404);
+		}
+
+		if ($item instanceof User) {
+			$this->renderPartial('ajax/_masterPopup', array('item'=>$item));
+			Yii::app()->end();
+		} elseif ($item instanceof Direction) {
+			$this->renderPartial('ajax/_directionPopup', array('item'=>$item));
+			Yii::app()->end();
+		} else {
+			throw new CHttpException(404);
+		}
+
 	}
 
 	/**

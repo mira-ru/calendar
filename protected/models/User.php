@@ -187,12 +187,12 @@ class User extends CActiveRecord
 	}
 
 	/**
-	 * Проверка на необходимость выводить линк на масетра на фронте
+	 * Проверка на необходимость выводить линк на мастера на фронте
 	 * @return bool
 	 */
 	public function checkShowLink()
 	{
-		return !empty($this->url);
+		return !empty($this->desc);
 	}
 
 }

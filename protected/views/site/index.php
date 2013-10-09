@@ -132,11 +132,11 @@
 					<?php
 					// выбрано направление - недельный вид
 					if (!empty($directionId)) {
-						$this->renderPartial('_daysWeek',
+						$this->renderPartial('index/_daysWeek',
 							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
 						);
 					} else {
-						$this->renderPartial('_daysMonth',
+						$this->renderPartial('index/_daysMonth',
 							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
 						);
 					}
