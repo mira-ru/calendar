@@ -120,13 +120,13 @@
 					<thead>
 					<tr>
 						<td>
-							<span class="current"><i data-weekday="пн" data-day="1381096800">7</i></span>
+							<span class=""><i data-weekday="пн" data-day="1381096800">7</i></span>
 						</td>
 						<td>
 							<span class=""><i data-weekday="вт" data-day="1381183200">8</i></span>
 						</td>
 						<td>
-							<span class=""><i data-weekday="ср" data-day="1381269600">9</i></span>
+							<span class="current"><i data-weekday="ср" data-day="1381269600">9</i></span>
 						</td>
 						<td>
 							<span class=""><i data-weekday="чт" data-day="1381356000">10</i></span>
@@ -167,7 +167,7 @@
 					<tr>
 						<td colspan="15" class="timeline-wrapper">
 							<div>
-								<div class="row current timeline-row">
+								<div class="row  timeline-row">
 									<div data-sub="32" data-event="780"
 									     data-sid="2"
 									     class="col-150 c-ff5114">
@@ -207,7 +207,7 @@
 										<a href="#">Света Морозова</a>
 									</div>
 								</div>
-								<div class="row timeline-row">
+								<div class="row current timeline-row">
 									<div data-sub="45" data-event="800"
 									     data-sid="30"
 									     class="col-150 c-ffa12d">

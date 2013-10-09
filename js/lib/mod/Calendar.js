@@ -40,8 +40,6 @@ var Calendar = function () { 'use strict';
 			_getEvents(_moduleOptions);
 			_setFilterLabel(text);
 			li.parent().hide();
-			$('body').removeClass('week-view');
-			$('.timeline-hours tr:first').show();
 		}).on('click', '[data-id]', function(){
 				var li = $(this),
 				    id = li.data('id');
@@ -50,8 +48,6 @@ var Calendar = function () { 'use strict';
 				_getEvents(_moduleOptions);
 				_setFilterLabel(li.text());
 				li.parent().hide();
-				$('body').addClass('week-view');
-				$('.timeline-hours tr:first').hide();
 			}).on('click', 'i', function(e){
 				e.stopImmediatePropagation();
 				_resetFilter();
@@ -140,9 +136,22 @@ var Calendar = function () { 'use strict';
 				if(msg.days.length > 0){
 					days.html(msg.days);
 				}
+				console.log(_moduleOptions.activity_id);
+				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
+				_toggleLayout(layout);
 			});
 		}
 
+
+		function _toggleLayout(toggle){
+			if(toggle){
+				$('#wrap').addClass('week-view');
+				$('.timeline-hours tr:first').hide();
+			} else {
+				$('#wrap').removeClass('week-view');
+				$('.timeline-hours tr:first').show();
+			}
+		}
 
 		// Установка фильтра
 		function _setFilterLabel(text) {
@@ -187,16 +196,16 @@ var Calendar = function () { 'use strict';
 		}
 
 		var     menuLinks = $('.top-menu li:not(.current) a'),
-			prevMoth = $('.prev-month'),
-			nextMoth = $('.next-month');
+			periodLinks = $('.period-links a');
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
 			$(this).attr('href','/c/' + id + urlWithoutCenter);
 		});
-
-		prevMoth.attr('href',urlWithoutDate + '/' + prevMoth.attr('data-time'));
-		nextMoth.attr('href',urlWithoutDate + '/' + nextMoth.attr('data-time'));
+		periodLinks.each(function(){
+			var time = $(this).attr('data-time');
+			$(this).attr('href',urlWithoutDate + '/' + time);
+		});
 	}
 
 	// Mapping

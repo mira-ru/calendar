@@ -283,30 +283,36 @@ h1, h2, h3, h4, h5, h6 {
 			}
 		}
 	}
-	.prev-month,
-	.next-month {
-		color: #aaa;
-	}
-	strong {
-		&.current {
-			font-size: 16px;
-			padding: 1em;
+	.period-links{
+		.prev-month,
+		.next-month {
+			color: #aaa;
+		}
+		strong {
+			&.current {
+				font-size: 16px;
+				padding: 1em;
+			}
+		}
+		.prev-month {
+			&:before {
+				content: '\2190';
+				margin-right: 0.25em;
+				.pointer();
+			}
+		}
+		.next-month {
+			&:after {
+				content: '\2192';
+				margin-left: 0.25em;
+				.pointer();
+			}
+		}
+		.col-lg-6:last-child{
+			display: none;
 		}
 	}
-	.prev-month {
-		&:before {
-			content: '\2190';
-			margin-right: 0.25em;
-			.pointer();
-		}
-	}
-	.next-month {
-		&:after {
-			content: '\2192';
-			margin-left: 0.25em;
-			.pointer();
-		}
-	}
+
 	.table-responsive.first-table {
 		margin-bottom: 50px;
 	}
@@ -929,7 +935,7 @@ h1, h2, h3, h4, h5, h6 {
 			}
 		}		
 	}
-	&.week-view{
+	.week-view{
 		table{
 			&.timeline-days{
 				thead{
@@ -950,7 +956,10 @@ h1, h2, h3, h4, h5, h6 {
 
 			}
 			&.timeline-hours{
-				margin-top: -25px;
+				margin-top: -14px;
+				tr:first-child{
+					display: none;
+				}
 				&:first-child{
 					td{
 						span{
@@ -973,6 +982,7 @@ h1, h2, h3, h4, h5, h6 {
 				vertical-align: top;
 				border-left:1px dotted #ddd;
 				border-radius: 0px;
+				margin: 0;
 				>div{
 					position: static;
 					width: 100%;
@@ -1015,6 +1025,7 @@ h1, h2, h3, h4, h5, h6 {
 		}
 		.col-lg-6:last-child{
 			text-align: right;
+			display: block;
 			a{
 				margin-left: 10px;
 			}

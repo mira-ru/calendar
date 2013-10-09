@@ -18,7 +18,7 @@
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap">
+<div id="wrap" class="<?php echo (!empty($checkedDirection)) ? 'week-view' : '';?>">
 <div class="container">
 	<div class="row">
 		<div class="col-lg-12 text-center">
@@ -89,8 +89,8 @@
 			</ul>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-lg-12">
+	<div class="row period-links">
+		<div class="col-lg-6">
 			<?php
 			$monthNumber = date('n', $checkedTime);
 			$yearNumber = date('Y', $checkedTime);
@@ -108,6 +108,10 @@
 				array('class'=>'next-month', 'data-time'=>$nextMonth)
 			);
 			?>
+		</div>
+		<div class="col-lg-6 ">
+			<a class="prev-month" href="/c/4/0/38/1377986400" data-time="1377986400">Предыдущая неделя</a>
+			<a class="next-month" href="/c/4/0/38/1377986800" data-time="1377986800"">Следующая неделя</a>
 		</div>
 	</div>
 	<div class="table-responsive first-table">
