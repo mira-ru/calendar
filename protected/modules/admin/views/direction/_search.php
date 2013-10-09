@@ -2,6 +2,8 @@
 /* @var $this DirectionController */
 /* @var $model Direction */
 /* @var $form CActiveForm */
+$centerList = array(''=>'Все')+CHtml::listData($centers, 'id', 'name');
+$serviceList = array(''=>'Все')+CHtml::listData($services, 'id', 'name');
 ?>
 <hr>
 <div class="wide form">
@@ -32,6 +34,20 @@
 		<?php echo $form->label($model,'name', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>255, 'class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'center_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'center_id', $centerList, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'service_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'service_id', $serviceList, array('class'=>'form-control')); ?>
 		</div>
 	</div>
 

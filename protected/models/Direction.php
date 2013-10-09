@@ -59,7 +59,7 @@ class Direction extends CActiveRecord
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
+			array('id, center_id, service_id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -148,21 +148,27 @@ class Direction extends CActiveRecord
 	{
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('t.id',$this->id);
+		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {
-			$criteria->compare('status', self::STATUS_ACTIVE);
+			$criteria->compare('t.status', self::STATUS_ACTIVE);
 		} else {
-			$criteria->compare('status',$this->status);
+			$criteria->compare('t.status',$this->status);
+		}
+
+		$criteria->compare('t.service_id', $this->service_id);
+		if (!empty($this->center_id)) {
+			$criteria->join = 'INNER JOIN service as s ON s.id=t.service_id';
+			$criteria->compare('s.center_id', $this->center_id);
 		}
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
+			$criteria->compare('t.create_time', '>=' . strtotime($dateFrom));
 		}
 		if (($dateTo = $request->getParam('update_to'))) {
-			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+			$criteria->compare('t.update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
 		return new CActiveDataProvider($this, array(

@@ -146,8 +146,13 @@ class DirectionController extends AdminController
 		if(isset($_GET['Direction']))
 			$model->attributes=$_GET['Direction'];
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE));
+
 		$this->render('index',array(
 			'model'=>$model,
+			'centers' => $centers,
+			'services' => $services,
 		));
 	}
 
