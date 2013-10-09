@@ -30,7 +30,11 @@
 				$cnt = 1;
 				/** @var $center Center */
 				foreach ($centers as $center) {
-					$class = 'item-'.$cnt;
+					$class = 'item-'.$cnt; // Класс .item-{n} уже не нужен будет. Вместо него - .menu-{HEX}
+
+					// CSS для генерации:
+					// .menu-{HEX}.current{border-color:#{HEX};}.menu-{HEX}.current:after{background-color:#{HEX};}.menu-{HEX}.current a{color:#{HEX}!important;}
+
 					if ($center->id == $current->id) {
 						$class .= ' current';
 						$url = 'javascript:void(0)';
