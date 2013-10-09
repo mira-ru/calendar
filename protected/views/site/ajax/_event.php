@@ -8,7 +8,7 @@
  */
 ?>
 <strong><?php
-	echo !$event->direction->checkShowLink()
+	echo $event->direction->checkShowLink()
 	    ? CHtml::link(
 		    $event->direction->name,
 		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
@@ -28,7 +28,7 @@
 	}
 	?></strong>
 <span><i>Мастер:</i><?php
-	echo !$event->user->checkShowLink()
+	echo $event->user->checkShowLink()
 	    ? CHtml::link(
 		    $event->user->name,
 		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
