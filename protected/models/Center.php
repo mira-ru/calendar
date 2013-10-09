@@ -22,6 +22,11 @@ class Center extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	public function init()
+	{
+		$this->onAfterSave = array('Config', 'generateCss');
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */
