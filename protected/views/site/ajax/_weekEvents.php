@@ -14,7 +14,7 @@ $weeksData = array();
 $dow = date('w', $checkedTime);
 foreach ($events as $event) {
 	$tmp = '';
-	$htmlOptions = array('data-sub'=>$event->direction_id, 'data-event'=>$event->id, 'data-sid'=>$event->service_id);
+	$htmlOptions = array('data-event'=>$event->id);
 
 	$colorClass = isset($services[$event->service_id]) ?
 	    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
