@@ -1,7 +1,109 @@
 <?php
-class UtilCommand extends CConsoleCommand{
+class UtilCommand extends CConsoleCommand
+{
+	public function actionResetDesc()
+	{
+		Yii::import('application.models.*');
 
-	public function run()
+		$purifier = new CHtmlPurifier();
+		$options = array(
+			'HTML.AllowedElements' => array(
+				'em' => true,
+				'a' => true,
+				'strong' => true,
+				'br' => true,
+				'p' => true,
+			),
+			'HTML.AllowedAttributes' => array(
+				'a.href' => true, 'a.title' => true,
+			),
+		);
+
+		$purifier->setOptions($options);
+
+
+		$sql = 'SELECT id, `desc` FROM user';
+		$users = Yii::app()->db->createCommand($sql)->queryAll();
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach ($users as $user) {
+				if (empty($user['desc'])) { continue; }
+
+				$desc = $purifier->purify($user['desc']);
+				User::model()->updateByPk($user['id'], array('desc'=>$desc));
+			}
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			print_r('error users');
+		}
+
+		/// events
+
+		$sql = 'SELECT id, `desc` FROM event';
+		$events = Yii::app()->db->createCommand($sql)->queryAll();
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach ($events as $event) {
+				if (empty($event['desc'])) { continue; }
+
+				$desc = $purifier->purify($event['desc']);
+				Event::model()->updateByPk($event['id'], array('desc'=>$desc));
+			}
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			print_r('error events');
+		}
+
+		// event templates
+		$sql = 'SELECT id, `desc` FROM event_template';
+		$events = Yii::app()->db->createCommand($sql)->queryAll();
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach ($events as $event) {
+				if (empty($event['desc'])) { continue; }
+
+				$desc = $purifier->purify($event['desc']);
+				EventTemplate::model()->updateByPk($event['id'], array('desc'=>$desc));
+			}
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			print_r('error templates');
+		}
+
+		// direction
+
+		$sql = 'SELECT id, `desc`, price FROM direction';
+		$directions = Yii::app()->db->createCommand($sql)->queryAll();
+		print_r(count($directions));
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			foreach ($directions as $direction) {
+
+				$desc = $purifier->purify($direction['desc']);
+				$price = $purifier->purify($direction['price']);
+				Direction::model()->updateByPk($direction['id'], array('desc'=>$desc, 'price'=>$price));
+			}
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			print_r('error directions');
+		}
+
+
+	}
+
+	public function resetEvents()
 	{
 		Yii::import('application.models.*');
 

@@ -108,11 +108,14 @@ class Event extends CActiveRecord
 				'attributes' => array('desc'),
 				'options' => array(
 					'HTML.AllowedElements' => array(
-						'span' => true,
 						'em' => true,
 						'a' => true,
 						'strong' => true,
 						'br' => true,
+						'p' => true,
+					),
+					'HTML.AllowedAttributes' => array(
+						'a.href' => true, 'a.title' => true,
 					),
 				),
 			),

@@ -33,17 +33,26 @@ $image = Yii::app()->image;
 				<div class="col-lg-8">
 					<?php echo CHtml::tag('h1', array(), $item->name); ?>
 					<?php echo $item->desc; ?>
-					<h4><strong>Стоимость занятий</strong></h4>
-					<?php echo $item->price; ?>
+					<?php
+					if (!empty($item->price)) {
+						echo CHtml::tag('h4', array(), '<strong>Стоимость занятий</strong>');
+						echo $item->price;
+					}
+					?>
     					<div id="disqus_thread"></div>
     					<script>
-					dsq.onload = function() {
+					resetDisqus = function(){
 						DISQUS.reset({
 							reload: true,
 							config: function () {
 								this.page.identifier = "action-<?php echo $item->id; ?>";
 							}
 						});
+					};
+					if (typeof DISQUS === 'undefined') {
+						window.onload = resetDisqus;
+					} else {
+						resetDisqus();
 					}
 					</script>
 				</div>

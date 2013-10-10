@@ -28,13 +28,18 @@ $image = Yii::app()->image;
 					<?php echo $item->desc; ?>
     					<div id="disqus_thread"></div>
     					<script>
-					dsq.onload = function(){
+					resetDisqus = function(){
 						DISQUS.reset({
 							reload: true,
 							config: function () {
 								this.page.identifier = "master-<?php echo $item->id; ?>";
 							}
 						});
+					};
+					if (typeof DISQUS === 'undefined') {
+						window.onload = resetDisqus;
+					} else {
+						resetDisqus();
 					}
 					</script>
 				</div>
