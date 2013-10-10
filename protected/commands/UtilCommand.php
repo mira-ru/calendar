@@ -1,5 +1,10 @@
 <?php
-class UtilCommand extends CConsoleCommand{
+class UtilCommand extends CConsoleCommand
+{
+	public function resetDesc()
+	{
+
+	}
 
 	public function run()
 	{

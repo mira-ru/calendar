@@ -60,7 +60,7 @@
 		var disqus_identifier = '35ab19dc859af24d7a40b2edbc679853';
 		var disqus_url = "http://calendar.miracentr.ru/#!";
 		(function() {
-			dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
 			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
 			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 		})();
