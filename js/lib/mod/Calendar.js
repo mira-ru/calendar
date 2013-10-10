@@ -102,7 +102,7 @@ var Calendar = function () { 'use strict';
 		$('.modal')
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
-				    str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('event-id')) ? 'a='+ev.data('action-id') : null ;
+				    str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('action-id')) ? 'a='+ev.data('action-id') : null ;
 				_changeUrl(_moduleOptions, str);
 			})
 			.on('hide.bs.modal', function() {
