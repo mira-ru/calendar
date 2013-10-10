@@ -178,6 +178,9 @@
 								'events'=>$events,
 								'services'=>$services,
 								'checkedTime'=>$checkedTime,
+								'centerId'=>$current->id,
+								'serviceId'=>$serviceId,
+								'directionId'=>$directionId,
 							));
 						} else {
 							$this->renderPartial('index/_monthEvents', array(

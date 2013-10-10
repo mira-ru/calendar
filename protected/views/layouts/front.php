@@ -23,14 +23,15 @@
 		<script>
 			lib.versioninig = true;
 			<?php
+				echo 'lib.version='.$cs->getVersion().';';
 				foreach($this->moduleId as $module) {
-					echo 'lib.include(\'mod.'.$module.'\','.$cs->getVersion().')';
+					echo 'lib.include(\'mod.'.$module.'\',lib.version)';
 				}
 			?>
 		</script>
 	</head>
 	<body class="<?php foreach($this->bodyClass as $class) { echo $class.' ';} ?>">
-
+		<div id="error"></div>
 		<?php echo $content; ?>
 
 		<!-- PAGE FOOTER -->

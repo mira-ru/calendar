@@ -31,7 +31,15 @@ $image = Yii::app()->image;
 					</div>
 				</div>
 				<div class="col-lg-8">
-					<?php echo CHtml::tag('h1', array(), $item->name); ?>
+					<?php
+					$h1 = $item->name;
+					if (!Yii::app()->getUser()->getIsGuest()) {
+						$h1 .= CHtml::link(''
+							, $this->createUrl('/admin/direction/update', array('id'=>$item->id))
+							, array('class'=>'pencil', 'target'=>'_blank'));
+					}
+					echo CHtml::tag('h1', array(), $h1);
+					?>
 					<?php echo $item->desc; ?>
 					<?php
 					if (!empty($item->price)) {

@@ -1,7 +1,7 @@
 // Definition
 lib.module('mod.Calendar');
 
-lib.include('mod.Common');
+lib.include('mod.Common', lib.version);
 
 lib.include('plugins.bootstrap.Modal');
 

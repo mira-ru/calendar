@@ -168,7 +168,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 
 	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
 		<?php echo $form->label($template, 'desc', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
+		<div class="col-lg-8">
 			<?php
 			$this->widget('application.extensions.tinymce.ETinyMce', array(
 				'model'=>$template,
@@ -181,7 +181,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 					'forced_root_block' => false,
 					'force_br_newlines' => true,
 					'force_p_newlines' => false,
-					'height'=>'200px',
+					'height'=>'350px',
 					'theme_advanced_toolbar_location'=>'top',
 					'theme_advanced_toolbar_align'=> "left",
 					'language'=>'ru',
