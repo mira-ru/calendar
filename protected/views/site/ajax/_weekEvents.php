@@ -4,6 +4,9 @@
  * @var $services array
  * @var $event Event
  * @var $checkedTime integer
+ * @var $centerId integer
+ * @var $directionId integer
+ * @var $serviceId integer
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
@@ -22,7 +25,17 @@ foreach ($events as $event) {
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
 	$content .= ($event->user->checkShowLink())
-	    ? CHtml::link($event->user->name)
+	    ? CHtml::link(
+		    $event->user->name,
+		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$checkedTime, 'popup'=>'m='.$event->user_id)),
+		    array(
+			    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
+			    'data-master-id'=>$event->user->id,
+			    'data-toggle'=>'modal',
+			    'data-target'=>'#modal',
+			    'class'=>'green'
+		    )
+	    )
 	    : CHtml::tag('span', array(), $event->user->name);
 
 	$tmp .= CHtml::tag('div', $htmlOptions, $content);

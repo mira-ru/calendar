@@ -148,6 +148,9 @@ class SiteController extends FrontController
 				'events'=>$events,
 				'services'=>$services,
 				'checkedTime'=>$dayStart,
+				'centerId'=>$centerId,
+				'serviceId'=>$serviceId,
+				'directionId'=>$directionId,
 			), true);
 
 		} else { // вид по дням
