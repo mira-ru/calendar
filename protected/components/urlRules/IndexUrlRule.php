@@ -8,6 +8,16 @@ class IndexUrlRule extends CBaseUrlRule
 			$serviceId = empty($params['service_id']) ? 0 : $params['service_id'];
 			$directionId = empty($params['direction_id']) ? 0 : $params['direction_id'];
 			$time = empty($params['time']) ? DateMap::currentDay(time()) : $params['time'];
+//			unset($params['center_id']);
+//			unset($params['service_id']);
+//			unset($params['direction_id']);
+//			unset($params['time']);
+
+			$url = 'c/'.$centerId.'/'.$serviceId.'/'.$directionId.'/'.$time;
+			if (isset($params['popup'])) {
+				$url .= '?'.$params['popup'];
+			}
+
 
 			return 'c/'.$centerId.'/'.$serviceId.'/'.$directionId.'/'.$time;
 		}
@@ -24,6 +34,9 @@ class IndexUrlRule extends CBaseUrlRule
 	 */
 	public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
 	{
+		if ($request->getIsAjaxRequest())
+			return false;
+
 		if (empty($pathInfo)) {
 			$request->redirect(
 				$this->createUrl($manager, 'site/index', array(), '&'),

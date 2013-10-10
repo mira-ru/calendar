@@ -21,7 +21,8 @@ class ImageComponent extends CApplicationComponent
 	/** @var array Список всех превью проекта (уникальные ключи используются для хранения и доступа */
 	private static $preview = array(
 		'crop_150' => array(150, 150, 'crop', 80),
-		'crop_200' => array(200, 200, 'crop', 80),
+//		'crop_200' => array(200, 200, 'crop', 80),
+		'crop_240' => array(240, 240, 'crop', 80),
 	);
 
 	/**

@@ -6,6 +6,7 @@
 		<title></title>
 		<link rel="stylesheet" href="/css/bootstrap.css">
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
+		<link rel="stylesheet" href="/css/generated/color.css">
 		<?php
 			foreach($styles as $style) {
 				echo '<link rel="stylesheet/less" href="/css/custom/'.$style.'.less">';

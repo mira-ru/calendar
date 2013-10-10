@@ -4,7 +4,11 @@ class TestController extends AdminController
 {
 	public function actionTest()
 	{
-		Config::generateCss();
+		$tmp = DateMap::currentWeek(time());
+
+		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
+		$tmp = DateMap::prevWeek(time());
+		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));
 		die();
 	}
 
