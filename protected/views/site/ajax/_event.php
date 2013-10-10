@@ -13,7 +13,7 @@
 		    $event->direction->name,
 		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
 		    array('data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->direction_id, 'type'=>'a')),
-			    'data-eventid'=>$event->id,
+			    'data-action-id'=>$event->direction_id,
 			    'data-toggle'=>'modal',
 			    'data-target'=>'#modal',
 			    'class'=>'green'
@@ -34,7 +34,7 @@
 		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
 		    array(
 			    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
-			    'data-masterid'=>$event->user->id,
+			    'data-master-id'=>$event->user->id,
 			    'data-toggle'=>'modal',
 			    'data-target'=>'#modal',
 			    'class'=>'green'
