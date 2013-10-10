@@ -17,13 +17,15 @@
 					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Numquam, dolore, soluta, est officia quaerat nemo dolorem beatae asperiores dicta aliquam rem sit enim nostrum porro natus qui consequatur exercitationem cumque. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt, maxime, omnis eveniet totam neque esse soluta eos ex inventore harum accusantium dolorum asperiores. Consectetur nemo iste reprehenderit quae dicta porro!</p>
     					<div id="disqus_thread"></div>
     					<script>
-					DISQUS.reset({
-						reload: true,
-						config: function () {  
-							this.page.identifier = "<?=md5(rand(1, 100000));?>";  
-							this.page.url = "http://calendar.local/#!<?=md5(rand(1, 100000));?>";
-						}
-					});
+					dsq.onload = function(){
+						DISQUS.reset({
+							reload: true,
+							config: function () {  
+								this.page.identifier = "<?=md5(rand(1, 100000));?>";  
+								this.page.url = "http://calendar.local/#!<?=md5(rand(1, 100000));?>";
+							}
+						});
+					};
 					</script>
 				</div>
 			</div>

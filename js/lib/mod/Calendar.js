@@ -101,7 +101,7 @@ var Calendar = function () { 'use strict';
 		$('.modal')
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
-				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'e='+ev.data('eventid') : null ;
+				    str = (ev.data('masterid')) ? 'm='+ev.data('masterid') : (ev.data('eventid')) ? 'a='+ev.data('eventid') : null ;
 				_changeUrl(_moduleOptions, str);
 			})
 			.on('hide.bs.modal', function() {
@@ -287,11 +287,14 @@ var Calendar = function () { 'use strict';
 }();
 
 $(function(){
-	if (location.search.substr(1).split('=')[0] == 'm' || location.search.substr(1).split('=')[0] == 'e') {
-		var m = $('.modal'), getstr = '?type='+location.search.substr(1).split('=')[0]+'&item='+location.search.substr(1).split('=')[1];
+	var getStr = location.search;
+	if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
+		var t = (getStr.getQueryKey('m', true)) ? 'm' : (getStr.getQueryKey('a', true)) ? 'a' : false ;
+		var v = (t == ('m' || 'a')) ? getStr.getQueryKey('m') : getStr.getQueryKey('a') ;
+		var m = $('.modal'), getSubstr = '?type='+t+'&item='+v;
 		m.modal({
 			show: true,
-			remote: '/site/axMasterInfo' + getstr
+			remote: '/site/axMasterInfo' + getSubstr
 		});
 	}
 });

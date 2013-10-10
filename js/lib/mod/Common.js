@@ -23,6 +23,24 @@ var Common = function() {
 		}
 	};
 
+	function getQueryKey(key, presence) {
+		var search = unescape(this.toString()),
+		    check_presence = presence || false;
+		if (search != '') {
+			search = search.substr(1); 
+			var params = search.split('&'); 
+			for (var i = 0; i < params.length; i++) { 
+				var pairs = params[i].split('='); 
+				if (pairs[0] == key) { 
+					return (check_presence) ? true : pairs[1] ;
+				} 
+			}
+		} else {
+			return (check_presence) ? false : null ;
+		}
+	}
+	String.prototype.getQueryKey = getQueryKey;
+
 	return {
 		isMobile:isMobile
 	};
