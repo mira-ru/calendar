@@ -73,4 +73,14 @@ class DateMap {
 	{
 		return strtotime("Monday previous week", strtotime('last sunday', $timestamp));
 	}
+
+	/**
+	 * Относительное время в течении дня
+	 * @param $timestamp
+	 * @return int
+	 */
+	public static function timeOfDay($timestamp)
+	{
+		return ($timestamp - strtotime('TODAY', $timestamp));
+	}
 }

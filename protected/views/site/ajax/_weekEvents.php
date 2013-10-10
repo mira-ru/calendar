@@ -12,10 +12,32 @@ if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 	return;
 }
+// массив начал занятий на неделе
+$timePoints = array();
+$dayTimes = array();
 
-$weeksData = array();
-$dow = date('w', $checkedTime);
+// раскладываем события
 foreach ($events as $event) {
+	$dow = $event->day_of_week;
+	$time = DateMap::timeOfDay($event->start_time);
+
+	$dayTimes[$dow][$time][] = $event;
+
+	$cnt = count( $dayTimes[$dow][$time] );
+	if ( empty($timePoints[$time]) || $timePoints[$time] < $cnt) {
+		$timePoints[$time] = $cnt;
+	}
+}
+// сортируем по времени
+ksort($timePoints, SORT_NUMERIC);
+
+$emptyBlock = CHtml::tag('div', array('class'=>'col-150 empty'), '');
+
+$dow = date('w', $checkedTime);
+
+$urlOptions = array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$checkedTime);
+
+$renderItem = function($event, $urlOptions, $services) {
 	$tmp = '';
 	$htmlOptions = array('data-event'=>$event->id);
 
@@ -27,9 +49,9 @@ foreach ($events as $event) {
 	$content .= ($event->user->checkShowLink())
 	    ? CHtml::link(
 		    $event->user->name,
-		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$checkedTime, 'popup'=>'m='.$event->user_id)),
+		    Yii::app()->controller->createUrl('/site/index', $urlOptions + array('popup'=>'m='.$event->user_id)),
 		    array(
-			    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
+			    'data-remote'=>Yii::app()->controller->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
 			    'data-master-id'=>$event->user->id,
 			    'data-toggle'=>'modal',
 			    'data-target'=>'#modal',
@@ -38,29 +60,51 @@ foreach ($events as $event) {
 	    )
 	    : CHtml::tag('span', array(), $event->user->name);
 
+	if (!Yii::app()->getUser()->getIsGuest()) {
+		$content .= ' '.CHtml::link('edit', Yii::app()->controller->createUrl('/admin/event/update', array('id'=>$event->id)), array('target'=>'_blank'));
+	}
 	$tmp .= CHtml::tag('div', $htmlOptions, $content);
 
-	if (isset($weeksData[$event->day_of_week])) {
-		$weeksData[$event->day_of_week] .= $tmp;
-	} else {
-		$weeksData[$event->day_of_week] = $tmp;
-	}
-}
+	return $tmp;
+};
 
 for ($i = 1; $i<7; $i++) {
 	$class = 'row timeline-row';
 	if ($i==$dow) { $class .= ' current'; }
+
 	echo CHtml::openTag('div', array('class'=>$class));
-	if (isset($weeksData[$i])) {
-		echo $weeksData[$i];
+
+	foreach ($timePoints as $pointKey=>$point) {
+
+		for ($cnt=0; $cnt<$point; $cnt++) {
+			if ( empty( $dayTimes[$i][$pointKey] )) {
+				echo $emptyBlock;
+				continue;
+			}
+
+			$event = array_shift($dayTimes[$i][$pointKey]);
+			echo $renderItem($event, $urlOptions, $services);
+		}
 	}
+
 	echo CHtml::closeTag('div');
 }
 
 $class = 'row timeline-row';
 if (0==$dow) { $class .= ' current'; }
 echo CHtml::openTag('div', array('class'=>$class));
-if (isset($weeksData[0])) {
-	echo $weeksData[0];
+
+foreach ($timePoints as $pointKey=>$point) {
+	for ($cnt=0; $cnt<$point; $cnt++) {
+		if ( empty( $dayTimes[0][$pointKey] )) {
+			echo $emptyBlock;
+			continue;
+		}
+
+		$event = array_shift($dayTimes[0][$pointKey]);
+
+		echo $renderItem($event, $urlOptions, $services);
+	}
 }
+
 echo CHtml::closeTag('div');
