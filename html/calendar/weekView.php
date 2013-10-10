@@ -8,7 +8,7 @@
 	/**
 	*	Custom body class
 	*/
-	$bodyclass = array('calendar', 'week-view');
+	$bodyclass = array('calendar');
 
 	/**
 	 *	Module ID
@@ -18,7 +18,7 @@
 	include('../common/_header.php');
 ?>
 		<!-- PAGE CONTENT -->
-	<div id="wrap">
+	<div id="wrap" class="week-view">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
