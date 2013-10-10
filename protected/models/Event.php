@@ -55,7 +55,7 @@ class Event extends CActiveRecord
 			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
 			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
 
-			array('desc', 'length', 'max'=>1024),
+			array('desc', 'length', 'max'=>5000),
 
 			array('start_time, end_time', 'timeCheck'),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),

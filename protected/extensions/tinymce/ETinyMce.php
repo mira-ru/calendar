@@ -779,7 +779,7 @@ class ETinyMce extends CInputWidget
       if ($this->contentCSS !== '') {
          $options['content_css'] = $this->contentCSS;
       }
-      
+
       if ($this->editorTemplate !== '') {
          switch ($this->editorTemplate) {
             case 'simple':
@@ -800,8 +800,21 @@ class ETinyMce extends CInputWidget
       if (is_array($this->options)) {
          $options = array_merge($options, $this->options);
       }
-      
-      return CJavaScript::encode($options);
+
+	//		$options['maxLength'] = 10;
+	if (isset($options['maxLength'])) {
+		$options['maxMessage'] = 'Текст не должен превышать '.$options['maxLength'].' символов';
+		$options['setup'] = 'js:function(ed) {'
+		    .'ed.onKeyUp.add(function(ed, e) { '
+		    .'var tinymax, tinylen, htmlcount; tinymax = ed.settings.maxLength; '
+		    .'tinylen = ed.getContent().replace(/(<([^>]+)>)/ig,"").length;  '
+		    .'htmlcount = "HTML Character Count: " + tinylen + "/" + tinymax; '
+		    .'if (tinylen>tinymax){ alert(ed.settings.maxMessage); } '
+		    .'})}';
+	}
+
+
+	return CJavaScript::encode($options);
    }
 
    //***************************************************************************

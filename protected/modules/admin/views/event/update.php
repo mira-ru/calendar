@@ -223,7 +223,6 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 			$this->widget('application.extensions.tinymce.ETinyMce', array(
 				'model'=>$event,
 				'attribute'=>'desc',
-				'htmlOptions' => array('maxlength'=>1024),
 				'options'=>array(
 					'theme'=>'advanced',
 					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
@@ -236,6 +235,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 					'theme_advanced_toolbar_location'=>'top',
 					'theme_advanced_toolbar_align'=> "left",
 					'language'=>'ru',
+					'maxLength'=>5000,
 				),
 			));
 			echo $form->error($event,'desc', array('class'=>'text-danger'));

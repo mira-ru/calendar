@@ -66,7 +66,9 @@ class DirectionController extends AdminController
 					$model->image_id = $fileId;
 				}
 				$model->save(false);
-				$this->redirect(array('index','id'=>$model->id));
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
 			}
 		}
 
@@ -105,7 +107,9 @@ class DirectionController extends AdminController
 					$model->image_id = $fileId;
 				}
 				$model->save(false);
-				$this->redirect(array('index','id'=>$model->id));
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
 			}
 		}
 
@@ -132,8 +136,10 @@ class DirectionController extends AdminController
 		$model->save(false);
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
+		if(!isset($_GET['ajax'])) {
+			$url = isset($_POST['returnUrl']) ? $_POST['returnUrl'] : Yii::app()->getUser()->getReturnUrl(array('index'));
+			$this->redirect($url);
+		}
 	}
 
 	/**
@@ -141,6 +147,8 @@ class DirectionController extends AdminController
 	 */
 	public function actionIndex()
 	{
+		Yii::app()->getUser()->setReturnUrl(Yii::app()->request->getRequestUri());
+
 		$model=new Direction('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Direction']))
