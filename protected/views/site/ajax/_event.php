@@ -31,7 +31,7 @@
 	echo $event->user->checkShowLink()
 	    ? CHtml::link(
 		    $event->user->name,
-		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'a='.$event->direction_id)),
+		    $this->createUrl('/site/index', array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$day, 'popup'=>'m='.$event->user_id)),
 		    array(
 			    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
 			    'data-master-id'=>$event->user->id,

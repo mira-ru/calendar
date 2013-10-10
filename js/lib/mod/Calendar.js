@@ -1,7 +1,7 @@
 // Definition
 lib.module('mod.Calendar');
 
-lib.include('mod.Common');
+lib.include('mod.Common', lib.version);
 
 lib.include('plugins.bootstrap.Modal');
 
@@ -57,7 +57,7 @@ var Calendar = function () { 'use strict';
 				$('ul', $(this)).hide();
 			});
 
-		$('.timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
+		$('#wrap:not(.week-view) .timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
 			e.stopImmediatePropagation();
 			var toggler = $(this),
 				pos = toggler.offset(),

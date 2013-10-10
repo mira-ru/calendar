@@ -8,7 +8,7 @@
 	/**
 	*	Custom body class
 	*/
-	$bodyclass = array('calendar', 'week-view');
+	$bodyclass = array('calendar', '');
 
 	/**
 	 *	Module ID
@@ -18,7 +18,7 @@
 	include('../common/_header.php');
 ?>
 		<!-- PAGE CONTENT -->
-	<div id="wrap">
+	<div id="wrap" class="week-view">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12 text-center">
@@ -168,9 +168,8 @@
 						<td colspan="15" class="timeline-wrapper">
 							<div>
 								<div class="row  timeline-row">
-									<div data-sub="32" data-event="780"
-									     data-sid="2"
-									     class="col-150 c-ff5114">
+									<div class="col-150 empty"></div>
+									<div class="col-150 c-ff5114">
 										<span>07:30 — 09:30</span>
 										<a href="#">Павел Коноровский</a>
 									</div>

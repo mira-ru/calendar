@@ -64,7 +64,7 @@ $image = Yii::app()->image;
 
 	<div class="form-group <?php if ($model->hasErrors('desc')) echo 'has-error'; ?>">
 		<?php echo $form->label($model, 'desc', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
+		<div class="col-lg-8">
 		<?php
 		$this->widget('application.extensions.tinymce.ETinyMce', array(
 			'model'=>$model,
@@ -77,7 +77,7 @@ $image = Yii::app()->image;
 				'forced_root_block' => false,
 				'force_br_newlines' => true,
 				'force_p_newlines' => false,
-				'height'=>'150px',
+				'height'=>'350px',
 				'theme_advanced_toolbar_location'=>'top',
 				'theme_advanced_toolbar_align'=> "left",
 				'language'=>'ru',
