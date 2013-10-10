@@ -23,8 +23,9 @@
 		<script>
 			lib.versioninig = true;
 			<?php
+				echo 'lib.version='.$cs->getVersion().';';
 				foreach($this->moduleId as $module) {
-					echo 'lib.include(\'mod.'.$module.'\','.$cs->getVersion().')';
+					echo 'lib.include(\'mod.'.$module.'\',lib.version)';
 				}
 			?>
 		</script>

@@ -81,7 +81,6 @@ $(function(){
 	$(document)
 		.ajaxError(
 			function(e, x, settings, exception) {
-				console.log(x);
 				var message;
 				var statusErrorMap = {
 					'400' : "Server understood the request but request content was invalid.",
