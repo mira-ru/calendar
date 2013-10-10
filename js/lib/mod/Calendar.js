@@ -226,7 +226,7 @@ $(function(){
 	if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 		var t = (getStr.getQueryKey('m', true)) ? 'm' : (getStr.getQueryKey('a', true)) ? 'a' : false ;
 		var v = (t == ('m' || 'a')) ? getStr.getQueryKey('m') : getStr.getQueryKey('a') ;
-		var m = $('.modal'), getSubstr = '?type='+t+'&item='+v;
+		var m = $('.modal'), getSubstr = '?type=' + t + '&item=' + v;
 		m.modal({
 			show: true,
 			remote: '/site/axPopup' + getSubstr
