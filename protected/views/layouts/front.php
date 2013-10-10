@@ -30,7 +30,7 @@
 		</script>
 	</head>
 	<body class="<?php foreach($this->bodyClass as $class) { echo $class.' ';} ?>">
-
+		<div id="error"></div>
 		<?php echo $content; ?>
 
 		<!-- PAGE FOOTER -->
