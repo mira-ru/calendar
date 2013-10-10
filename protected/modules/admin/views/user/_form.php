@@ -69,7 +69,6 @@ $image = Yii::app()->image;
 		$this->widget('application.extensions.tinymce.ETinyMce', array(
 			'model'=>$model,
 			'attribute'=>'desc',
-			'htmlOptions' => array('maxlength'=>2048),
 			'options'=>array(
 				'theme'=>'advanced',
 				'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
@@ -82,6 +81,7 @@ $image = Yii::app()->image;
 				'theme_advanced_toolbar_location'=>'top',
 				'theme_advanced_toolbar_align'=> "left",
 				'language'=>'ru',
+				'maxLength'=>5000,
 			),
 		));
 		echo $form->error($model,'desc', array('class'=>'text-danger'));

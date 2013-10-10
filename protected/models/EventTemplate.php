@@ -65,7 +65,7 @@ class EventTemplate extends CActiveRecord
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
-			array('desc', 'length', 'max'=>1024),
+			array('desc', 'length', 'max'=>5000),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
