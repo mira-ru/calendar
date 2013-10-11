@@ -4,22 +4,23 @@ class UtilCommand extends CConsoleCommand
 	public function actionResetDesc()
 	{
 		Yii::import('application.models.*');
+		Yii::import('application.components.lib.*');
 
-		$purifier = new CHtmlPurifier();
-		$options = array(
-			'HTML.AllowedElements' => array(
-				'em' => true,
-				'a' => true,
-				'strong' => true,
-				'br' => true,
-				'p' => true,
-			),
-			'HTML.AllowedAttributes' => array(
-				'a.href' => true, 'a.title' => true,
-			),
-		);
-
-		$purifier->setOptions($options);
+//		$purifier = new CHtmlPurifier();
+//		$options = array(
+//			'HTML.AllowedElements' => array(
+//				'em' => true,
+//				'a' => true,
+//				'strong' => true,
+//				'br' => true,
+//				'p' => true,
+//			),
+//			'HTML.AllowedAttributes' => array(
+//				'a.href' => true, 'a.title' => true,
+//			),
+//		);
+//
+//		$purifier->setOptions($options);
 
 
 		$sql = 'SELECT id, `desc` FROM user';
@@ -31,7 +32,7 @@ class UtilCommand extends CConsoleCommand
 			foreach ($users as $user) {
 				if (empty($user['desc'])) { continue; }
 
-				$desc = $purifier->purify($user['desc']);
+				$desc = Kavychker::baseFormat($user['desc']);
 				User::model()->updateByPk($user['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -51,7 +52,7 @@ class UtilCommand extends CConsoleCommand
 			foreach ($events as $event) {
 				if (empty($event['desc'])) { continue; }
 
-				$desc = $purifier->purify($event['desc']);
+				$desc = Kavychker::baseFormat($event['desc']);
 				Event::model()->updateByPk($event['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -70,7 +71,7 @@ class UtilCommand extends CConsoleCommand
 			foreach ($events as $event) {
 				if (empty($event['desc'])) { continue; }
 
-				$desc = $purifier->purify($event['desc']);
+				$desc = Kavychker::baseFormat($event['desc']);
 				EventTemplate::model()->updateByPk($event['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -83,15 +84,14 @@ class UtilCommand extends CConsoleCommand
 
 		$sql = 'SELECT id, `desc`, price FROM direction';
 		$directions = Yii::app()->db->createCommand($sql)->queryAll();
-		print_r(count($directions));
 
 		/** @var $transaction CDbTransaction */
 		$transaction = Yii::app()->db->beginTransaction();
 		try {
 			foreach ($directions as $direction) {
 
-				$desc = $purifier->purify($direction['desc']);
-				$price = $purifier->purify($direction['price']);
+				$desc = Kavychker::baseFormat($direction['desc']);
+				$price = Kavychker::baseFormat($direction['price']);
 				Direction::model()->updateByPk($direction['id'], array('desc'=>$desc, 'price'=>$price));
 			}
 			$transaction->commit();

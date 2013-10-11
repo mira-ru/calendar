@@ -23,6 +23,7 @@ class InitComponent extends CComponent
 	private function setLocale()
 	{
 		setlocale(LC_TIME, 'ru_RU.utf8');
+		mb_regex_encoding ('utf-8');
 	}
 
 	/**
