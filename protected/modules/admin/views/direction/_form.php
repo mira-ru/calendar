@@ -138,7 +138,7 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 					'theme_advanced_toolbar_location'=>'top',
 					'theme_advanced_toolbar_align'=> "left",
 					'language'=>'ru',
-					'maxLength'=>512,
+					'maxLength'=>2048,
 				),
 			));
 			echo $form->error($model,'price', array('class'=>'text-danger'));
