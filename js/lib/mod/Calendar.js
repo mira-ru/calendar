@@ -57,7 +57,7 @@ var Calendar = function () { 'use strict';
 				$('ul', $(this)).hide();
 			});
 
-		$('#wrap:not(.week-view) .timeline-wrapper').on('click', 'div[class^="col-"]', function(e){
+		$('.timeline-wrapper').on('click', 'div[class^="col-"]:not(.empty)', function(e){
 			e.stopImmediatePropagation();
 			var toggler = $(this),
 				pos = toggler.offset(),
