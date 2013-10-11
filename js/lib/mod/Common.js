@@ -64,7 +64,7 @@ var Common = function() {
 			var err = $(this);
 			setTimeout(function(){
 				err.fadeOut();
-			}, 2000);
+			}, 5000);
 		});
 	}
 
@@ -104,6 +104,8 @@ $(function(){
 				} else {
 					message = "Unknow Error";
 				}
+
+				$('*').modal('hide');
 				Common.showError(message);
 			});
 });
