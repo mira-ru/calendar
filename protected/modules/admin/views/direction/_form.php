@@ -96,23 +96,11 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 		<?php echo $form->label($model, 'desc', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-8">
 			<?php
-			$this->widget('application.extensions.tinymce.ETinyMce', array(
-				'model'=>$model,
-				'attribute'=>'desc',
-				'options'=>array(
-					'theme'=>'advanced',
-					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
-					'theme_advanced_buttons2' => "",
-					'theme_advanced_buttons3' => "",
-					'forced_root_block' => false,
-					'force_br_newlines' => true,
-					'force_p_newlines' => false,
-					'height'=>'350px',
-					'theme_advanced_toolbar_location'=>'top',
-					'theme_advanced_toolbar_align'=> "left",
-					'language'=>'ru',
-					'maxLength'=>5000,
-				),
+			echo CHtml::activeTextArea($model, 'desc', array(
+				'value'=>Kavychker::deformat($model->desc),
+				'maxlength'=>5000,
+				'class'=>'col-lg-12',
+				'rows'=>20,
 			));
 			echo $form->error($model,'desc', array('class'=>'text-danger'));
 			?>
@@ -123,23 +111,11 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 		<?php echo $form->label($model, 'price', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-8">
 			<?php
-			$this->widget('application.extensions.tinymce.ETinyMce', array(
-				'model'=>$model,
-				'attribute'=>'price',
-				'options'=>array(
-					'theme'=>'advanced',
-					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
-					'theme_advanced_buttons2' => "",
-					'theme_advanced_buttons3' => "",
-					'forced_root_block' => false,
-					'force_br_newlines' => true,
-					'force_p_newlines' => false,
-					'height'=>'200px',
-					'theme_advanced_toolbar_location'=>'top',
-					'theme_advanced_toolbar_align'=> "left",
-					'language'=>'ru',
-					'maxLength'=>2048,
-				),
+			echo CHtml::activeTextArea($model, 'price', array(
+				'value'=>Kavychker::deformat($model->price),
+				'maxlength'=>2048,
+				'class'=>'col-lg-12',
+				'rows'=>10,
 			));
 			echo $form->error($model,'price', array('class'=>'text-danger'));
 			?>
