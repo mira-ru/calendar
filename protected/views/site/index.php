@@ -20,10 +20,18 @@
 </script>
 <div id="wrap" class="<?php echo (!empty($directionId)) ? 'week-view' : '';?>">
 <div class="container">
-	<div class="row">
-		<div class="col-lg-12 text-center">
-			<h1>Расписание</h1>
+	<div class="row header">
+		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://www.miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
+		<div class="col-lg-4"><h1>Расписание</h1></div>
+		<div class="col-lg-4 search-form">
+			<div><input type="text" class="form-control"></div>
 		</div>
+		<div class="col-lg-2 text-right">
+			<span>Запись по телефону:</span>
+			<h2 class="green">2-300-108</h2>
+		</div>
+	</div>
+	<div class="row">	
 		<div class="col-lg-12">
 			<ul class="list-inline list-justified top-menu">
 				<?php
