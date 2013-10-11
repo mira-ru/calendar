@@ -33,6 +33,23 @@ class TestController extends AdminController
 		die();
 	}
 
+	public function actionTyp()
+	{
+		$this->layout = '//layouts/empty';
+		$direction = Direction::model()->findByPk(32);
+//		$typo = new Typographus('UTF-8');
+//		$text = $typo->process($direction->desc);
+//		$typo = new Typograph();
+//		$text = $typo->typo($direction->desc);
+		$text = lib::quotes($direction->desc);
+
+		FirePHP::getInstance()->fb($text);
+//		echo $text;
+		$this->render('typ', array('text'=>$text));
+
+//		die();
+	}
+
 	public function actionImage()
 	{
 		$src = 'images/break.png';
