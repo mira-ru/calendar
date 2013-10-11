@@ -170,23 +170,11 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		<?php echo $form->label($template, 'desc', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-8">
 			<?php
-			$this->widget('application.extensions.tinymce.ETinyMce', array(
-				'model'=>$template,
-				'attribute'=>'desc',
-				'options'=>array(
-					'theme'=>'advanced',
-					'theme_advanced_buttons1' => "link, unlink, | , bold, italic, underline",
-					'theme_advanced_buttons2' => "",
-					'theme_advanced_buttons3' => "",
-					'forced_root_block' => false,
-					'force_br_newlines' => true,
-					'force_p_newlines' => false,
-					'height'=>'350px',
-					'theme_advanced_toolbar_location'=>'top',
-					'theme_advanced_toolbar_align'=> "left",
-					'language'=>'ru',
-					'maxLength'=>5000,
-				),
+			echo CHtml::activeTextArea($template, 'desc', array(
+				'value'=>Kavychker::deformat($template->desc),
+				'maxlength'=>5000,
+				'class'=>'col-lg-12',
+				'rows'=>20,
 			));
 			echo $form->error($template,'desc', array('class'=>'text-danger'));
 			?>

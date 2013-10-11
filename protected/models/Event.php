@@ -103,21 +103,9 @@ class Event extends CActiveRecord
 	public function behaviors()
 	{
 		return array(
-			'CSafeContentBehavor' => array(
-				'class' => 'application.components.behaviors.CSafeContentBehavior',
+			'TextAreaBehavior' => array(
+				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc'),
-				'options' => array(
-					'HTML.AllowedElements' => array(
-						'em' => true,
-						'a' => true,
-						'strong' => true,
-						'br' => true,
-						'p' => true,
-					),
-					'HTML.AllowedAttributes' => array(
-						'a.href' => true, 'a.title' => true,
-					),
-				),
 			),
 		);
 	}

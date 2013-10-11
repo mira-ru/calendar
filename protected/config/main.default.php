@@ -15,6 +15,7 @@ return CMap::mergeArray(array(
 		'application.config.Config',
 		'ext.yii-firephp.*',
 		'application.components.maps.DateMap',
+		'application.components.lib.*',
 	),
 
 	'modules'=>array(

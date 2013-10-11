@@ -46,23 +46,8 @@ $renderItem = function($event, $urlOptions, $services) {
 	$htmlOptions['class'] = 'col-150 '.$colorClass;
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
-	$content .= ($event->user->checkShowLink())
-	    ? CHtml::link(
-		    $event->user->name,
-		    Yii::app()->controller->createUrl('/site/index', $urlOptions + array('popup'=>'m='.$event->user_id)),
-		    array(
-			    'data-remote'=>Yii::app()->controller->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
-			    'data-master-id'=>$event->user->id,
-			    'data-toggle'=>'modal',
-			    'data-target'=>'#modal',
-			    'class'=>'green'
-		    )
-	    )
-	    : CHtml::tag('span', array(), $event->user->name);
+	$content .= CHtml::tag('span', array(), $event->user->name);
 
-	if (!Yii::app()->getUser()->getIsGuest()) {
-		$content .= ' '.CHtml::link('edit', Yii::app()->controller->createUrl('/admin/event/update', array('id'=>$event->id)), array('target'=>'_blank'));
-	}
 	$tmp .= CHtml::tag('div', $htmlOptions, $content);
 
 	return $tmp;

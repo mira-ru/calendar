@@ -57,7 +57,7 @@ class Direction extends CActiveRecord
 			array('url', 'length', 'max'=>512),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			array('desc', 'length', 'max'=>5000),
-			array('price', 'length', 'max'=>512),
+			array('price', 'length', 'max'=>2048),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -86,21 +86,9 @@ class Direction extends CActiveRecord
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
 			),
-			'CSafeContentBehavor' => array(
-				'class' => 'application.components.behaviors.CSafeContentBehavior',
+			'TextAreaBehavior' => array(
+				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc', 'price'),
-				'options' => array(
-					'HTML.AllowedElements' => array(
-						'em' => true,
-						'a' => true,
-						'strong' => true,
-						'br' => true,
-						'p' => true,
-					),
-					'HTML.AllowedAttributes' => array(
-						'a.href' => true, 'a.title' => true,
-					),
-				),
 			),
 		);
 	}
