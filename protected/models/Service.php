@@ -22,6 +22,8 @@ class Service extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	const MODEL_TYPE = 2;
+
 	public function init()
 	{
 		$this->onAfterSave = array('Config', 'generateCss');

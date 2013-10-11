@@ -22,6 +22,8 @@ class Center extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	const MODEL_TYPE = 6;
+
 	public function init()
 	{
 		$this->onAfterSave = array('Config', 'generateCss');
