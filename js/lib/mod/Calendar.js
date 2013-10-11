@@ -21,7 +21,7 @@ var Calendar = function () { 'use strict';
 
 		var filter;
 
-		$('.timeline-days').on('click', 'span:not(.disabled, .current)', function(e){
+		$('.timeline-days').on('click', 'span:not(.current)', function(e){
 			var span = $(this),
 				day = $('i', span).data('day'),
 				current = $('.current', $(e.delegateTarget));
