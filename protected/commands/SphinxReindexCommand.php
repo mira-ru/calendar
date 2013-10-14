@@ -52,7 +52,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
 
 			if (!empty($data)) {
-				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`) VALUES ';
+				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$cnt = 0;
 				foreach ($data as $item) {
 					if ($cnt > 0)
@@ -60,7 +60,7 @@ class SphinxReindexCommand extends CConsoleCommand
 					else
 						$cnt++;
 
-					$sphinxQl .= '('.($item['id']*100 + Center::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Center::MODEL_TYPE.')';
+					$sphinxQl .= '('.($item['id']*100 + Center::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Center::MODEL_TYPE.','.$item['id'].')';
 					$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
 				}
 				$total += $result;
@@ -75,7 +75,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
 
 			if (!empty($data)) {
-				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`) VALUES ';
+				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$cnt = 0;
 				foreach ($data as $item) {
 					if ($cnt > 0)
@@ -83,7 +83,7 @@ class SphinxReindexCommand extends CConsoleCommand
 					else
 						$cnt++;
 
-					$sphinxQl .= '('.($item['id']*100 + User::MODEL_TYPE).',\''.addslashes($item['name']).'\','.User::MODEL_TYPE.')';
+					$sphinxQl .= '('.($item['id']*100 + User::MODEL_TYPE).',\''.addslashes($item['name']).'\','.User::MODEL_TYPE.','.$item['id'].')';
 					$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
 				}
 				$total += $result;
@@ -97,7 +97,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
 
 			if (!empty($data)) {
-				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`) VALUES ';
+				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$cnt = 0;
 				foreach ($data as $item) {
 					if ($cnt > 0)
@@ -105,7 +105,7 @@ class SphinxReindexCommand extends CConsoleCommand
 					else
 						$cnt++;
 
-					$sphinxQl .= '('.($item['id']*100 + Direction::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Direction::MODEL_TYPE.')';
+					$sphinxQl .= '('.($item['id']*100 + Direction::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Direction::MODEL_TYPE.','.$item['id'].')';
 					$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
 				}
 				$total += $result;
@@ -119,7 +119,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
 
 			if (!empty($data)) {
-				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`) VALUES ';
+				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$cnt = 0;
 				foreach ($data as $item) {
 					if ($cnt > 0)
@@ -127,7 +127,7 @@ class SphinxReindexCommand extends CConsoleCommand
 					else
 						$cnt++;
 
-					$sphinxQl .= '('.($item['id']*100 + Hall::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Hall::MODEL_TYPE.')';
+					$sphinxQl .= '('.($item['id']*100 + Hall::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Hall::MODEL_TYPE.','.$item['id'].')';
 					$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
 				}
 				$total += $result;
@@ -141,7 +141,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
 
 			if (!empty($data)) {
-				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`) VALUES ';
+				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$cnt = 0;
 				foreach ($data as $item) {
 					if ($cnt > 0)
@@ -149,7 +149,7 @@ class SphinxReindexCommand extends CConsoleCommand
 					else
 						$cnt++;
 
-					$sphinxQl .= '('.($item['id']*100 + Service::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Service::MODEL_TYPE.')';
+					$sphinxQl .= '('.($item['id']*100 + Service::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Service::MODEL_TYPE.','.$item['id'].')';
 					$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
 				}
 				$total += $result;

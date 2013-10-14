@@ -17,6 +17,22 @@ class Config {
 		500 => 'Внутренняя ошибка сервера',
 	);
 
+	static public $routeMap = array(
+		User::MODEL_TYPE => 'user',
+		Service::MODEL_TYPE => 'service',
+		Hall::MODEL_TYPE => 'hall',
+		Direction::MODEL_TYPE => 'activity',
+		Center::MODEL_TYPE => 'center',
+	);
+
+	static public $modelMap = array(
+		User::MODEL_TYPE => 'User',
+		Service::MODEL_TYPE => 'Service',
+		Hall::MODEL_TYPE => 'Hall',
+		Direction::MODEL_TYPE => 'Direction',
+		Center::MODEL_TYPE => 'Center',
+	);
+
 	/**
 	 * Генерация css для всех цветов
 	 */

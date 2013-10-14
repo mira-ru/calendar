@@ -84,15 +84,9 @@ var Calendar = function () { 'use strict';
 				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
 			});
 		});
-		var availableTags = [
-			{label:"Хатха йога, Коноровский Павел",type:'user',item:1},
-			{label:"Хатха йога, Силкачева Ольга",type:'service',item:2},
-			{label:"Хатха йога для начинающих, Гладышева Инга",type:'user',item:3},
-			{label:"Хатха йога для начинающих, Коноровский Павел",type:'service',item:4},
-			{label:"Хатха йога, Коноровский Павел", type:'user',item:5},
-		];
 		$('.search-form input').autocomplete({
-			source: availableTags,
+			source:'/ajax/search',
+			minLength: 2,
 			appendTo: ".search-form",
 			select: function( event, ui ) {
 				setOptions({type:ui.item.type,item:ui.item.item});

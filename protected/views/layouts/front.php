@@ -23,7 +23,11 @@
 		<script>
 			lib.versioninig = true;
 			<?php
-				echo 'lib.version='.$cs->getVersion().';';
+				if (YII_DEBUG) {
+					echo 'lib.version='.time().';';
+				} else {
+					echo 'lib.version='.$cs->getVersion().';';
+				}
 				foreach($this->moduleId as $module) {
 					echo 'lib.include(\'mod.'.$module.'\',lib.version)';
 				}
