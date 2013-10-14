@@ -4,12 +4,14 @@ class IndexUrlRule extends CBaseUrlRule
 	public function createUrl($manager, $route, $params, $ampersand)
 	{
 		if ($route == 'site/index') {
-			$centerId = empty($params['center_id']) ? 0 : $params['center_id'];
-			$serviceId = empty($params['service_id']) ? 0 : $params['service_id'];
-			$directionId = empty($params['direction_id']) ? 0 : $params['direction_id'];
 			$time = empty($params['time']) ? DateMap::currentDay(time()) : $params['time'];
+			$class = isset($params['class_id']) ? Config::$routeMap[$params['class_id']] : '';
+			$id = isset($params['id']) ? $params['id'] : '';
 
-			$url = 'c/'.$centerId.'/'.$serviceId.'/'.$directionId.'/'.$time;
+			$url = 'c/'.$time;
+			if ( !empty($class) && !empty($id) ) {
+				$url .= '/'.$class.'/'.$id;
+			}
 			if (isset($params['popup'])) {
 				$url .= '?'.$params['popup'];
 			}
@@ -33,27 +35,27 @@ class IndexUrlRule extends CBaseUrlRule
 			return false;
 
 		if (empty($pathInfo)) {
-			$request->redirect(
-				$this->createUrl($manager, 'site/index', array(), '&'),
-				true,
-				302
-			);
+			return 'site/index';
+//			$request->redirect(
+//				$this->createUrl($manager, 'site/index', array(), '&'),
+//				true,
+//				302
+//			);
 		}
-		/*
-		 * 1 - center_id
-		 * 2 - service_id
-		 * 3 - direction_id
-		 * 4 - time
+
+		/**
+		 * 1 - time
+		 * 2 - model class
+		 * 3 - model id
 		 */
-		if (preg_match('@^c/([\d]+)/([\d]+)/([\d]+)/([\d]+)?(?:/([-\d]+))?$@u', $pathInfo, $pathArray))
+		if (preg_match('@^c/([\d]+)/([\w]+)/([\d]+)?$@u', $pathInfo, $pathArray))
 		{
-			$params = array(
-				'center_id' => $pathArray[1],
-				'service_id' => $pathArray[2],
-				'direction_id' => $pathArray[3],
-				'time' => $pathArray[4],
-			);
-			$_GET += $params;
+			$class_id = array_search($pathArray[2], Config::$routeMap);
+			if ($class_id === false) { throw new CHttpException(404); }
+
+			$_GET['time'] = $pathArray[1];
+			$_GET['class_id'] = $class_id;
+			$_GET['model_id'] = $pathArray[3];
 
 			return 'site/index';
 		}

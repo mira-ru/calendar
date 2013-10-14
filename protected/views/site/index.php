@@ -1,27 +1,38 @@
 <?php
 /**
+ * @var $model
  * @var $centers array
- * @var $current Center
- * @var $checkedTime integer
+ * @var $centerId Center
+ * @var $currentTime integer
+ *
  * @var $events array
  * @var $halls array
  * @var $services array
  * @var $activeDays array
+ *
  * @var $currentMonth integer
  * @var $nextMonth integer
  * @var $serviceId integer
  * @var $directionId integer
- * @var $checkedDirection Direction
+ * @var $userId integer
+ * @var $hallId integer
  */
+
+// layout settings
+$this->layout = '//layouts/front';
+$this->pageTitle = 'Расписание';
+$this->moduleId = array('Calendar');
+$this->bodyClass = array('calendar');
+
 ?>
 <!-- PAGE CONTENT -->
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap" class="<?php echo (!empty($directionId)) ? 'week-view' : '';?>">
+<div id="wrap" class="<?php echo ( $model instanceof Direction ) ? 'week-view' : '';?>">
 <div class="container">
 	<div class="row header">
-		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://www.miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
+		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
 		<div class="col-lg-4"><h1>Расписание</h1></div>
 		<div class="col-lg-4 search-form">
 			<div><input type="text" class="form-control"></div>
@@ -39,11 +50,11 @@
 				foreach ($centers as $center) {
 					$class = 'menu-'.ltrim($center->color, '#');
 
-					if ($center->id == $current->id) {
+					if ($center->id == $centerId) {
 						$class .= ' current';
 						$url = 'javascript:void(0)';
 					} else {
-						$url = $this->createUrl('/site/index', array('center_id'=>$center->id, 'time'=>$checkedTime));
+						$url = $this->createUrl('/site/index', array('class_id'=>Center::MODEL_TYPE, 'id'=>$center->id, 'time'=>$currentTime));
 					}
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url, array('data-center' => $center->id))
@@ -85,11 +96,10 @@
 		<div class="col-lg-12">
 			<ul class="list-inline filter-items">
 				<?php
-				if (!empty($serviceId)) {
-					$service = $services[$serviceId];
-					echo CHtml::tag('li', array(), $service->name.' (все направления)<i></i>');
-				} elseif (!empty($checkedDirection)) {
-					echo CHtml::tag('li', array(), $checkedDirection->name.'<i></i>');
+				if ( $model instanceof Service ) {
+					echo CHtml::tag('li', array(), $model->name.' (все направления)<i></i>');
+				} elseif ( $model instanceof Direction ) {
+					echo CHtml::tag('li', array(), $model->name.'<i></i>');
 				}
 				?>
 				<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
@@ -99,11 +109,11 @@
 	<div class="row period-links">
 		<div class="col-lg-6">
 			<?php
-			$monthNumber = date('n', $checkedTime);
-			$yearNumber = date('Y', $checkedTime);
-			$prevMonthTime = DateMap::prevMonth($checkedTime);
+			$monthNumber = date('n', $currentTime);
+			$yearNumber = date('Y', $currentTime);
+			$prevMonthTime = DateMap::prevMonth($currentTime);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevMonthTime, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
 				array('class'=>'prev-month', 'data-time'=>$prevMonthTime)
 			);
 			echo CHtml::tag('strong',
@@ -111,22 +121,22 @@
 				DateMap::$monthMap[$monthNumber].', '.$yearNumber
 			);
 			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextMonth, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextMonth)),
 				array('class'=>'next-month', 'data-time'=>$nextMonth)
 			);
 			?>
 		</div>
 		<div class="col-lg-6 ">
 			<?php
-			$prevWeek = DateMap::prevWeek($checkedTime);
-			$nextWeek = DateMap::nextWeek($checkedTime);
+			$prevWeek = DateMap::prevWeek($currentTime);
+			$nextWeek = DateMap::nextWeek($currentTime);
 			echo CHtml::link('Предыдущая неделя',
-				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$prevWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevWeek)),
 				array('class'=>'prev-month', 'data-time'=>$prevWeek)
 			);
 
 			echo CHtml::link('Следующая неделя',
-				$this->createUrl('/site/index', array('center_id'=>$current->id, 'time'=>$nextWeek, 'direction_id'=>$directionId, 'service_id'=>$serviceId)),
+				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextWeek)),
 				array('class'=>'next-month', 'data-time'=>$nextWeek)
 			);
 			?>
@@ -139,13 +149,13 @@
 					<div>
 					<?php
 					// выбрано направление - недельный вид
-					if (!empty($directionId)) {
+					if ( $model instanceof Direction ) {
 						$this->renderPartial('index/_daysWeek',
-							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
+							array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
 						);
 					} else {
 						$this->renderPartial('index/_daysMonth',
-							array('checkedTime'=>$checkedTime, 'activeDays'=>$activeDays)
+							array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
 						);
 					}
 
@@ -185,10 +195,7 @@
 								'halls'=>$halls,
 								'events'=>$events,
 								'services'=>$services,
-								'checkedTime'=>$checkedTime,
-								'centerId'=>$current->id,
-								'serviceId'=>$serviceId,
-								'directionId'=>$directionId,
+								'checkedTime'=>$currentTime,
 							));
 						} else {
 							$this->renderPartial('index/_monthEvents', array(
@@ -219,10 +226,10 @@
 		* item
 		* */
 		Calendar.initialize(<?php echo json_encode(array(
-			'center_id'=>$current->id,
-			'activity_id'=>$directionId,
-			'service_id'=>$serviceId,
-			'day'=>$checkedTime,
+			'center_id'=>$centerId,
+			'type' => Config::$routeMap[$model::MODEL_TYPE],
+			'item' => $model->id,
+			'day'=>$currentTime,
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>

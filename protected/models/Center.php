@@ -135,4 +135,13 @@ class Center extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	/**
+	 * Получение ID первого центра
+	 */
+	public static function getFirstId()
+	{
+		$sql = 'SELECT id FROM center WHERE status='.self::STATUS_ACTIVE.' ORDER BY position ASC LIMIT 1';
+		return Yii::app()->db->createCommand($sql)->queryScalar();
+	}
 }

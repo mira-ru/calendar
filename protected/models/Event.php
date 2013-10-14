@@ -229,18 +229,27 @@ class Event extends CActiveRecord
 	 * @param $endTime
 	 * @return array|CActiveRecord
 	 */
-	public static function getByTime($startTime, $endTime, $centerId, $directionId=null, $serviceId=null)
+	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
 	{
 		$criteria = new CDbCriteria();
-		$criteria->condition = 'start_time >= :start AND end_time < :end AND center_id=:cid';
+		$criteria->condition = 'start_time >= :start AND end_time < :end';
 		$criteria->order = 'start_time ASC';
-		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId);
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime);
 
+		if ( !empty($centerId) ) {
+			$criteria->compare('center_id', $centerId);
+		}
 		if ( !empty($directionId) ) {
 			$criteria->compare('direction_id', $directionId);
 		}
 		if ( !empty($serviceId) ) {
 			$criteria->compare('service_id', $serviceId);
+		}
+		if ( !empty($userId) ) {
+			$criteria->compare('user_id', $userId);
+		}
+		if ( !empty($hallId) ) {
+			$criteria->compare('hall_id', $hallId);
 		}
 
 		return self::model()->findAll($criteria);
@@ -250,9 +259,9 @@ class Event extends CActiveRecord
 	 * Получение списка дней с событиями
 	 * (по центру и по направлениям)
 	 */
-	public static function getActiveDays($startTime, $endTime, $centerId, $directionId=null, $serviceId=null)
+	public static function getActiveDays($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
 	{
-		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId);
+		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId, $userId, $hallId);
 		$result = array();
 		/** @var $event Event */
 		foreach ($events as $event) {

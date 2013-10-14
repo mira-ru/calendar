@@ -1,12 +1,12 @@
 <?php
 /**
- * @var $checkedTime integer
+ * @var $currentTime integer
  * @var $activeDays integer
  */
 
-$daysOfMonth = date('t', $checkedTime);
-$dayNumber = date('j', $checkedTime);
-$currentMonth = DateMap::currentMonth($checkedTime);
+$daysOfMonth = date('t', $currentTime);
+$dayNumber = date('j', $currentTime);
+$currentMonth = DateMap::currentMonth($currentTime);
 
 for ($n=1; $n<=$daysOfMonth; $n++) {
 	echo CHtml::openTag('td');

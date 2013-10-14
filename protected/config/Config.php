@@ -34,6 +34,37 @@ class Config {
 	);
 
 	/**
+	 * Преобразует входной объект в набор параметров для выборок
+	 */
+	public static function mapRequestParams($model)
+	{
+		$data = array(
+			'centerId' => 0,
+			'serviceId' => 0,
+			'directionId' => 0,
+			'userId' => 0,
+			'hallId' => 0,
+		);
+
+		if ($model instanceof Center) {
+			$data['centerId'] = $model->id;
+		} elseif ($model instanceof Service) {
+			$data['centerId'] = $model->center_id;
+			$data['serviceId'] = $model->id;
+		} elseif ($model instanceof Direction) {
+			$data['centerId'] = $model->center_id;
+			$data['directionId'] = $model->id;
+		} elseif ($model instanceof User) {
+			$data['userId'] = $model->id;
+		} elseif ($model instanceof Hall) {
+			$data['hallId'] = $model->id;
+		} else {
+			throw new CException(500);
+		}
+		return $data;
+	}
+
+	/**
 	 * Генерация css для всех цветов
 	 */
 	public static function generateCss()
