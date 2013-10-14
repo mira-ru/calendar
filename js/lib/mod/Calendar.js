@@ -5,15 +5,17 @@ lib.include('mod.Common', lib.version);
 
 lib.include('plugins.bootstrap.Modal');
 
+lib.include('plugins.jquery-ui');
+
 //lib.include('plugins.bootstrap.Transition');
 
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
 		'day': 0,
-		'activity_id': 0,
-		'center_id': 0,
-		'service_id': 0
+		'type': '',
+		'item': 0,
+		'center_id':0
 	};
 	// Public method
 	function initialize (options) {
@@ -36,7 +38,7 @@ var Calendar = function () { 'use strict';
 				sid = li.data('service'),
 				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
 
-			setOptions({'service_id':sid, 'activity_id':0});
+			setOptions({type:'service', item:sid});
 			_getEvents(_moduleOptions);
 			_setFilterLabel(text);
 			li.parent().hide();
@@ -44,7 +46,7 @@ var Calendar = function () { 'use strict';
 				var li = $(this),
 				    id = li.data('id');
 
-				setOptions({'activity_id':id, 'service_id':0});
+				setOptions({type:'activity', item:id});
 				_getEvents(_moduleOptions);
 				_setFilterLabel(li.text());
 				li.parent().hide();
@@ -82,7 +84,25 @@ var Calendar = function () { 'use strict';
 				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
 			});
 		});
-
+		var availableTags = [
+			{label:"Хатха йога, Коноровский Павел",type:'user',item:1},
+			{label:"Хатха йога, Силкачева Ольга",type:'service',item:2},
+			{label:"Хатха йога для начинающих, Гладышева Инга",type:'user',item:3},
+			{label:"Хатха йога для начинающих, Коноровский Павел",type:'service',item:4},
+			{label:"Хатха йога, Коноровский Павел", type:'user',item:5},
+		];
+		$('.search-form input').autocomplete({
+			source: availableTags,
+			appendTo: ".search-form",
+			select: function( event, ui ) {
+				setOptions({type:ui.item.type,item:ui.item.item});
+				_getEvents(_moduleOptions);
+			},
+			position: {
+				my:'left top+10',
+				at: "right bottom"
+			}
+		});
 		$('body').on('click', function(e){
 			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
@@ -139,12 +159,12 @@ var Calendar = function () { 'use strict';
 					days.html(msg.days);
 				}
 
-				if(_moduleOptions.activity_id > 0){
-					var urlWithoutDate = '/c/'+_moduleOptions.center_id+'/'+_moduleOptions.service_id+'/'+_moduleOptions.activity_id;
-					$(period[2]).attr('href',urlWithoutDate + '/' + msg.week.prev).attr('data-time', msg.week.prev);
-					$(period[3]).attr('href',urlWithoutDate + '/' + msg.week.next).attr('data-time', msg.week.next);
+				if(_moduleOptions.type == 'activity'){
+					var     params = '/' + data.type + '/' + data.item;
+					$(period[2]).attr('href','/' + msg.week.prev + params).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href','/' + msg.week.next + params).attr('data-time', msg.week.next);
 				}
-				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
+				var layout = (_moduleOptions.type == 'activity') ? 1 : 0;
 				_toggleLayout(layout);
 			});
 		}
@@ -170,7 +190,7 @@ var Calendar = function () { 'use strict';
 		// Сброс фильтра
 		function _resetFilter() {
 			$('.filter-items').empty();
-			setOptions({'activity_id':0, 'service_id':0});
+			setOptions({type:'center', item:_moduleOptions.center_id});
 			// Обновляем таймлайн и расписание
 			_getEvents(_moduleOptions);
 		}
@@ -190,9 +210,8 @@ var Calendar = function () { 'use strict';
 
 	// замена url
 	function _changeUrl(data, get) {
-		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
-			urlWithoutCenter = '/0/0/'+data.day,
-			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
+		var     params = (data.type != '' && data.item != 0) ? '/' + data.type + '/' + data.item : '',
+			url = '/c/'+data.day + params,
 			menuLinks = $('.top-menu li:not(.current) a'),
 			periodLinks = $('.period-links a');
 
@@ -205,11 +224,11 @@ var Calendar = function () { 'use strict';
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			$(this).attr('href','/c/' + id + urlWithoutCenter);
+			$(this).attr('href','/c/' + id + '/' + data.day);
 		});
 		periodLinks.each(function(){
 			var time = $(this).attr('data-time');
-			$(this).attr('href',urlWithoutDate + '/' + time);
+			$(this).attr('href','/c/' + time + params);
 		});
 	}
 

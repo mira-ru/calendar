@@ -213,6 +213,11 @@
 <!-- EOF PAGE CONTENT -->
 <script>
 	$(function () {
+		/*теперь объект _moduleOptions содержит следующее:
+		* center_id
+		* type
+		* item
+		* */
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
 			'activity_id'=>$directionId,

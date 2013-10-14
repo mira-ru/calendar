@@ -1,3 +1,4 @@
+@import url('/css/jqueryui.css');
 .gFontImport (@name, @weights, @subsets) {
 	@import url('http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin');
 }
@@ -114,6 +115,7 @@ h1, h2, h3, h4, h5, h6 {
 				}
 			}
 			.search-form {
+				position: relative;
 				div {
 					background: #8a8c8b url(data:image/gif;base64,R0lGODlhDgAPAKU4AImLiouLi4qMi4yMjImNjIuNjI2NjZKSkpGTkpOTk5KUk5eZmJmZmZiamaCgoJ+hoKCioaepqKiqqa2vrq6wr7CwsLW3tre3t7u9vL2/vsLEw8PFxMTGxcnLysvLy8zMzNLS0tPT09LU09PV1OHh4eLi4uHj4ufn5+bo5+jo6Ojq6enr6u7u7vDw8O/x8PDy8fb29vf39/j4+Pz8/P39/fz+/f7+/v7//////////////////////////////////yH+EUNyZWF0ZWQgd2l0aCBHSU1QACwAAAAADgAPAAAGisCCQGDh1G4jjEIoKBQUKRzupZLGHkzBCVdiNA8enKwhtOBIgeZQsMGBhCTcwakesnCAwqw1GGYLIDgRAjQpQgR0Q2ESAig4iU1wOAIAGjgdkAUUNiRNCjA4GWoGE6AVdA4xOCsiHyU2UikITAshUlImF6opCX6UEYNDqTgoa015dRAuKkLNWXUFQQA7) 14px 50% no-repeat;
 					border-radius: 4px;
@@ -122,6 +124,28 @@ h1, h2, h3, h4, h5, h6 {
 					input {
 						height: 30px;
 						padding: 4px 10px;
+					}
+				}
+				ul{
+					border-radius: 5px;
+					margin: 0;
+					padding: 0;
+					box-shadow: 0 0 5px 0 rgba(0,0,0,0.3);
+					background: #fff;
+					left: 15px !important;
+					li{
+						padding-left: 15px;
+						margin-bottom: 2px;
+						a{
+							color: #51564b;
+							text-decoration: none;
+						}
+						&:hover{
+							background: #95d600;
+							a{
+								color: #fff;
+							}
+						}
 					}
 				}
 			}
