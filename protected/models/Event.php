@@ -19,6 +19,8 @@
  */
 class Event extends CActiveRecord
 {
+	const MODEL_TYPE = 4;
+
 	// для поиска по типам
 	public $event_type;
 	// Загруженный файл
