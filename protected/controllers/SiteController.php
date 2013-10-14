@@ -112,16 +112,13 @@ class SiteController extends FrontController
 	{
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
-		if (!$request->getIsAjaxRequest()) {
-			throw new CHttpException(400);
-		}
+		if (!$request->getIsAjaxRequest()) { throw new CHttpException(400); }
 
 		$day = intval($request->getParam('day'));
 		$type = $request->getParam('type');
 		$modelId = intval($request->getParam('item'));
 
 		$classId = array_search($type, Config::$routeMap);
-		FirePHP::getInstance()->fb($type);
 		if ($classId === false) { throw new CHttpException(400); }
 		if ( empty($modelId) ) { throw new CHttpException(400); }
 
@@ -130,7 +127,6 @@ class SiteController extends FrontController
 		$class = Config::$modelMap[ $classId ];
 
 		$model = $class::model()->findByPk($modelId);
-		FirePHP::getInstance()->fb($model);
 		if ($model === null) { throw new CHttpException(404); }
 
 		$config = Config::mapRequestParams($model);
@@ -201,21 +197,27 @@ class SiteController extends FrontController
 
 		$eventId = intval($request->getParam('event_id'));
 		$event = Event::model()->findByPk($eventId);
-		if ($event===null) {
-			throw new CHttpException(404);
-		}
+		if ($event===null) { throw new CHttpException(404); }
 
-		$centerId = intval($request->getParam('center_id'));
 		$day = intval($request->getParam('day'));
-		$directionId = intval($request->getParam('activity_id'));
-		$serviceId = intval($request->getParam('service_id'));
+		$type = $request->getParam('type');
+		$modelId = intval($request->getParam('item'));
+
+		$classId = array_search($type, Config::$routeMap);
+		if ($classId === false) { throw new CHttpException(400); }
+		if ( empty($modelId) ) { throw new CHttpException(400); }
+
+		// Приведение параметров
+		if (!isset(Config::$modelMap[$classId])) { throw new CHttpException(400); }
+		$class = Config::$modelMap[ $classId ];
+
+		$model = $class::model()->findByPk($modelId);
+		if ($model === null) { throw new CHttpException(404); }
 
 		$html = $this->renderPartial('ajax/_event', array(
 			'event'=>$event,
-			'centerId'=>$centerId,
 			'day'=>$day,
-			'directionId'=>$directionId,
-			'serviceId'=>$serviceId,
+			'model'=>$model,
 		), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );

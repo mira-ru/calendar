@@ -35,7 +35,7 @@ $this->bodyClass = array('calendar');
 		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
 		<div class="col-lg-4"><h1>Расписание</h1></div>
 		<div class="col-lg-4 search-form">
-			<div><input type="text" class="form-control"></div>
+			<div><input type="text" class="form-control" value="<?php echo empty($_GET['search']) ? '' : addslashes($_GET['search']); ?>"><i></i></div>
 		</div>
 		<div class="col-lg-2 text-right">
 			<span>Запись по телефону:</span>
@@ -224,12 +224,14 @@ $this->bodyClass = array('calendar');
 		* center_id
 		* type
 		* item
+		* search - true/false? в зависимости от того есть ли в url строка поиска
 		* */
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$centerId,
 			'type' => Config::$routeMap[$model::MODEL_TYPE],
 			'item' => $model->id,
 			'day'=>$currentTime,
+			'search'=>!empty($_GET['search']),
 		), JSON_NUMERIC_CHECK); ?>);
 	});
 </script>

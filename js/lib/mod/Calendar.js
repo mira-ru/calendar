@@ -15,7 +15,8 @@ var Calendar = function () { 'use strict';
 		'day': 0,
 		'type': '',
 		'item': 0,
-		'center_id':0
+		'center_id':0,
+		search: false
 	};
 	// Public method
 	function initialize (options) {
@@ -84,19 +85,34 @@ var Calendar = function () { 'use strict';
 				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
 			});
 		});
-		$('.search-form input').autocomplete({
+		$('.search-form').find('input').autocomplete({
 			source:'/ajax/search',
 			minLength: 2,
 			appendTo: ".search-form",
 			select: function( event, ui ) {
 				setOptions({type:ui.item.type,item:ui.item.item});
 				_getEvents(_moduleOptions);
+				_changeUrl(_moduleOptions, 'search='+ui.item.label);
+				_moduleOptions.search = true;
 			},
 			position: {
 				my:'left top+10',
 				at: "right bottom"
 			}
-		});
+		}).keyup(function(){
+			if($(this).val().length > 2)
+				$(this).siblings('i').fadeIn();
+			else
+				$(this).siblings('i').fadeOut();
+		})
+		.end()
+			.find('i').click(function(){
+				if(_moduleOptions.search) {
+					location.href = '/'
+				} else {
+					$(this).siblings('input').val('');
+				}
+			});
 		$('body').on('click', function(e){
 			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
@@ -193,7 +209,7 @@ var Calendar = function () { 'use strict';
 	function reloadWithHash(){
 		var hash = location.hash;
 		if(hash.length > 0){
-			location = hash.replace('#','');
+			location.href = hash.replace('#','');
 		}
 	}
 
