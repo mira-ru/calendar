@@ -36,11 +36,6 @@ class IndexUrlRule extends CBaseUrlRule
 
 		if (empty($pathInfo)) {
 			return 'site/index';
-//			$request->redirect(
-//				$this->createUrl($manager, 'site/index', array(), '&'),
-//				true,
-//				302
-//			);
 		}
 
 		/**
@@ -57,6 +52,12 @@ class IndexUrlRule extends CBaseUrlRule
 			$_GET['class_id'] = $class_id;
 			$_GET['model_id'] = $pathArray[3];
 
+			return 'site/index';
+		}
+		// для дефолтных страниц, с указанием времени
+		if (preg_match('@^c/([\d]+)?$@u', $pathInfo, $pathArray))
+		{
+			$_GET['time'] = $pathArray[1];
 			return 'site/index';
 		}
 
