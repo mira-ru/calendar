@@ -15,7 +15,8 @@ var Calendar = function () { 'use strict';
 		'day': 0,
 		'type': '',
 		'item': 0,
-		'center_id':0
+		'center_id':0,
+		search: false
 	};
 	// Public method
 	function initialize (options) {
@@ -91,18 +92,33 @@ var Calendar = function () { 'use strict';
 			{label:"Хатха йога для начинающих, Коноровский Павел",type:'service',item:4},
 			{label:"Хатха йога, Коноровский Павел", type:'user',item:5},
 		];
-		$('.search-form input').autocomplete({
+		$('.search-form').find('input').autocomplete({
 			source: availableTags,
 			appendTo: ".search-form",
 			select: function( event, ui ) {
 				setOptions({type:ui.item.type,item:ui.item.item});
 				_getEvents(_moduleOptions);
+				_changeUrl(_moduleOptions, 'search='+ui.item.label);
+				_moduleOptions.search = true;
 			},
 			position: {
 				my:'left top+10',
 				at: "right bottom"
 			}
-		});
+		}).keyup(function(){
+			if($(this).val().length > 2)
+				$(this).siblings('i').fadeIn();
+			else
+				$(this).siblings('i').fadeOut();
+		})
+		.end()
+			.find('i').click(function(){
+				if(_moduleOptions.search) {
+					location = '/'
+				} else {
+					$(this).siblings('input').val('');
+				}
+			});
 		$('body').on('click', function(e){
 			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){

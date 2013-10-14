@@ -24,7 +24,7 @@
 		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://www.miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
 		<div class="col-lg-4"><h1>Расписание</h1></div>
 		<div class="col-lg-4 search-form">
-			<div><input type="text" class="form-control"></div>
+			<div><input type="text" class="form-control"><i></i></div>
 		</div>
 		<div class="col-lg-2 text-right">
 			<span>Запись по телефону:</span>
@@ -217,6 +217,7 @@
 		* center_id
 		* type
 		* item
+		* search - true/false? в зависимости от того есть ли в url строка поиска
 		* */
 		Calendar.initialize(<?php echo json_encode(array(
 			'center_id'=>$current->id,
