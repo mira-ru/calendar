@@ -44,7 +44,7 @@ $this->bodyClass = array('calendar');
 	</div>
 	<div class="row">	
 		<div class="col-lg-12">
-			<ul class="list-inline list-justified top-menu">
+			<ul class="list-inline top-menu">
 				<?php
 				/** @var $center Center */
 				foreach ($centers as $center) {
