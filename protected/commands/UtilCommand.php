@@ -32,7 +32,10 @@ class UtilCommand extends CConsoleCommand
 			foreach ($users as $user) {
 				if (empty($user['desc'])) { continue; }
 
-				$desc = Kavychker::baseFormat($user['desc']);
+				$desc = $user['desc'];
+				$desc = Kavychker::deformat($desc);
+				$desc = Kavychker::baseFormat($desc);
+
 				User::model()->updateByPk($user['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -52,7 +55,10 @@ class UtilCommand extends CConsoleCommand
 			foreach ($events as $event) {
 				if (empty($event['desc'])) { continue; }
 
-				$desc = Kavychker::baseFormat($event['desc']);
+				$desc = $event['desc'];
+				$desc = Kavychker::deformat($desc);
+				$desc = Kavychker::baseFormat($desc);
+
 				Event::model()->updateByPk($event['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -71,7 +77,10 @@ class UtilCommand extends CConsoleCommand
 			foreach ($events as $event) {
 				if (empty($event['desc'])) { continue; }
 
-				$desc = Kavychker::baseFormat($event['desc']);
+				$desc = $event['desc'];
+				$desc = Kavychker::deformat($desc);
+				$desc = Kavychker::baseFormat($desc);
+
 				EventTemplate::model()->updateByPk($event['id'], array('desc'=>$desc));
 			}
 			$transaction->commit();
@@ -90,8 +99,14 @@ class UtilCommand extends CConsoleCommand
 		try {
 			foreach ($directions as $direction) {
 
-				$desc = Kavychker::baseFormat($direction['desc']);
-				$price = Kavychker::baseFormat($direction['price']);
+				$desc = $direction['desc'];
+				$desc = Kavychker::deformat($desc);
+				$desc = Kavychker::baseFormat($desc);
+
+				$price = $direction['price'];
+				$price = Kavychker::deformat($price);
+				$price = Kavychker::baseFormat($price);
+
 				Direction::model()->updateByPk($direction['id'], array('desc'=>$desc, 'price'=>$price));
 			}
 			$transaction->commit();

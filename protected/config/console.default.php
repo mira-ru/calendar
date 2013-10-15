@@ -9,6 +9,10 @@ return array(
 	// preloading 'log' component
 	'preload'=>array('log'),
 
+	'import'=>array(
+		'application.components.lib.*',
+	),
+
 	// application components
 	'components'=>array(
 		'db'=>array(
