@@ -65,7 +65,8 @@ class SiteController extends FrontController
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId);
 		if ( !empty($serviceId) && empty($services[$serviceId]) ) { throw new CHttpException(404); }
 
-		if ( $model instanceof Direction ) {
+		// недельный вид
+		if ( Config::getIsWeekView($model) ) {
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
 
@@ -144,7 +145,7 @@ class SiteController extends FrontController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 		// выбрано направление - недельный вид
-		if ( $model instanceof Direction ) {
+		if ( Config::getIsWeekView($model) ) {
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
 

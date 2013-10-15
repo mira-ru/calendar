@@ -64,6 +64,11 @@ class Config {
 		return $data;
 	}
 
+	public static function getIsWeekView($model)
+	{
+		return ( $model instanceof Direction || $model instanceof User || $model instanceof Hall );
+	}
+
 	/**
 	 * Генерация css для всех цветов
 	 */

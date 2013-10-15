@@ -29,7 +29,7 @@ $this->bodyClass = array('calendar');
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap" class="<?php echo ( $model instanceof Direction ) ? 'week-view' : '';?>">
+<div id="wrap" class="<?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
 <div class="container">
 	<div class="row header">
 		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
