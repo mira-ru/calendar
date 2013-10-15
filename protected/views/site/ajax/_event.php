@@ -25,21 +25,37 @@
 		);;
 	}
 	?></strong>
-<span><i>Мастер:</i><?php
-	echo $event->user->checkShowLink()
-	    ? CHtml::link(
-		    $event->user->name,
-		    $this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$day, 'popup'=>'m='.$event->user_id)),
-		    array(
-			    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->user_id, 'type'=>'m')),
-			    'data-master-id'=>$event->user->id,
-			    'data-toggle'=>'modal',
-			    'data-target'=>'#modal',
-			    'class'=>'green'
+<?php
+$users = $event->getUsers();
+if (!empty($users)) {
+	echo CHtml::openTag('span');
+	echo CHtml::tag('i', array(), 'Мастер:');
+	$cnt = 0;
+	foreach ($users as $user) {
+		if ($cnt==0) {
+			$cnt++;
+		} else {
+			echo ', ';
+		}
+		echo $user->checkShowLink()
+		    ? CHtml::link(
+			    $user->name,
+			    $this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$day, 'popup'=>'m='.$user->id)),
+			    array(
+				    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$user->id, 'type'=>'m')),
+				    'data-master-id'=>$user->id,
+				    'data-toggle'=>'modal',
+				    'data-target'=>'#modal',
+				    'class'=>'green'
+			    )
 		    )
-	    )
-	    : $event->user->name;
-	?></span>
+		    : $user->name;
+	}
+
+
+	echo CHtml::closeTag('span');
+}
+?>
 <span><i>Зал:</i><?php echo $event->hall->name; ?></span>
 <?php $dow = date('w', $event->start_time); ?>
 <span><i>Время:</i><?php echo DateMap::$smallDayMap[$dow].', '.date('H:i', $event->start_time).'-'.date('H:i', $event->end_time); ?></span>
