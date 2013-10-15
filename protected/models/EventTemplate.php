@@ -26,6 +26,8 @@ class EventTemplate extends CActiveRecord
 	// Загруженный файл
 	public $file;
 
+	private $_users = null;
+
 	const STATUS_ACTIVE = 1;
 	const STATUS_DISABLED = 2;
 
@@ -201,5 +203,28 @@ class EventTemplate extends CActiveRecord
 		$this->type = $type;
 		$this->init_time = $initTime;
 	}
+
+	/**
+	 * Список линкованых юзеров к шаблону
+	 */
+//	public function getUsers()
+//	{
+//		if ($this->getIsNewRecord()) {
+//			$this->_users = array();
+//		} elseif ( $this->_users === null ) {
+//			$selected = MediaThemeSelect::model()->findAllByAttributes(array(
+//				'model' => get_class($this),
+//				'model_id' => $this->id
+//			));
+//
+//			if ($selected) {
+//				foreach($selected as $item) {
+//					$this->_themes[] = $item->theme_id;
+//				}
+//			}
+//		}
+//
+//		return $this->_themes;
+//	}
 
 }
