@@ -103,7 +103,7 @@ class UtilCommand extends CConsoleCommand
 				$desc = Kavychker::deformat($desc);
 				$desc = Kavychker::baseFormat($desc);
 
-				$price = $direction['desc'];
+				$price = $direction['price'];
 				$price = Kavychker::deformat($price);
 				$price = Kavychker::baseFormat($price);
 
