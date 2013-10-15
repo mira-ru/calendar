@@ -9,6 +9,7 @@
  * @var $halls array
  * @var $services array
  * @var $activeDays array
+ * @var allServices array
  *
  * @var $currentMonth integer
  * @var $nextMonth integer
@@ -149,7 +150,7 @@ $this->bodyClass = array('calendar');
 					<div>
 					<?php
 					// выбрано направление - недельный вид
-					if ( $model instanceof Direction ) {
+					if ( Config::getIsWeekView($model) ) {
 						$this->renderPartial('index/_daysWeek',
 							array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
 						);
@@ -190,11 +191,11 @@ $this->bodyClass = array('calendar');
 						<div>
 						<?php
 						// выбрано направление - недельный вид
-						if (!empty($directionId)) {
+						if ( Config::getIsWeekView($model) ) {
 							$this->renderPartial('index/_weekEvents', array(
 								'halls'=>$halls,
 								'events'=>$events,
-								'services'=>$services,
+								'services'=>$allServices,
 								'checkedTime'=>$currentTime,
 							));
 						} else {

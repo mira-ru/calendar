@@ -80,6 +80,7 @@ class SiteController extends FrontController
 		}
 
 		$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+		$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 
 		$this->render('index', array(
@@ -96,6 +97,7 @@ class SiteController extends FrontController
 			'halls' => $halls,
 			'events' => $events,
 			'activeDays' => $activeDays,
+			'allServices' => $allServices,
 
 			'currentTime' => $currentTime,
 
