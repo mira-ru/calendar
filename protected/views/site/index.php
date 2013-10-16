@@ -53,10 +53,8 @@ $this->bodyClass = array('calendar');
 
 					if ($center->id == $centerId) {
 						$class .= ' current';
-						$url = 'javascript:void(0)';
-					} else {
-						$url = $this->createUrl('/site/index', array('class_id'=>Center::MODEL_TYPE, 'id'=>$center->id, 'time'=>$currentTime));
 					}
+					$url = $this->createUrl('/site/index', array('class_id'=>Center::MODEL_TYPE, 'id'=>$center->id, 'time'=>$currentTime));
 					echo CHtml::tag('li', array('class'=>$class),
 						CHtml::link($center->name, $url, array('data-center' => $center->id))
 					)."\n";

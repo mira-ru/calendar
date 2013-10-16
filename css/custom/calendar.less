@@ -194,6 +194,7 @@ h1, h2, h3, h4, h5, h6 {
 	}
 	.top-menu {
 		margin: 0; // 0 -12px 15px -12px
+		text-align: center;
 		li {
 			border: 1px solid #eeeeee !important;
 			border-radius: 8px 8px 0 0;
@@ -205,7 +206,7 @@ h1, h2, h3, h4, h5, h6 {
 			a {
 				color: #52554e;
 				font-weight: bold;
-				padding: 0 12px;
+				padding: 0 20px;
 				text-decoration: none;
 			}
 			&.current {
@@ -295,10 +296,19 @@ h1, h2, h3, h4, h5, h6 {
 					position: absolute;
 					width: 22px;
 				}
-				&:hover {
+				// &:hover {
+				// 	&:before {
+				// 		border-radius: 4px 4px 0 0;
+				// 		height: 28px;
+				// 	}
+				// }
+				&.expanded {
 					&:before {
 						border-radius: 4px 4px 0 0;
 						height: 28px;
+					}
+					.list-unstyled {
+						display: block;
 					}
 				}
 			}				
@@ -379,8 +389,8 @@ h1, h2, h3, h4, h5, h6 {
 		}
 		strong {
 			&.current {
-				font-size: 16px;
-				padding: 1em;
+				font-size: 18px;
+				padding: 0 1em;
 			}
 		}
 		.prev-month {
@@ -406,7 +416,7 @@ h1, h2, h3, h4, h5, h6 {
 		margin-bottom: 50px;
 	}
 	table {
-		margin-top: 30px;
+		margin-top: 10px;
 		&.timeline-days {
 			thead {
 				tr {
@@ -840,10 +850,10 @@ h1, h2, h3, h4, h5, h6 {
 		a {
 			text-decoration: underline;
 		}
-		.list-justified.top-menu li {
+		.top-menu li {
 			font-size: 16px;
 		}
-		.list-justified.sub-menu li {
+		.sub-menu li {
 			span {
 				i {
 					& + .list-unstyled {
@@ -954,36 +964,34 @@ h1, h2, h3, h4, h5, h6 {
 				}
 			}
 		}
-		.list-justified {
-			&.top-menu {
-				li {
-					a {
-						&:hover {
-							color: #000;
-						}
+		.top-menu {
+			li {
+				a {
+					&:hover {
+						color: #000;
 					}
 				}
 			}
-			&.sub-menu {
-				li {
-					span {
-						.list-unstyled {
-							li {
-								&:hover {
-									text-decoration: underline;
-								}
+		}
+		.sub-menu {
+			li {
+				span {
+					.list-unstyled {
+						li {
+							&:hover {
+								text-decoration: underline;
 							}
 						}
-						&:hover {
-							.list-unstyled {
-								display: inline-block;
-							}
-							i {
-								border-bottom: none;
-							}
-						}
-					}				
-				}
+					}
+					// &:hover {
+					// 	.list-unstyled {
+					// 		display: inline-block;
+					// 	}
+					// 	i {
+					// 		border-bottom: none;
+					// 	}
+					// }
+				}				
 			}
 		}
 		.filter-items {
@@ -1159,7 +1167,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 @media (max-width: 500px) {
 	.calendar {
-		.list-justified.top-menu li {
+		.top-menu li {
 			display: block;
 			height: 30px;
 			line-height: 30px;

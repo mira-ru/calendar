@@ -34,31 +34,49 @@ var Calendar = function () { 'use strict';
 			$('.event-balloon').hide('fast');
 		});
 
-		$('.sub-menu').on('click', '[data-service]', function(){
+		$('.top-menu').on('click', '.current', function(){
+			return false;
+		});
+
+		$('.sub-menu').on('click', 'span', function(e){
+			$('.expanded', e.delegateTarget).add(this).toggleClass('expanded');
+		}).on('click', '[data-service]', function(e){
+			e.stopImmediatePropagation();
 			var li = $(this),
-				sid = li.data('service'),
-				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+			    sid = li.data('service'),
+			    text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
 
 			setOptions({type:'service', item:sid});
 			_getEvents(_moduleOptions);
 			_setFilterLabel(text);
-			li.parent().hide();
-		}).on('click', '[data-id]', function(){
+			
+			li.parent().fadeOut('fast', function(){
+				$('.expanded').removeClass('expanded');
+				$(this).removeAttr('style');
+			});
+		}).on('click', '[data-id]', function(e){
+				e.stopImmediatePropagation();
 				var li = $(this),
 				    id = li.data('id');
 
 				setOptions({type:'activity', item:id});
 				_getEvents(_moduleOptions);
 				_setFilterLabel(li.text());
-				li.parent().hide();
-			}).on('click', 'i', function(e){
-				e.stopImmediatePropagation();
-				_resetFilter();
-			}).on('mouseover', 'span', function(){
-				$('ul', $(this)).show();
-			}).on('mouseout', 'span', function(){
-				$('ul', $(this)).hide();
+				
+				li.parent().fadeOut('fast', function(){
+					$('.expanded').removeClass('expanded');
+					$(this).removeAttr('style');
+				});
 			});
+			// .on('click', 'i', function(e){
+			// 	e.stopImmediatePropagation();
+			// 	_resetFilter();
+			// })
+			// .on('mouseover', 'span', function(){
+			// 	$('ul', $(this)).show();
+			// }).on('mouseout', 'span', function(){
+			// 	$('ul', $(this)).hide();
+			// });
 
 		$('.timeline-wrapper').on('click', 'div[class^="col-"]:not(.empty)', function(e){
 			e.stopImmediatePropagation();
@@ -120,6 +138,10 @@ var Calendar = function () { 'use strict';
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
+			}
+			var match = $(e.target).closest('.expanded');
+			if (!match.length){
+				$('.expanded').removeClass('expanded');
 			}
 		});
 

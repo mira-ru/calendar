@@ -83,6 +83,7 @@ class Config {
 			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
 			$content .= '.item-'.$clearCode.':before{background-color:'.$color.' !important}';
 			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.'.expanded{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul{border-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul:before{background-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul li:first-child{color:'.$color.' !important}';
