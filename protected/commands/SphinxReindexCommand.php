@@ -46,7 +46,7 @@ class SphinxReindexCommand extends CConsoleCommand
 
 
 			// Center
-			$sql = 'SELECT DISTINCT t.id, t.name FROM center as t '
+			/*$sql = 'SELECT DISTINCT t.id, t.name FROM center as t '
 				.'INNER JOIN event as e ON e.center_id=t.id AND e.start_time > '.$start.' AND e.start_time < '.($start + 8*DateMap::TIME_WEEK).' '
 				.'WHERE t.status='.Center::STATUS_ACTIVE;
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
@@ -65,7 +65,7 @@ class SphinxReindexCommand extends CConsoleCommand
 				}
 				$total += $result;
 				echo "{$result} items was written \n";
-			}
+			}*/
 
 			// User
 			$sql = 'SELECT DISTINCT t.id, t.name FROM user as t '

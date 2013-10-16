@@ -93,6 +93,8 @@ var Calendar = function () { 'use strict';
 				setOptions({type:ui.item.type,item:ui.item.item});
 				_getEvents(_moduleOptions);
 				_changeUrl(_moduleOptions, 'search='+ui.item.label);
+				$('.list-inline li.current').removeClass('current');
+				$('.sub-menu').slideUp('fast');
 				_moduleOptions.search = true;
 			},
 			position: {
@@ -108,7 +110,7 @@ var Calendar = function () { 'use strict';
 		.end()
 			.find('i').click(function(){
 				if(_moduleOptions.search) {
-					location.href = '/'
+					location.href = '/c/'+_moduleOptions.day;
 				} else {
 					$(this).siblings('input').val('');
 				}
@@ -169,12 +171,12 @@ var Calendar = function () { 'use strict';
 					days.html(msg.days);
 				}
 
-				if(_moduleOptions.type == 'activity'){
+				if(_moduleOptions.type != 'center' && _moduleOptions.type != 'service'){
 					var     params = '/' + data.type + '/' + data.item;
-					$(period[2]).attr('href','/' + msg.week.prev + params).attr('data-time', msg.week.prev);
-					$(period[3]).attr('href','/' + msg.week.next + params).attr('data-time', msg.week.next);
+					$(period[2]).attr('href','/c/' + msg.week.prev + params).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href','/c/' + msg.week.next + params).attr('data-time', msg.week.next);
 				}
-				var layout = (_moduleOptions.type == 'activity') ? 1 : 0;
+				var layout = (_moduleOptions.type != 'center' && _moduleOptions.type != 'service') ? 1 : 0;
 				_toggleLayout(layout);
 			});
 		}
@@ -234,7 +236,7 @@ var Calendar = function () { 'use strict';
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			$(this).attr('href','/c/' + id + '/' + data.day);
+			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){
 			var time = $(this).attr('data-time');
