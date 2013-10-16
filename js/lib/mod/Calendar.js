@@ -173,8 +173,8 @@ var Calendar = function () { 'use strict';
 
 				if(_moduleOptions.type != 'center' && _moduleOptions.type != 'service'){
 					var     params = '/' + data.type + '/' + data.item;
-					$(period[2]).attr('href','/' + msg.week.prev + params).attr('data-time', msg.week.prev);
-					$(period[3]).attr('href','/' + msg.week.next + params).attr('data-time', msg.week.next);
+					$(period[2]).attr('href','/c/' + msg.week.prev + params).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href','/c/' + msg.week.next + params).attr('data-time', msg.week.next);
 				}
 				var layout = (_moduleOptions.type != 'center' && _moduleOptions.type != 'service') ? 1 : 0;
 				_toggleLayout(layout);
@@ -236,7 +236,7 @@ var Calendar = function () { 'use strict';
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			$(this).attr('href','/c/' + id + '/' + data.day);
+			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){
 			var time = $(this).attr('data-time');
