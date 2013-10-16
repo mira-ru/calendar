@@ -39,7 +39,8 @@ $('.search-button').click(function(){
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('widgets.CustomGridView', array(
+<?php
+$this->widget('widgets.CustomGridView', array(
 	'id'=>'user-grid',
 	'dataProvider'=>$model->search(),
 	'columns'=>array(
@@ -49,10 +50,10 @@ $('.search-button').click(function(){
 			'value' => '$data->id',
 		),
 		array(
-			'name'=>'user_id',
+			'name'=>'users',
 			'sortable' => false,
 			'type' => 'raw',
-			'value' => 'empty($data->user) ? \'Мастер не указан\' : CHtml::link($data->user->name, Yii::app()->controller->createUrl(\'/admin/event/index\', array(\'Event[user_id]\'=> $data->user->id) ))',
+			'value' => 'empty($data->users) ? \'Мастера не указаны\' : $data->renderAdminUsers()',
 		),
 		array(
 			'name'=>'service_id',

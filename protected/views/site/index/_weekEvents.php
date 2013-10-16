@@ -4,9 +4,6 @@
  * @var $services array
  * @var $event Event
  * @var $checkedTime integer
- * @var $centerId integer
- * @var $directionId integer
- * @var $serviceId integer
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
@@ -35,9 +32,7 @@ $emptyBlock = CHtml::tag('div', array('class'=>'col-150 empty'), '');
 
 $dow = date('w', $checkedTime);
 
-$urlOptions = array('center_id'=>$centerId, 'service_id'=>$serviceId, 'direction_id'=>$directionId, 'time'=>$checkedTime);
-
-$renderItem = function($event, $urlOptions, $services) {
+$renderItem = function($event, $services) {
 	$tmp = '';
 	$htmlOptions = array('data-event'=>$event->id);
 
@@ -46,7 +41,19 @@ $renderItem = function($event, $urlOptions, $services) {
 	$htmlOptions['class'] = 'col-150 '.$colorClass;
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
-	$content .= CHtml::tag('span', array(), $event->user->name);
+
+	$users = $event->getUsers();
+	if (!empty($users)) {
+		$userStr = '';
+		foreach ($users as $user) {
+			if (!empty($userStr)) {
+				$userStr .= ', ';
+			}
+			$userStr .= $user->name;
+		}
+//		$userStr = StrUtil::getLimb($userStr, 50);
+		$content .= CHtml::tag('span', array(), $userStr);
+	}
 
 	$tmp .= CHtml::tag('div', $htmlOptions, $content);
 
@@ -68,7 +75,7 @@ for ($i = 1; $i<7; $i++) {
 			}
 
 			$event = array_shift($dayTimes[$i][$pointKey]);
-			echo $renderItem($event, $urlOptions, $services);
+			echo $renderItem($event, $services);
 		}
 	}
 
@@ -88,7 +95,7 @@ foreach ($timePoints as $pointKey=>$point) {
 
 		$event = array_shift($dayTimes[0][$pointKey]);
 
-		echo $renderItem($event, $urlOptions, $services);
+		echo $renderItem($event, $services);
 	}
 }
 

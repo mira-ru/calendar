@@ -7,7 +7,6 @@
  * @property integer $id
  * @property integer $type
  * @property integer $status
- * @property integer $user_id
  * @property integer $hall_id
  * @property integer $direction_id
  * @property integer $center_id
@@ -25,6 +24,10 @@ class EventTemplate extends CActiveRecord
 {
 	// Загруженный файл
 	public $file;
+	// Флаг создания линков после сохранения
+	public $makeLinks = true;
+
+	private $_users = null;
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DISABLED = 2;
@@ -57,10 +60,9 @@ class EventTemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
-			array('user_id', 'required', 'message'=>'Укажите мастера'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
@@ -78,6 +80,8 @@ class EventTemplate extends CActiveRecord
 
 			array('start_time, end_time', 'timeCheck'),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
+
+			array('users', 'safe'),
 
 			// The following rule is used by search().
 //			array('id, status, type, name', 'safe', 'on'=>'search'),
@@ -121,6 +125,7 @@ class EventTemplate extends CActiveRecord
 	public function init()
 	{
 		parent::init();
+		$this->onAfterSave = array($this, '_saveUsers');
 		$this->onAfterSave = array($this, 'makeLinks');
 	}
 
@@ -131,7 +136,7 @@ class EventTemplate extends CActiveRecord
 	 */
 	public function makeLinks()
 	{
-		if ($this->status != self::STATUS_ACTIVE)
+		if ($this->status != self::STATUS_ACTIVE || !$this->makeLinks)
 			return false;
 
 		if ($this->getIsNewRecord()) {
@@ -162,12 +167,12 @@ class EventTemplate extends CActiveRecord
 			'center_id' => 'Центр',
 			'service_id' => 'Группа услуг',
 			'direction_id' => 'Направление',
-			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
+			'users' => 'Мастера',
 		);
 	}
 
@@ -192,7 +197,6 @@ class EventTemplate extends CActiveRecord
 		$this->desc = $event->desc;
 		$this->direction_id = $event->direction_id;
 		$this->hall_id = $event->hall_id;
-		$this->user_id = $event->user_id;
 		$this->center_id = $event->center_id;
 		$this->service_id = $event->service_id;
 		$this->day_of_week = $event->day_of_week;
@@ -200,6 +204,72 @@ class EventTemplate extends CActiveRecord
 		$this->end_time = $event->end_time;
 		$this->type = $type;
 		$this->init_time = $initTime;
+	}
+
+	/**
+	 * Список линкованых юзеров к шаблону
+	 */
+	public function getUsers()
+	{
+		if ($this->_users !== null) {
+			return $this->_users;
+		}
+
+		if ($this->getIsNewRecord()) {
+			$this->_users = array();
+		} elseif ( $this->_users === null ) {
+			$sql = 'SELECT user_id FROM event_user WHERE template_id='.intval($this->id);
+			$this->_users = Yii::app()->db->createCommand($sql)->queryColumn();
+		}
+
+		return $this->_users;
+	}
+
+	public function setUsers($value)
+	{
+		if (is_array($value)) {
+			$this->_users = $value;
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Сохраняет список пользователей в связную таблицу
+	 * NOTICE: do not call directly
+	 */
+	public function _saveUsers()
+	{
+		if ($this->_users === null) { // Небыло обновлений
+			return true;
+		}
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+		try {
+			$sql = 'DELETE FROM event_user WHERE template_id='.intval($this->id);
+			Yii::app()->db->createCommand($sql)->execute();
+
+			if ( !empty($this->_users) ) {
+				$sql = 'INSERT INTO event_user (`template_id`, `user_id`) VALUES ';
+				$cnt = 0;
+				foreach ($this->_users as $user) {
+					$id = intval($user);
+					if ($cnt > 0) {
+						$sql .= ',';
+					} else {
+						$cnt++;
+					}
+					$sql .= '('.$this->id.','.$id.')';
+				}
+				Yii::app()->db->createCommand($sql)->execute();
+			}
+
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+		}
 	}
 
 }

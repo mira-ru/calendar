@@ -28,6 +28,8 @@ class Direction extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	const MODEL_TYPE = 5;
+
 
 	/**
 	 * @return string the associated database table name
