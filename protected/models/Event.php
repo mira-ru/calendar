@@ -13,18 +13,22 @@
  * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
- * @property integer $user_id
  * @property integer $start_time
  * @property integer $end_time
  */
 class Event extends CActiveRecord
 {
+	const MODEL_TYPE = 4;
+
 	// для поиска по типам
 	public $event_type;
+	// Поиск по юзерам
+	public $user_id;
 	// Загруженный файл
 	public $file;
 
 	private $_template = null;
+	private $_users = null;
 
 	/**
 	 * @return string the associated database table name
@@ -42,9 +46,8 @@ class Event extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id, user_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 
-			array('user_id', 'required', 'message'=>'Укажите мастера'),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
@@ -92,7 +95,6 @@ class Event extends CActiveRecord
 	public function relations()
 	{
 		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
 			'hall' => array(self::BELONGS_TO, 'Hall', 'hall_id'),
 			'center' => array(self::BELONGS_TO, 'Center', 'center_id'),
@@ -120,7 +122,6 @@ class Event extends CActiveRecord
 			'center_id' => 'Центр',
 			'service_id' => 'Группа услуг',
 			'direction_id' => 'Направление',
-			'user_id' => 'Мастер',
 			'hall_id' => 'Зал',
 			'desc' => 'Описание',
 			'start_time' => 'Дата начала',
@@ -129,7 +130,7 @@ class Event extends CActiveRecord
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 			'image_id' => 'Фото',
-
+			'users' => 'Мастера',
 			'event_type' => 'Тип события',
 		);
 	}
@@ -149,10 +150,15 @@ class Event extends CActiveRecord
 	public function search()
 	{
 		$criteria=new CDbCriteria;
+		FirePHP::getInstance()->fb($this->attributes);
 
 		$criteria->select = 't.*';
 		$criteria->compare('t.id',$this->id);
-		$criteria->compare('t.user_id', $this->user_id);
+		if (!empty($this->user_id)) {
+			$criteria->join = 'INNER JOIN event_user as eu ON eu.template_id=t.template_id';
+			$criteria->compare('eu.user_id', $this->user_id);
+		}
+
 		$criteria->compare('t.service_id', $this->service_id);
 		$criteria->compare('t.hall_id', $this->hall_id);
 		$criteria->compare('t.center_id', $this->center_id);
@@ -169,7 +175,7 @@ class Event extends CActiveRecord
 		}
 
 		if (!empty($this->event_type)) {
-			$criteria->join = 'INNER JOIN event_template as et ON et.id=t.template_id';
+			$criteria->join .= ' INNER JOIN event_template as et ON et.id=t.template_id';
 			$criteria->compare('et.type', $this->event_type);
 		}
 
@@ -227,18 +233,28 @@ class Event extends CActiveRecord
 	 * @param $endTime
 	 * @return array|CActiveRecord
 	 */
-	public static function getByTime($startTime, $endTime, $centerId, $directionId=null, $serviceId=null)
+	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
 	{
 		$criteria = new CDbCriteria();
-		$criteria->condition = 'start_time >= :start AND end_time < :end AND center_id=:cid';
+		$criteria->condition = 'start_time >= :start AND end_time < :end';
 		$criteria->order = 'start_time ASC';
-		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId);
+		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime);
 
+		if ( !empty($centerId) ) {
+			$criteria->compare('center_id', $centerId);
+		}
 		if ( !empty($directionId) ) {
 			$criteria->compare('direction_id', $directionId);
 		}
 		if ( !empty($serviceId) ) {
 			$criteria->compare('service_id', $serviceId);
+		}
+		if ( !empty($userId) ) {
+			$criteria->join = 'INNER JOIN event_user as eu ON eu.template_id=t.template_id';
+			$criteria->compare('eu.user_id', $userId);
+		}
+		if ( !empty($hallId) ) {
+			$criteria->compare('hall_id', $hallId);
 		}
 
 		return self::model()->findAll($criteria);
@@ -248,9 +264,9 @@ class Event extends CActiveRecord
 	 * Получение списка дней с событиями
 	 * (по центру и по направлениям)
 	 */
-	public static function getActiveDays($startTime, $endTime, $centerId, $directionId=null, $serviceId=null)
+	public static function getActiveDays($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
 	{
-		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId);
+		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId, $userId, $hallId);
 		$result = array();
 		/** @var $event Event */
 		foreach ($events as $event) {
@@ -274,7 +290,6 @@ class Event extends CActiveRecord
 		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
 		$event->hall_id = $template->hall_id;
-		$event->user_id = $template->user_id;
 		$event->center_id = $template->center_id;
 		$event->service_id = $template->service_id;
 		$event->day_of_week = $template->day_of_week;
@@ -283,6 +298,47 @@ class Event extends CActiveRecord
 		$event->template_id = $template->id;
 
 		$event->save(false);
+	}
+
+	/**
+	 * Список объектов юзеров шаблона
+	 */
+	public function getUsers()
+	{
+		if ($this->_users !== null) {
+			return $this->_users;
+		}
+
+		if ($this->getIsNewRecord()) {
+			$this->_users = array();
+		} elseif ( $this->_users === null ) {
+			$criteria = new CDbCriteria();
+			$criteria->select = 'DISTINCT t.*';
+			$criteria->join = 'INNER JOIN event_user as eu ON eu.user_id=t.id';
+			$criteria->condition = 'eu.template_id=:tid';
+			$criteria->params = array(':tid'=>$this->template_id);
+
+			$this->_users = User::model()->findAll($criteria);
+		}
+
+		return $this->_users;
+	}
+
+	/**
+	 * Вывод юзеров для админки
+	 */
+	public function renderAdminUsers()
+	{
+		$tmp = '';
+		foreach ($this->getUsers() as $user) {
+			if (!empty($tmp)) {
+				$tmp .= ', ';
+			}
+			$tmp .= CHtml::link(
+					$user->name,
+					Yii::app()->controller->createUrl('/admin/event/index', array('Event[user_id]'=> $user->id) ));
+		}
+		return $tmp;
 	}
 
 	/**

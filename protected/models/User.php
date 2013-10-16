@@ -30,6 +30,8 @@ class User extends CActiveRecord
 
 	const DEFAULT_IMG = '/images/nophoto_man.svg';
 
+	const MODEL_TYPE = 1;
+
 	/**
 	 * @return string the associated database table name
 	 */

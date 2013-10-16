@@ -78,6 +78,13 @@ return CMap::mergeArray(array(
 			'enableProfiling' => true,
 			'enableParamLogging' => true,
 		),
+		'sphinx' => array(
+			'class'=>'CDbConnection',
+			'connectionString' => 'mysql:host=127.0.0.1;port=9306;',
+			'emulatePrepare' => true,
+			'tablePrefix'=>'calendar_',
+			'charset' => 'utf8',
+		),
 		'less'=>array(
 			'class'=>'ext.yii-less.components.Less',
 			'mode'=>'server',

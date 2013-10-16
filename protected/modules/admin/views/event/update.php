@@ -112,35 +112,36 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($event->getError('user_id')) echo 'has-error';?>">
+	<div class="form-group <?php if ($template->getError('users')) echo 'has-error';?>">
 		<?php
-		if (empty($event->user_id)) {
-			echo $form->label($event, 'user_id', array('class'=>'col-lg-2 control-label'));
-		} else {
-			echo CHtml::link(
-				$event->getAttributeLabel('user_id'),
-				$this->createUrl('/admin/event/index', array('Event[user_id]'=>$event->user_id)),
-				array('class'=>'col-lg-2 control-label')
-			);
-		}
+	//	if (empty($event->user_id)) {
+			echo $form->label($template, 'users', array('class'=>'col-lg-2 control-label'));
+	//	} else {
+	//		echo CHtml::link(
+	//			$template->getAttributeLabel('users'),
+	//			$this->createUrl('/admin/event/index', array('Event[user_id]'=>$event->user_id)),
+	//			array('class'=>'col-lg-2 control-label')
+	//		);
+	//	}
 		?>
 
 		<div class="col-lg-5">
 			<?php
-			$this->widget('application.components.widgets.EAutoComplete', array(
-				'valueName'	=> User::getName($event->user_id),
-				'sourceUrl'	=> '/admin/ajax/acUser',
-				'value'		=> $event->user_id,
-				'options'	=> array(
-					'showAnim'	=>'fold',
-					'open' => 'js:function(){}',
-					'minLength' => 2
+			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'name'=>'',
+				'sourceUrl'=>'/admin/ajax/acUser',
+				'options'=>array(
+					'minLength'=>'2',
+					'showAnim'=>'fold',
+					'select'=>'js:function(event, ui) { '
+					.'var html = \'<li><a href="#">[x]</a>\'+ui.item.label+\'<input type="hidden" name="EventTemplate[users][]" value="\'+ui.item.id+\'" /></li>\'; '
+					.'$("#event-users").append(html); $(this).val(""); return false; }',
 				),
-				'htmlOptions'	=> array('id'=>'user_id', 'name'=>'Event[user_id]', 'class' => 'form-control'),
-	//				'cssFile' => null,
+				'htmlOptions'=>array('class'=>'form-control', 'id'=>'event-autocomplete')
 			));
 			?>
-			<?php echo $form->error($event,'user_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($template,'users', array('class'=>'text-danger')); ?>
+			<?php $this->renderPartial('_users', array('template'=>$template)); ?>
 		</div>
 	</div>
 

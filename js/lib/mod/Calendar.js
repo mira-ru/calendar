@@ -5,15 +5,18 @@ lib.include('mod.Common', lib.version);
 
 lib.include('plugins.bootstrap.Modal');
 
+lib.include('plugins.jquery-ui');
+
 //lib.include('plugins.bootstrap.Transition');
 
 // Class definition
 var Calendar = function () { 'use strict';
 	var _moduleOptions = {
 		'day': 0,
-		'activity_id': 0,
-		'center_id': 0,
-		'service_id': 0
+		'type': '',
+		'item': 0,
+		'center_id':0,
+		search: false
 	};
 	// Public method
 	function initialize (options) {
@@ -31,31 +34,49 @@ var Calendar = function () { 'use strict';
 			$('.event-balloon').hide('fast');
 		});
 
-		$('.sub-menu').on('click', '[data-service]', function(){
-			var li = $(this),
-				sid = li.data('service'),
-				text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+		$('.top-menu').on('click', '.current', function(){
+			return false;
+		});
 
-			setOptions({'service_id':sid, 'activity_id':0});
+		$('.sub-menu').on('click', 'span', function(e){
+			$('.expanded', e.delegateTarget).add(this).toggleClass('expanded');
+		}).on('click', '[data-service]', function(e){
+			e.stopImmediatePropagation();
+			var li = $(this),
+			    sid = li.data('service'),
+			    text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
+
+			setOptions({type:'service', item:sid});
 			_getEvents(_moduleOptions);
 			_setFilterLabel(text);
-			li.parent().hide();
-		}).on('click', '[data-id]', function(){
+			
+			li.parent().fadeOut('fast', function(){
+				$('.expanded').removeClass('expanded');
+				$(this).removeAttr('style');
+			});
+		}).on('click', '[data-id]', function(e){
+				e.stopImmediatePropagation();
 				var li = $(this),
 				    id = li.data('id');
 
-				setOptions({'activity_id':id, 'service_id':0});
+				setOptions({type:'activity', item:id});
 				_getEvents(_moduleOptions);
 				_setFilterLabel(li.text());
-				li.parent().hide();
-			}).on('click', 'i', function(e){
-				e.stopImmediatePropagation();
-				_resetFilter();
-			}).on('mouseover', 'span', function(){
-				$('ul', $(this)).show();
-			}).on('mouseout', 'span', function(){
-				$('ul', $(this)).hide();
+				
+				li.parent().fadeOut('fast', function(){
+					$('.expanded').removeClass('expanded');
+					$(this).removeAttr('style');
+				});
 			});
+			// .on('click', 'i', function(e){
+			// 	e.stopImmediatePropagation();
+			// 	_resetFilter();
+			// })
+			// .on('mouseover', 'span', function(){
+			// 	$('ul', $(this)).show();
+			// }).on('mouseout', 'span', function(){
+			// 	$('ul', $(this)).hide();
+			// });
 
 		$('.timeline-wrapper').on('click', 'div[class^="col-"]:not(.empty)', function(e){
 			e.stopImmediatePropagation();
@@ -82,12 +103,45 @@ var Calendar = function () { 'use strict';
 				balloon.css({top: top, left: o}).animate({opacity: 1}, 'fast');
 			});
 		});
-
+		$('.search-form').find('input').autocomplete({
+			source:'/ajax/search',
+			minLength: 2,
+			appendTo: ".search-form",
+			select: function( event, ui ) {
+				setOptions({type:ui.item.type,item:ui.item.item});
+				_getEvents(_moduleOptions);
+				_changeUrl(_moduleOptions, 'search='+ui.item.label);
+				$('.list-inline li.current').removeClass('current');
+				$('.sub-menu').slideUp('fast');
+				_moduleOptions.search = true;
+			},
+			position: {
+				my:'left top+10',
+				at: "right bottom"
+			}
+		}).keyup(function(){
+			if($(this).val().length > 2)
+				$(this).siblings('i').fadeIn();
+			else
+				$(this).siblings('i').fadeOut();
+		})
+		.end()
+			.find('i').click(function(){
+				if(_moduleOptions.search) {
+					location.href = '/c/'+_moduleOptions.day;
+				} else {
+					$(this).siblings('input').val('');
+				}
+			});
 		$('body').on('click', function(e){
 			if ($(e.target).data('toggle') != 'modal' || typeof $(e.target).data('sub') === 'undefined') {
 				$('.event-balloon').hide('fast', function(){
 					$(this).removeAttr('style').children('div').empty();
 				});
+			}
+			var match = $(e.target).closest('.expanded');
+			if (!match.length){
+				$('.expanded').removeClass('expanded');
 			}
 		});
 
@@ -139,12 +193,12 @@ var Calendar = function () { 'use strict';
 					days.html(msg.days);
 				}
 
-				if(_moduleOptions.activity_id > 0){
-					var urlWithoutDate = '/c/'+_moduleOptions.center_id+'/'+_moduleOptions.service_id+'/'+_moduleOptions.activity_id;
-					$(period[2]).attr('href',urlWithoutDate + '/' + msg.week.prev).attr('data-time', msg.week.prev);
-					$(period[3]).attr('href',urlWithoutDate + '/' + msg.week.next).attr('data-time', msg.week.next);
+				if(_moduleOptions.type != 'center' && _moduleOptions.type != 'service'){
+					var     params = '/' + data.type + '/' + data.item;
+					$(period[2]).attr('href','/c/' + msg.week.prev + params).attr('data-time', msg.week.prev);
+					$(period[3]).attr('href','/c/' + msg.week.next + params).attr('data-time', msg.week.next);
 				}
-				var layout = (_moduleOptions.activity_id > 0) ? 1 : 0;
+				var layout = (_moduleOptions.type != 'center' && _moduleOptions.type != 'service') ? 1 : 0;
 				_toggleLayout(layout);
 			});
 		}
@@ -170,7 +224,7 @@ var Calendar = function () { 'use strict';
 		// Сброс фильтра
 		function _resetFilter() {
 			$('.filter-items').empty();
-			setOptions({'activity_id':0, 'service_id':0});
+			setOptions({type:'center', item:_moduleOptions.center_id});
 			// Обновляем таймлайн и расписание
 			_getEvents(_moduleOptions);
 		}
@@ -179,7 +233,7 @@ var Calendar = function () { 'use strict';
 	function reloadWithHash(){
 		var hash = location.hash;
 		if(hash.length > 0){
-			location = hash.replace('#','');
+			location.href = hash.replace('#','');
 		}
 	}
 
@@ -190,9 +244,8 @@ var Calendar = function () { 'use strict';
 
 	// замена url
 	function _changeUrl(data, get) {
-		var     url = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id+'/'+data.day,
-			urlWithoutCenter = '/0/0/'+data.day,
-			urlWithoutDate = '/c/'+data.center_id+'/'+data.service_id+'/'+data.activity_id,
+		var     params = (data.type != '' && data.item != 0) ? '/' + data.type + '/' + data.item : '',
+			url = '/c/'+data.day + params,
 			menuLinks = $('.top-menu li:not(.current) a'),
 			periodLinks = $('.period-links a');
 
@@ -205,11 +258,11 @@ var Calendar = function () { 'use strict';
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			$(this).attr('href','/c/' + id + urlWithoutCenter);
+			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){
 			var time = $(this).attr('data-time');
-			$(this).attr('href',urlWithoutDate + '/' + time);
+			$(this).attr('href','/c/' + time + params);
 		});
 	}
 

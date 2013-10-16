@@ -1,10 +1,10 @@
 <?php
 /**
- * @var $checkedTime integer
+ * @var $currentTime integer
  * @var $activeDays integer
  */
 
-$firstDay = DateMap::currentWeek($checkedTime);
+$firstDay = DateMap::currentWeek($currentTime);
 
 for ($n=1; $n<=7; $n++) {
 	echo CHtml::openTag('td');
@@ -12,7 +12,7 @@ for ($n=1; $n<=7; $n++) {
 	$htmlOptions = array('class'=>'');
 	$dayTime = $firstDay + ($n-1)*86400;
 
-	if ($dayTime == $checkedTime) {
+	if ($dayTime == $currentTime) {
 		$htmlOptions['class'] = 'current';
 	}
 
