@@ -69,7 +69,8 @@ class SphinxReindexCommand extends CConsoleCommand
 
 			// User
 			$sql = 'SELECT DISTINCT t.id, t.name FROM user as t '
-			    .'INNER JOIN event as e ON e.user_id=t.id AND e.start_time > '.$start.' AND e.start_time < '.($start + 8*DateMap::TIME_WEEK).' '
+			    .'INNER JOIN event_user as eu ON eu.user_id=t.id '
+			    .'INNER JOIN event as e ON e.template_id=eu.template_id AND e.start_time > '.$start.' AND e.start_time < '.($start + 8*DateMap::TIME_WEEK).' '
 			    .'WHERE t.status='.User::STATUS_ACTIVE;
 
 			$data = Yii::app()->db->createCommand($sql)->queryAll();
@@ -160,6 +161,7 @@ class SphinxReindexCommand extends CConsoleCommand
 			echo "Total index result: {$total}\n";
 		} catch (Exception $e) {
 			echo $e->getTraceAsString()."\n";
+			echo 'Message: '.$e->getMessage()."\n";
 		}
 
 		echo 'Time stop: '.date('d-M-Y H:i:s')."\n";
