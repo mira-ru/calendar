@@ -150,7 +150,6 @@ class Event extends CActiveRecord
 	public function search()
 	{
 		$criteria=new CDbCriteria;
-		FirePHP::getInstance()->fb($this->attributes);
 
 		$criteria->select = 't.*';
 		$criteria->compare('t.id',$this->id);
