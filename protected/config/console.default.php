@@ -12,6 +12,7 @@ return array(
 	'import' => array(
 		'application.commands.models.EDbConnection',
 		'application.components.maps.DateMap',
+		'application.components.lib.*',
 	),
 
 	// application components
