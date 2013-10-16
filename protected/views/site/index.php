@@ -63,7 +63,7 @@ $this->bodyClass = array('calendar');
 				}
 				?>
 			</ul>
-			<ul class="list-inline list-justified sub-menu">
+			<ul class="list-inline sub-menu">
 
 				<?php
 				/** @var $service Service */
