@@ -41,7 +41,19 @@ $renderItem = function($event, $services) {
 	$htmlOptions['class'] = 'col-150 '.$colorClass;
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
-	$content .= CHtml::tag('span', array(), $event->user->name);
+
+	$users = $event->getUsers();
+	if (!empty($users)) {
+		$userStr = '';
+		foreach ($users as $user) {
+			if (!empty($userStr)) {
+				$userStr .= ', ';
+			}
+			$userStr .= $user->name;
+		}
+//		$userStr = StrUtil::getLimb($userStr, 50);
+		$content .= CHtml::tag('span', array(), $userStr);
+	}
 
 	$tmp .= CHtml::tag('div', $htmlOptions, $content);
 

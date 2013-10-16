@@ -82,25 +82,25 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
-
-	<div class="form-group <?php if ($template->getError('user_id')) echo 'has-error';?>">
-		<?php echo $form->label($template, 'user_id', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($template->getError('users')) echo 'has-error';?>">
+		<?php echo $form->label($template, 'users', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php
-			$this->widget('application.components.widgets.EAutoComplete', array(
-				'valueName'	=> User::getName($template->user_id),
-				'sourceUrl'	=> '/admin/ajax/acUser',
-				'value'		=> $template->user_id,
-				'options'	=> array(
-					'showAnim'	=>'fold',
-					'open' => 'js:function(){}',
-					'minLength' => 2
+			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'name'=>'',
+				'sourceUrl'=>'/admin/ajax/acUser',
+				'options'=>array(
+					'minLength'=>'2',
+					'showAnim'=>'fold',
+					'select'=>'js:function(event, ui) { '
+						.'var html = \'<li><a href="#">[x]</a>\'+ui.item.label+\'<input type="hidden" name="EventTemplate[users][]" value="\'+ui.item.id+\'" /></li>\'; '
+						.'$("#event-users").append(html); $(this).val(""); return false; }',
 				),
-				'htmlOptions'	=> array('id'=>'user_id', 'name'=>'EventTemplate[user_id]', 'class' => 'form-control'),
-//				'cssFile' => null,
+				'htmlOptions'=>array('class'=>'form-control', 'id'=>'event-autocomplete')
 			));
 			?>
-			<?php echo $form->error($template,'user_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($template,'users', array('class'=>'text-danger')); ?>
+			<?php $this->renderPartial('_users', array('template'=>$template)); ?>
 		</div>
 	</div>
 

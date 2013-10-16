@@ -119,6 +119,7 @@ class EventController extends AdminController
 
 			if (isset($_POST['Event'])) {
 				$event->attributes = $_POST['Event'];
+				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
 
 				$initTime = strtotime($date);
 
@@ -133,6 +134,7 @@ class EventController extends AdminController
 
 				if ($event->validate() && !$hasErrors) {
 					$currentTemplate = $event->getTemplate();
+					$currentTemplate->users = $template->users;
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {
@@ -154,6 +156,8 @@ class EventController extends AdminController
 						$currentTemplate->save(false);
 
 					} elseif (($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
+						$currentTemplate->makeLinks = false;
+						$currentTemplate->save(false);
 						// ok
 					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
 						// Сменили тип на одиночное событие, прибиваем младшие копии события
