@@ -30,190 +30,165 @@ $this->bodyClass = array('calendar');
 <script>
 	Calendar.reloadWithHash();
 </script>
-<div id="wrap" class="<?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
-<div class="container">
-	<div class="row header">
-		<div class="col-lg-2 col-md-3 col-xs-4 logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="img-responsible"></a></div>
-		<div class="col-lg-4"><h1>Расписание</h1></div>
-		<div class="col-lg-4 search-form">
-			<div><input type="text" class="form-control" value="<?php echo empty($_GET['search']) ? '' : addslashes($_GET['search']); ?>"><i></i></div>
-		</div>
-		<div class="col-lg-2 text-right">
-			<span>Запись по телефону:</span>
-			<h2 class="green">2-300-108</h2>
+<div id="wrap" class="grid <?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
+	<div id="header" class="grid">
+		<div class="flow align-middle">
+			<div class="col-2" id="logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="_img-responsible"></a></div>
+			<div class="col-3" id="name"><h1>Расписание</h1></div>
+			<div class="col-5" id="search">
+				<div><input type="text" class="form-control" value="<?php echo empty($_GET['search']) ? '' : addslashes($_GET['search']); ?>"><i></i></div>
+			</div>
+			<div class="col-2 text-right" id="phone">
+				<span>Запись по телефону:</span>
+				<h2>2-300-108</h2>
+			</div>
 		</div>
 	</div>
-	<div class="row">	
-		<div class="col-lg-12">
-			<ul class="list-inline top-menu">
+	<div class="flow">
+		<div class="col-12">
+			<ul id="centers" class="list-inline">
 				<?php
-				/** @var $center Center */
-				foreach ($centers as $center) {
-					$class = 'menu-'.ltrim($center->color, '#');
+					/** @var $center Center */
+					foreach ($centers as $center) {
+						$class = 'menu-'.ltrim($center->color, '#');
 
-					if ($center->id == $centerId) {
-						$class .= ' current';
+						if ($center->id == $centerId) {
+							$class .= ' current';
+						}
+						$url = $this->createUrl('/site/index', array('class_id'=>Center::MODEL_TYPE, 'id'=>$center->id, 'time'=>$currentTime));
+						echo CHtml::tag('li', array('class'=>$class),
+							CHtml::link($center->name, $url, array('data-center' => $center->id))
+						)."\n";
 					}
-					$url = $this->createUrl('/site/index', array('class_id'=>Center::MODEL_TYPE, 'id'=>$center->id, 'time'=>$currentTime));
-					echo CHtml::tag('li', array('class'=>$class),
-						CHtml::link($center->name, $url, array('data-center' => $center->id))
-					)."\n";
-				}
+				?>				
+			</ul>
+			<ul id="services" class="list-inline">
+				<?php
+					/** @var $service Service */
+					foreach ($services as $service) {
+						echo CHtml::openTag('li');
+
+							$class = 'item-'.ltrim($service->color, '#');
+							echo CHtml::openTag('span', array('class'=>$class));
+								echo '<i>'.$service->name."</i>\n";
+
+								echo CHtml::openTag('ul');
+								echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
+
+								/** @var $direction Direction */
+								foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
+									echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
+								}
+
+								echo CHtml::closeTag('ul');
+							echo CHtml::closeTag('span');
+
+						echo CHtml::closeTag('li')."\n";
+					}
 				?>
 			</ul>
-			<ul class="list-inline sub-menu">
-
+			<ul id="filter" class="list-inline">
 				<?php
-				/** @var $service Service */
-				foreach ($services as $service) {
-					echo CHtml::openTag('li');
-
-						$class = 'item-'.ltrim($service->color, '#');
-						echo CHtml::openTag('span', array('class'=>$class));
-							echo '<i>'.$service->name."</i>\n";
-
-							echo CHtml::openTag('ul', array('class'=>'list-unstyled'));
-							echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
-
-							/** @var $direction Direction */
-							foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
-								echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
-							}
-
-							echo CHtml::closeTag('ul');
-						echo CHtml::closeTag('span');
-
-					echo CHtml::closeTag('li')."\n";
-				}
-
-//				?>
-			</ul>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-lg-12">
-			<ul class="list-inline filter-items">
-				<?php
-				if ( $model instanceof Service ) {
-					echo CHtml::tag('li', array(), $model->name.' (все направления)<i></i>');
-				} elseif ( $model instanceof Direction ) {
-					echo CHtml::tag('li', array(), $model->name.'<i></i>');
-				}
+					if ( $model instanceof Service ) {
+						echo CHtml::tag('li', array(), $model->name.' (все направления)<i></i>');
+					} elseif ( $model instanceof Direction ) {
+						echo CHtml::tag('li', array(), $model->name.'<i></i>');
+					}
 				?>
-				<!-- <li>Хатха-йога для начинающих<i data-show="1"></i></li> -->
 			</ul>
-		</div>
-	</div>
-	<div class="row period-links">
-		<div class="col-lg-6">
-			<?php
-			$monthNumber = date('n', $currentTime);
-			$yearNumber = date('Y', $currentTime);
-			$prevMonthTime = DateMap::prevMonth($currentTime);
-			echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
-				array('class'=>'prev-month', 'data-time'=>$prevMonthTime)
-			);
-			echo CHtml::tag('strong',
-				array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
-				DateMap::$monthMap[$monthNumber].', '.$yearNumber
-			);
-			echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextMonth)),
-				array('class'=>'next-month', 'data-time'=>$nextMonth)
-			);
-			?>
-		</div>
-		<div class="col-lg-6 ">
-			<?php
-			$prevWeek = DateMap::prevWeek($currentTime);
-			$nextWeek = DateMap::nextWeek($currentTime);
-			echo CHtml::link('Предыдущая неделя',
-				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevWeek)),
-				array('class'=>'prev-month', 'data-time'=>$prevWeek)
-			);
-
-			echo CHtml::link('Следующая неделя',
-				$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextWeek)),
-				array('class'=>'next-month', 'data-time'=>$nextWeek)
-			);
-			?>
-		</div>
-	</div>
-	<div class="table-responsive first-table">
-		<table class="table timeline-days">
-			<thead>
-				<tr>
-					<div>
+			<div id="period" class="flow">
+				<div class="col-6">
 					<?php
-					// выбрано направление - недельный вид
-					if ( Config::getIsWeekView($model) ) {
-						$this->renderPartial('index/_daysWeek',
-							array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
+						$monthNumber = date('n', $currentTime);
+						$yearNumber = date('Y', $currentTime);
+						$prevMonthTime = DateMap::prevMonth($currentTime);
+						echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
+							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
+							array('class'=>'prev', 'data-time'=>$prevMonthTime)
 						);
-					} else {
-						$this->renderPartial('index/_daysMonth',
-							array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
+						echo CHtml::tag('strong',
+							array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
+							DateMap::$monthMap[$monthNumber].', '.$yearNumber
 						);
-					}
-
+						echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
+							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextMonth)),
+							array('class'=>'next', 'data-time'=>$nextMonth)
+						);
 					?>
-					</div>
-				</tr>
-			</thead>
-		</table>
-	</div>
-	<div class="table-responsive second-table">
-		<table class="table timeline-hours">
-			<tbody>
-				<tr>
-					<td><span>07<sup>00</sup></span></td>
-					<td><span>08<sup>00</sup></span></td>
-					<td><span>09<sup>00</sup></span></td>
-					<td><span>10<sup>00</sup></span></td>
-					<td><span>11<sup>00</sup></span></td>
-					<td><span>12<sup>00</sup></span></td>
-					<td><span>13<sup>00</sup></span></td>
-					<td><span>14<sup>00</sup></span></td>
-					<td><span>15<sup>00</sup></span></td>
-					<td><span>16<sup>00</sup></span></td>
-					<td><span>17<sup>00</sup></span></td>
-					<td><span>18<sup>00</sup></span></td>
-					<td><span>19<sup>00</sup></span></td>
-					<td><span>20<sup>00</sup></span></td>
-					<td><span>21<sup>00</sup></span></td>
-				</tr>
-				<tr>
-					<td colspan="15" class="timeline-wrapper">
-						<div>
-						<?php
+				</div>
+				<div class="col-6 text-right">
+					<?php
+						$prevWeek = DateMap::prevWeek($currentTime);
+						$nextWeek = DateMap::nextWeek($currentTime);
+						echo CHtml::link('Предыдущая неделя',
+							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevWeek)),
+							array('class'=>'prev', 'data-time'=>$prevWeek)
+						);
+
+						echo CHtml::link('Следующая неделя',
+							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextWeek)),
+							array('class'=>'next', 'data-time'=>$nextWeek)
+						);
+					?>
+				</div>
+			</div>
+			<div class="scroller">
+				<ul id="days" class="list-inline list-justified">
+					<?php
 						// выбрано направление - недельный вид
 						if ( Config::getIsWeekView($model) ) {
-							$this->renderPartial('index/_weekEvents', array(
-								'halls'=>$halls,
-								'events'=>$events,
-								'services'=>$allServices,
-								'checkedTime'=>$currentTime,
-							));
+							$this->renderPartial('index/_daysWeek',
+								array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
+							);
 						} else {
-							$this->renderPartial('index/_monthEvents', array(
-								'halls'=>$halls,
-								'events'=>$events,
-								'services'=>$services,
-							));
+							$this->renderPartial('index/_daysMonth',
+								array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
+							);
 						}
+					?>
+				</ul>
+			</div>
+			<div class="scroller">
+				<div id="events">
+					<div class="timeline">
+						<div><span>07<sup>00</sup></span></div>
+						<div><span>08<sup>00</sup></span></div>
+						<div><span>09<sup>00</sup></span></div>
+						<div><span>10<sup>00</sup></span></div>
+						<div><span>11<sup>00</sup></span></div>
+						<div><span>12<sup>00</sup></span></div>
+						<div><span>13<sup>00</sup></span></div>
+						<div><span>14<sup>00</sup></span></div>
+						<div><span>15<sup>00</sup></span></div>
+						<div><span>16<sup>00</sup></span></div>
+						<div><span>17<sup>00</sup></span></div>
+						<div><span>18<sup>00</sup></span></div>
+						<div><span>19<sup>00</sup></span></div>
+						<div><span>20<sup>00</sup></span></div>
+						<div><span>21<sup>00</sup></span></div>
+					</div>
+					<div class="events-wrapper">
+						<?php
+							// выбрано направление - недельный вид
+							if ( Config::getIsWeekView($model) ) {
+								$this->renderPartial('index/_weekEvents', array(
+									'halls'=>$halls,
+									'events'=>$events,
+									'services'=>$allServices,
+									'checkedTime'=>$currentTime,
+								));
+							} else {
+								$this->renderPartial('index/_monthEvents', array(
+									'halls'=>$halls,
+									'events'=>$events,
+									'services'=>$services,
+								));
+							}
 						?>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-	<div class="event-balloon">
-		<div></div>
-		<!-- <i class="cross"></i> -->
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <!-- EOF PAGE CONTENT -->
