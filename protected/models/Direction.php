@@ -209,4 +209,21 @@ class Direction extends CActiveRecord
 	{
 		return !empty($this->desc);
 	}
+
+	public function getEventsProvider()
+	{
+		$criteria=new CDbCriteria;
+
+		$criteria->select = 't.*';
+		$criteria->compare('t.direction_id', $this->id);
+		$criteria->order = 't.start_time DESC';
+
+		return new CActiveDataProvider('Event', array(
+			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>10,
+			),
+		));
+	}
+
 }
