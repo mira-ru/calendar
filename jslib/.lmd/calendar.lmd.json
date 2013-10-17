@@ -1,32 +1,32 @@
 {
-    "name": "Mock chat with LMD modules",
+    "name": "Miracentr Calendar",
     
     "path": "../modules/",
 
-    "output": "../index.lmd.js",
+    "output": "../calendar.lmd.js",
 
-    "sourcemap": "../index.lmd.map",
+    "sourcemap": "../calendar.lmd.map",
     "sourcemap_inline": true,
     "sourcemap_www": "",
 
     "www_root": "../../../",
 
     "modules": {
-        "main": "index.js",
-        "$": {
-            "path": "vendor/jquery.js",
-            "exports": "jQuery"
+	"$": {
+		"path": "vendor/jquery.js",
+		"exports": "jQuery"
+	},
+	"main": {
+	        "path":"calendar/app.js",
+	        "require":{
+		        "jQuery":"$"
+	        }
         },
-        "can": {
-            "path": "vendor/can.js",
-            "require": {
-                "jQuery": "$"
-            },
-            "exports": "can"
-        },
-        "utils": {
-            "path": "custom/common.js"
-        }
+	"calendar": {
+		"path":"calendar/module.js"
+	},
+	"common": "custom/common.js",
+	"modal": "vendor/bootstrap/Modal.js"
     },
     "main": "main",
     "global": "this",
@@ -36,9 +36,7 @@
     "pack": false,
     "parallel": true,
     "shortcuts": false,
-
     "version": "1.0",
-
     "stats": false,
     "stats_coverage": false,
     "stats_coverage_async": false,

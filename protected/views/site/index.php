@@ -28,7 +28,7 @@ $this->bodyClass = array('calendar');
 ?>
 <!-- PAGE CONTENT -->
 <script>
-	Calendar.reloadWithHash();
+	//Calendar.reloadWithHash();
 </script>
 <div id="wrap" class="grid <?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
 	<div id="header" class="grid">
@@ -193,19 +193,11 @@ $this->bodyClass = array('calendar');
 </div>
 <!-- EOF PAGE CONTENT -->
 <script>
-	$(function () {
-		/*теперь объект _moduleOptions содержит следующее:
-		* center_id
-		* type
-		* item
-		* search - true/false? в зависимости от того есть ли в url строка поиска
-		* */
-		Calendar.initialize(<?php echo json_encode(array(
-			'center_id'=>$centerId,
-			'type' => Config::$routeMap[$model::MODEL_TYPE],
-			'item' => $model->id,
-			'day'=>$currentTime,
-			'search'=>!empty($_GET['search']),
-		), JSON_NUMERIC_CHECK); ?>);
-	});
+	var defaultState = <?php echo json_encode(array(
+		'center_id'=>$centerId,
+		'type' => Config::$routeMap[$model::MODEL_TYPE],
+		'item' => $model->id,
+		'day'=>$currentTime,
+		'search'=>!empty($_GET['search']),
+	), JSON_NUMERIC_CHECK); ?>;
 </script>
