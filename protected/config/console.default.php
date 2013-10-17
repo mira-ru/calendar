@@ -9,9 +9,16 @@ return array(
 	// preloading 'log' component
 	'preload'=>array('log'),
 
+	'import' => array(
+		'application.commands.models.EDbConnection',
+		'application.components.maps.DateMap',
+		'application.components.lib.*',
+	),
+
 	// application components
 	'components'=>array(
 		'db'=>array(
+			'class' => 'EDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=calendar',
 			'emulatePrepare' => true,
 			'username' => 'calendar',
@@ -26,6 +33,16 @@ return array(
 					'levels'=>'error, warning',
 				),
 			),
+		),
+		'sphinx' => array(
+			'class' => 'EDbConnection',
+			'connectionString' => 'mysql:host=127.0.0.1;port=9306;',
+			'emulatePrepare' => true,
+			'tablePrefix'=>'calendar_',
+			'persistent' => true,
+			'autoConnect' => false,
+			'charset' => 'utf8',
+			'reconnectTimeOut' => 5,
 		),
 	),
 );

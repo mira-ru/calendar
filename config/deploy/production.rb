@@ -81,6 +81,11 @@ namespace :deploy do
                 mv #{latest_release}/index-prod.php #{latest_release}/index.php
     CMD
 
+    # создание uploads TODO: поправить порядок деплоя
+    run <<-CMD
+          ln -s #{shared_path}/uploads #{latest_release}/uploads
+    CMD
+
     # Создание seo-файлов
     #run <<-CMD
     #            ln -s #{shared_path}/webroot/robots.txt #{latest_release}/robots.txt &

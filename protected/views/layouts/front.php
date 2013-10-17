@@ -8,7 +8,10 @@
 		<link rel="stylesheet" href="/css/bootstrap-theme.css">
 		<?php
 		Yii::app()->less->register();
-		$url = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.runtime.assets') . '/color.css');
+
+		$colorFile = Yii::getPathOfAlias('application.runtime.assets') . '/color.css';
+		if (!file_exists($colorFile)) { Config::generateCss(); }
+		$url = Yii::app()->getAssetManager()->publish($colorFile);
 		/** @var $cs EClientScript */
 		$cs = Yii::app()->getClientScript();
 		$cs->registerCoreScript('jquery');
@@ -20,14 +23,19 @@
 		<script>
 			lib.versioninig = true;
 			<?php
+				if (YII_DEBUG) {
+					echo 'lib.version='.time().';';
+				} else {
+					echo 'lib.version='.$cs->getVersion().';';
+				}
 				foreach($this->moduleId as $module) {
-					echo 'lib.include(\'mod.'.$module.'\','.$cs->getVersion().')';
+					echo 'lib.include(\'mod.'.$module.'\',lib.version)';
 				}
 			?>
 		</script>
 	</head>
 	<body class="<?php foreach($this->bodyClass as $class) { echo $class.' ';} ?>">
-
+		<div id="error"></div>
 		<?php echo $content; ?>
 
 		<!-- PAGE FOOTER -->
@@ -47,7 +55,23 @@
 				</div>
 			</div>
 		</div>
+	 <!-- Modal -->
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true"><div id="disqus_thread"></div></div>
+	<!-- /.modal -->
 		<!-- EOF PAGE FOOTER -->
-<!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter22425796 = new Ya.Metrika({id:22425796, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/22425796" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter -->
+	<script type="text/javascript">
+		/* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+		var disqus_shortname = 'miracentr'; // required: replace example with your forum shortname
+		var disqus_identifier = '35ab19dc859af24d7a40b2edbc679853';
+		var disqus_url = "http://calendar.miracentr.ru/#!";
+		(function() {
+			var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+			(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		})();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+	<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+	<?php if (!YII_DEBUG) { ?><!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter22425796 = new Ya.Metrika({id:22425796, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/22425796" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter --><?php } ?>
 	</body>
 </html>

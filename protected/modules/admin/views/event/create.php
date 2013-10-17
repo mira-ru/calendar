@@ -3,7 +3,9 @@
  * @var $this UserController
  * @var $template EventTemplate
  * @var $date string
+ * @var $image ImageComponent
  */
+$image = Yii::app()->image;
 
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
@@ -23,17 +25,12 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		'method' =>'post',
 		'htmlOptions' => array(
 			'class'=>'form-horizontal',
+			'enctype'=>'multipart/form-data',
 		),
 	)); ?>
 
 	<div class="form-group <?php if ($template->hasErrors('center_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('center_id'),
-			$this->createUrl('/admin/center/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'center_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'center_id', $centerList,
 				array(
@@ -52,13 +49,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('service_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('service_id'),
-			$this->createUrl('/admin/service/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'service_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'service_id', $serviceList,
 				array(
@@ -78,13 +69,7 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('direction_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('direction_id'),
-			$this->createUrl('/admin/direction/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'direction_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'direction_id', $directionList,
 				array(
@@ -97,43 +82,30 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
-
-	<div class="form-group <?php if ($template->getError('user_id')) echo 'has-error';?>">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('user_id'),
-			$this->createUrl('/admin/user/index'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
-
+	<div class="form-group <?php if ($template->getError('users')) echo 'has-error';?>">
+		<?php echo $form->label($template, 'users', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php
-			$this->widget('application.components.widgets.EAutoComplete', array(
-				'valueName'	=> User::getName($template->user_id),
-				'sourceUrl'	=> '/admin/ajax/acUser',
-				'value'		=> $template->user_id,
-				'options'	=> array(
-					'showAnim'	=>'fold',
-					'open' => 'js:function(){}',
-					'minLength' => 2
+			$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				'name'=>'',
+				'sourceUrl'=>'/admin/ajax/acUser',
+				'options'=>array(
+					'minLength'=>'2',
+					'showAnim'=>'fold',
+					'select'=>'js:function(event, ui) { '
+						.'var html = \'<li><a href="#">[x]</a>\'+ui.item.label+\'<input type="hidden" name="EventTemplate[users][]" value="\'+ui.item.id+\'" /></li>\'; '
+						.'$("#event-users").append(html); $(this).val(""); return false; }',
 				),
-				'htmlOptions'	=> array('id'=>'user_id', 'name'=>'EventTemplate[user_id]', 'class' => 'form-control'),
-//				'cssFile' => null,
+				'htmlOptions'=>array('class'=>'form-control', 'id'=>'event-autocomplete')
 			));
 			?>
-			<?php echo $form->error($template,'user_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($template,'users', array('class'=>'text-danger')); ?>
+			<?php $this->renderPartial('_users', array('template'=>$template)); ?>
 		</div>
 	</div>
 
 	<div class="form-group <?php if ($template->hasErrors('hall_id')) echo 'has-error'; ?>"">
-		<?php
-		echo CHtml::link(
-			$template->getAttributeLabel('hall_id'),
-			$this->createUrl('/admin/hall/create'),
-			array('class'=>'col-lg-2 control-label', 'target'=>'_blank')
-		);
-		?>
+		<?php echo $form->label($template, 'hall_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'hall_id', $hallList, array('class'=>'form-control')); ?>
 			<?php echo $form->error($template,'hall_id', array('class'=>'text-danger')); ?>
@@ -175,20 +147,45 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group">
+		<?php echo $form->label($template,'image_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo CHtml::image($image->getPreview($template->image_id, 'crop_150'), '', array('width'=>150, 'height'=>150)); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="col-lg-2"></div>
+		<div class="col-lg-5">
+			<?php
+			echo CHtml::activeFileField($template, 'file');
+			if ($template->hasErrors('file')) {
+				echo CHtml::tag('p', array('class'=>'help-block'), $template->getError('file'));
+			}
+			?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($template, 'desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-8">
+			<?php
+			echo CHtml::activeTextArea($template, 'desc', array(
+				'value'=>Kavychker::deformat($template->desc),
+				'maxlength'=>5000,
+				'class'=>'col-lg-12',
+				'rows'=>20,
+			));
+			echo $form->error($template,'desc', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($template->hasErrors('type')) echo 'has-error'; ?>">
 		<?php echo $form->label($template,'type', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($template, 'type', EventTemplate::$typeNames, array('class'=>'form-control', 'id'=>'typeSelect')); ?>
 			<?php echo $form->error($template,'type', array('class'=>'text-danger')); ?>
-
-		</div>
-	</div>
-
-	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
-		<?php echo $form->label($template,'desc', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
-			<?php echo $form->textArea($template, 'desc', array('class'=>'form-control', 'maxlength'=>1024, 'rows'=>10)); ?>
-			<?php echo $form->error($template,'desc', array('class'=>'text-danger')); ?>
 
 		</div>
 	</div>

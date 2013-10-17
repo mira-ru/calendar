@@ -53,8 +53,23 @@ class DirectionController extends AdminController
 		if(isset($_POST['Direction']))
 		{
 			$model->attributes=$_POST['Direction'];
-			if($model->save())
-				$this->redirect(array('index','id'=>$model->id));
+
+			$model->file = CUploadedFile::getInstance($model, 'file');
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
@@ -79,8 +94,23 @@ class DirectionController extends AdminController
 		if(isset($_POST['Direction']))
 		{
 			$model->attributes=$_POST['Direction'];
-			if($model->save())
-				$this->redirect(array('index','id'=>$model->id));
+			$model->file = CUploadedFile::getInstance($model, 'file');
+
+			if ($model->validate()) {
+				if ($model->file instanceof CUploadedFile) {
+					$file = $model->file->getTempName();
+					$fileId = Yii::app()->image->putImage($file, $model->file->getName());
+					if (empty($fileId)) {
+						throw new CHttpException(500);
+					}
+
+					$model->image_id = $fileId;
+				}
+				$model->save(false);
+				$this->redirect(
+					Yii::app()->getUser()->getReturnUrl(array('index'))
+				);
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
@@ -106,8 +136,10 @@ class DirectionController extends AdminController
 		$model->save(false);
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
+		if(!isset($_GET['ajax'])) {
+			$url = isset($_POST['returnUrl']) ? $_POST['returnUrl'] : Yii::app()->getUser()->getReturnUrl(array('index'));
+			$this->redirect($url);
+		}
 	}
 
 	/**
@@ -115,13 +147,20 @@ class DirectionController extends AdminController
 	 */
 	public function actionIndex()
 	{
+		Yii::app()->getUser()->setReturnUrl(Yii::app()->request->getRequestUri());
+
 		$model=new Direction('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Direction']))
 			$model->attributes=$_GET['Direction'];
 
+		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE));
+
 		$this->render('index',array(
 			'model'=>$model,
+			'centers' => $centers,
+			'services' => $services,
 		));
 	}
 

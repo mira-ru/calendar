@@ -8,12 +8,17 @@
  * @property integer $status
  * @property string $name
  * @property string $url
+ * @property integer $image_id
+ * @property string $desc
  * @property integer $create_time
  * @property integer $update_time
  */
 class User extends CActiveRecord
 {
 	private $_identity;
+
+	// Загруженный файл
+	public $file;
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
@@ -22,6 +27,10 @@ class User extends CActiveRecord
 		self::STATUS_ACTIVE => 'Активен',
 		self::STATUS_DELETED => 'Удален',
 	);
+
+	const DEFAULT_IMG = '/images/nophoto_man.svg';
+
+	const MODEL_TYPE = 1;
 
 	/**
 	 * @return string the associated database table name
@@ -39,7 +48,7 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-//			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
+			array('image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
 			array('url', 'url', 'allowEmpty' => true,
@@ -47,6 +56,8 @@ class User extends CActiveRecord
 				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
 			),
 			array('url', 'length', 'max'=>512),
+			array('desc', 'length', 'max'=>5000),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, name', 'safe', 'on'=>'search'),
 		);
@@ -57,7 +68,11 @@ class User extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'TextAreaBehavior' => array(
+				'class' => 'application.components.behaviors.TextAreaBehavior',
+				'attributes' => array('desc'),
+			),
 		);
 	}
 
@@ -71,6 +86,8 @@ class User extends CActiveRecord
 			'status' => 'Статус',
 			'name' => 'ФИО',
 			'url' => 'URL страницы',
+			'image_id' => 'Фото',
+			'desc' => 'Описание',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
@@ -160,6 +177,15 @@ class User extends CActiveRecord
 		}
 		$model = self::model()->findByPk(intval($id));
 		return $model===null ? '' : $model->name;
+	}
+
+	/**
+	 * Проверка на необходимость выводить линк на мастера на фронте
+	 * @return bool
+	 */
+	public function checkShowLink()
+	{
+		return !empty($this->desc);
 	}
 
 }

@@ -8,6 +8,7 @@
  * @property string $name
  * @property string $color
  * @property string $status
+ * @property integer $position
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -20,6 +21,13 @@ class Center extends CActiveRecord
 		self::STATUS_ACTIVE => 'Активен',
 		self::STATUS_DELETED => 'Удален',
 	);
+
+	const MODEL_TYPE = 6;
+
+	public function init()
+	{
+		$this->onAfterSave = array('Config', 'generateCss');
+	}
 
 	/**
 	 * @return string the associated database table name
@@ -53,7 +61,11 @@ class Center extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'PositionBehavior' => array(
+				'class'     => 'application.components.behaviors.PositionBehavior',
+				'whereLimitField' => 'status',
+			),
 		);
 	}
 
@@ -106,6 +118,7 @@ class Center extends CActiveRecord
 		if (($dateTo = $request->getParam('update_to'))) {
 			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
+		$criteria->order = 'position ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -121,5 +134,14 @@ class Center extends CActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Получение ID первого центра
+	 */
+	public static function getFirstId()
+	{
+		$sql = 'SELECT id FROM center WHERE status='.self::STATUS_ACTIVE.' ORDER BY position ASC LIMIT 1';
+		return Yii::app()->db->createCommand($sql)->queryScalar();
 	}
 }

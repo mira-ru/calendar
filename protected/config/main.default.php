@@ -15,6 +15,7 @@ return CMap::mergeArray(array(
 		'application.config.Config',
 		'ext.yii-firephp.*',
 		'application.components.maps.DateMap',
+		'application.components.lib.*',
 	),
 
 	'modules'=>array(
@@ -28,6 +29,9 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'image'=>array(
+			'class'=>'ext.imgLoader.ImageComponent',
+		),
 		'widgetFactory'=>array(
 			'widgets'=>array(
 				'CJuiDatePicker'=>array(
@@ -55,9 +59,9 @@ return CMap::mergeArray(array(
 			'urlFormat'=>'path',
 			'showScriptName' => false,
 			'rules'=>array(
-				'<id:\d+>/<time:\d+>' => 'site/index',
-				'<id:\d{0,}>' => 'site/index',
-				'/' => 'site/index',
+				array(
+					'class' => 'application.components.urlRules.IndexUrlRule',
+				),
 
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -73,6 +77,13 @@ return CMap::mergeArray(array(
 			'charset' => 'utf8',
 			'enableProfiling' => true,
 			'enableParamLogging' => true,
+		),
+		'sphinx' => array(
+			'class'=>'CDbConnection',
+			'connectionString' => 'mysql:host=127.0.0.1;port=9306;',
+			'emulatePrepare' => true,
+			'tablePrefix'=>'calendar_',
+			'charset' => 'utf8',
 		),
 		'less'=>array(
 			'class'=>'ext.yii-less.components.Less',
@@ -114,5 +125,6 @@ return CMap::mergeArray(array(
 		'adminEmail'=>'webmaster@example.com',
 		'closeMain' => true, // закрытие главной страницы
 		'allowIp' => array('127.0.0.1', '195.239.212.54', '37.193.244.157', '89.189.191.1'),
+		'miraPhone' => '(383) 230-01-80',
 	),
 ), require(dirname(__FILE__) . '/main.php'));

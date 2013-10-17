@@ -7,6 +7,7 @@ class EventCommand extends CConsoleCommand{
 		$templates = EventTemplate::model()->findAllByAttributes(array('status'=>EventTemplate::STATUS_ACTIVE, 'type'=>EventTemplate::TYPE_REGULAR));
 
 		$time = time()+28*86400;
+		$time = strtotime('TODAY', $time);
 
 		$count = 0;
 		foreach ($templates as $template) {
@@ -29,7 +30,8 @@ class EventCommand extends CConsoleCommand{
 		if ($dayOfWeek != $template->day_of_week) {
 			return false;
 		}
-		$count = Event::model()->countByAttributes(array('template_id'=>$template->id), 'start_time>:time', array(':time'=>$time));
+		$endDay = $time+86400;
+		$count = Event::model()->countByAttributes(array('template_id'=>$template->id), 'start_time>:time and start_time<:end', array(':time'=>$time, ':end'=>$endDay));
 		return $count == 0;
 	}
 }

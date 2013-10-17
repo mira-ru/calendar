@@ -9,12 +9,16 @@
  * @property integer $service_id
  * @property string $name
  * @property string $url
+ * @property string price
+ * @property integer image_id
  * @property integer $create_time
  * @property integer $update_time
  */
 class Direction extends CActiveRecord
 {
 	public $center_id;
+	// Загруженный файл
+	public $file;
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
@@ -23,6 +27,8 @@ class Direction extends CActiveRecord
 		self::STATUS_ACTIVE => 'Активен',
 		self::STATUS_DELETED => 'Удален',
 	);
+
+	const MODEL_TYPE = 5;
 
 
 	/**
@@ -41,7 +47,7 @@ class Direction extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('center_id, service_id', 'numerical', 'integerOnly'=>true),
+			array('center_id, service_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
 			array('center_id', 'required'),
@@ -51,10 +57,13 @@ class Direction extends CActiveRecord
 				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
 			),
 			array('url', 'length', 'max'=>512),
+			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
+			array('desc', 'length', 'max'=>5000),
+			array('price', 'length', 'max'=>2048),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
+			array('id, center_id, service_id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,7 +87,11 @@ class Direction extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'TextAreaBehavior' => array(
+				'class' => 'application.components.behaviors.TextAreaBehavior',
+				'attributes' => array('desc', 'price'),
+			),
 		);
 	}
 
@@ -106,6 +119,9 @@ class Direction extends CActiveRecord
 			'service_id' => 'Услуга',
 			'name' => 'Название',
 			'url' => 'URL страницы',
+			'image_id' => 'Фото',
+			'desc' => 'Описание',
+			'price' => 'Цена',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
@@ -127,21 +143,27 @@ class Direction extends CActiveRecord
 	{
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('t.id',$this->id);
+		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {
-			$criteria->compare('status', self::STATUS_ACTIVE);
+			$criteria->compare('t.status', self::STATUS_ACTIVE);
 		} else {
-			$criteria->compare('status',$this->status);
+			$criteria->compare('t.status',$this->status);
+		}
+
+		$criteria->compare('t.service_id', $this->service_id);
+		if (!empty($this->center_id)) {
+			$criteria->join = 'INNER JOIN service as s ON s.id=t.service_id';
+			$criteria->compare('s.center_id', $this->center_id);
 		}
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
+			$criteria->compare('t.create_time', '>=' . strtotime($dateFrom));
 		}
 		if (($dateTo = $request->getParam('update_to'))) {
-			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+			$criteria->compare('t.update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
 		return new CActiveDataProvider($this, array(
@@ -177,5 +199,14 @@ class Direction extends CActiveRecord
 		$criteria->index = 'id';
 
 		return self::model()->findAll($criteria);
+	}
+
+	/**
+	 * Проверка на необходимость выводить линк на напрвление на фронте
+	 * @return bool
+	 */
+	public function checkShowLink()
+	{
+		return !empty($this->desc);
 	}
 }

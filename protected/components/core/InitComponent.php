@@ -9,6 +9,7 @@ class InitComponent extends CComponent
         
         public function init()
 	{
+		Yii::setPathOfAlias('widgets', dirname(__FILE__).'/../widgets');
                 if(!$this->enable)
                         return false;
 
@@ -22,6 +23,7 @@ class InitComponent extends CComponent
 	private function setLocale()
 	{
 		setlocale(LC_TIME, 'ru_RU.utf8');
+		mb_regex_encoding ('utf-8');
 	}
 
 	/**

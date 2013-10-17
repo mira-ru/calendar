@@ -23,14 +23,14 @@ $('.search-button').click(function(){
 	'model'=>$model,
 	'dateTo'=>Yii::app()->request->getParam('date_to'),
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
+	'centers' => $centers,
+	'services' => $services,
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('widgets.CustomGridView', array(
 	'id'=>'service-grid',
 	'dataProvider'=>$model->search(),
-	'itemsCssClass' => 'table table-striped',
-	'ajaxUpdate' => false,
 	'columns'=>array(
 		array(
 			'name'=>'id',

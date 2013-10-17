@@ -7,58 +7,100 @@ class SiteController extends FrontController
 		Yii::import('application.components.maps.DateMap');
 		return parent::beforeAction($action);
 	}
+
 	/**
 	 * This is the default 'index' action that is invoked
 	 * when an action is not explicitly requested by users.
 	 */
-	public function actionIndex($id=null, $time=null)
+	public function actionIndex($class_id=null, $model_id=null, $time=null)
 	{
 		$time = intval($time);
-		$checkedTime = empty($time) ? time() : $time;
+		$currentTime = empty($time) ? time() : $time;
+		$currentTime = DateMap::currentDay($currentTime);
 
-		$this->layout = '//layouts/front';
-		$this->pageTitle = 'Расписание';
-		$this->moduleId = array('Calendar');
-		$this->bodyClass = array('calendar');
+		// Приведение параметров
+		if ($class_id === null) { $class_id = Center::MODEL_TYPE; }
+		if (!isset(Config::$modelMap[$class_id])) { throw new CHttpException(400); }
 
-		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE), array('index'=>'id'));
-		$id = intval($id);
+		$class = Config::$modelMap[ $class_id ];
 
-		if (empty($id)) {
-			$current = @reset($centers);
-		} else {
-			if (empty($centers[$id])) {
-				throw new CHttpException(404);
+		// Приведение ID модели
+		if ($model_id === null) {
+			if ($class === 'Center') {
+				$model_id = Center::getFirstId();
+			} else {
+				throw new CHttpException(400);
 			}
-			$current = $centers[$id];
 		}
-		$this->bodyClass[] = 'center-'.$current->id;
 
-		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+		$model = $class::model()->findByPk($model_id);
+		if ($model === null) { throw new CHttpException(404); }
 
-		$dayStart = strtotime('TODAY', $checkedTime);
-		$dayEnd = $dayStart + 86400;
+		$config = Config::mapRequestParams($model);
+		/**
+		 * @var $centerId integer
+		 * @var $serviceId integer
+		 * @var $directionId integer
+		 * @var $userId integer
+		 * @var $hallId integer
+		 */
+		extract($config);
 
-		$events = Event::getByTime($dayStart, $dayEnd, $current->id);
+		$centers = Center::model()->findAllByAttributes(
+			array('status'=>Center::STATUS_ACTIVE),
+			array(
+				'index'=>'id',
+				'order'=>'position ASC',
+			)
+		);
+
+		if ( !empty($centerId) && empty($centers[$centerId])) { throw new CHttpException(404); }
 
 		// Список активных дней в месяце
-		$currentMonth = DateMap::currentMonth($checkedTime);
-		$nextMonth = DateMap::nextMonth($checkedTime);
-		$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $current->id);
+		$currentMonth = DateMap::currentMonth($currentTime);
+		$nextMonth = DateMap::nextMonth($currentTime);
+
+		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		// Список активных услуг на месяц
-		$services = Service::getActiveByTime($currentMonth, $nextMonth, $current->id);
+		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId);
+		if ( !empty($serviceId) && empty($services[$serviceId]) ) { throw new CHttpException(404); }
+
+		// недельный вид
+		if ( Config::getIsWeekView($model) ) {
+			$timeStart = DateMap::currentWeek($currentTime);
+			$timeEnd = DateMap::nextWeek($currentTime);
+
+			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+		} else { // вид по дням
+			$timeStart = $currentTime;
+			$timeEnd = $currentTime + DateMap::TIME_DAY;
+
+			$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
+		}
+
+		$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+		$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 
 		$this->render('index', array(
 
-			'current' => $current,
+			'model' => $model,
+			'centerId' => $centerId,
+			'directionId' => $directionId,
+			'serviceId' => $serviceId,
+			'userId' => $userId,
+			'hallId' => $hallId,
+
 			'centers' => $centers,
 			'services' => $services,
 			'halls' => $halls,
-
-			'checkedTime' => $checkedTime,
 			'events' => $events,
 			'activeDays' => $activeDays,
+			'allServices' => $allServices,
+
+			'currentTime' => $currentTime,
+
 
 			'currentMonth' => $currentMonth,
 			'nextMonth' => $nextMonth,
@@ -73,40 +115,76 @@ class SiteController extends FrontController
 	{
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
-		if (!$request->getIsAjaxRequest()) {
-			throw new CHttpException(400);
-		}
+		if (!$request->getIsAjaxRequest()) { throw new CHttpException(400); }
 
-		$centerId = intval($request->getParam('center_id'));
 		$day = intval($request->getParam('day'));
-		$directionId = intval($request->getParam('activity_id'));
-		$serviceId = intval($request->getParam('service_id'));
+		$type = $request->getParam('type');
+		$modelId = intval($request->getParam('item'));
 
-		if ($serviceId) {
-			$directionId = null;
+		$classId = array_search($type, Config::$routeMap);
+		if ($classId === false) { throw new CHttpException(400); }
+		if ( empty($modelId) ) { throw new CHttpException(400); }
+
+		// Приведение параметров
+		if (!isset(Config::$modelMap[$classId])) { throw new CHttpException(400); }
+		$class = Config::$modelMap[ $classId ];
+
+		$model = $class::model()->findByPk($modelId);
+		if ($model === null) { throw new CHttpException(404); }
+
+		$config = Config::mapRequestParams($model);
+		/**
+		 * @var $centerId integer
+		 * @var $serviceId integer
+		 * @var $directionId integer
+		 * @var $userId integer
+		 * @var $hallId integer
+		 */
+		extract($config);
+
+		$currentTime = DateMap::currentDay($day);
+
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
+
+		// выбрано направление - недельный вид
+		if ( Config::getIsWeekView($model) ) {
+			$timeStart = DateMap::currentWeek($currentTime);
+			$timeEnd = DateMap::nextWeek($currentTime);
+
+			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$days = $this->renderPartial('index/_daysWeek', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
+
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+			$html = $this->renderPartial('ajax/_weekEvents', array(
+				'events'=>$events,
+				'services'=>$services,
+				'currentTime'=>$currentTime,
+			), true);
+
+		} else { // вид по дням
+			$timeStart = $currentTime;
+			$timeEnd = $currentTime + DateMap::TIME_DAY;
+
+			$monthTime = DateMap::currentMonth($currentTime);
+			$nextMonthTime = DateMap::nextMonth($monthTime);
+			$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+			$days = $this->renderPartial('index/_daysMonth', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
+
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
+			$html = $this->renderPartial('ajax/_monthEvents', array(
+				'halls'=>$halls,
+				'events'=>$events,
+				'services'=>$services,
+			), true);
 		}
+		$nextWeek = DateMap::nextWeek($currentTime);
+		$prevWeek = DateMap::prevWeek($currentTime);
 
-		$center = Center::model()->findByPk($centerId);
-		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
-			throw new CHttpException(404);
-		}
-
-		$dayStart = strtotime('TODAY', $day);
-
-		$events = Event::getByTime($dayStart, $dayStart+86400, $center->id);
-
-		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$center->id), array('index'=>'id'));
-
-		$html = $this->renderPartial('_ajaxEvents', array(
-			'halls'=>$halls,
-			'events'=>$events,
-			'services'=>$services,
-			'directionId'=>$directionId,
-			'serviceId'=>$serviceId,
-		), true);
-
-		Yii::app()->end( json_encode(array('html'=>$html)) );
+		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days, 'week'=>array('next'=>$nextWeek, 'prev'=>$prevWeek))) );
 	}
 
 	/**
@@ -122,19 +200,36 @@ class SiteController extends FrontController
 
 		$eventId = intval($request->getParam('event_id'));
 		$event = Event::model()->findByPk($eventId);
-		if ($event===null) {
-			throw new CHttpException(404);
-		}
+		if ($event===null) { throw new CHttpException(404); }
 
-		$html = $this->renderPartial('_event', array('event'=>$event), true);
+		$day = intval($request->getParam('day'));
+		$type = $request->getParam('type');
+		$modelId = intval($request->getParam('item'));
+
+		$classId = array_search($type, Config::$routeMap);
+		if ($classId === false) { throw new CHttpException(400); }
+		if ( empty($modelId) ) { throw new CHttpException(400); }
+
+		// Приведение параметров
+		if (!isset(Config::$modelMap[$classId])) { throw new CHttpException(400); }
+		$class = Config::$modelMap[ $classId ];
+
+		$model = $class::model()->findByPk($modelId);
+		if ($model === null) { throw new CHttpException(404); }
+
+		$html = $this->renderPartial('ajax/_event', array(
+			'event'=>$event,
+			'day'=>$day,
+			'model'=>$model,
+		), true);
 
 		Yii::app()->end( json_encode(array('html'=>$html)) );
 	}
 
 	/**
-	 * Возвращает список активных дней в месяце
+	 * Отдача контента для popup мастера и направления
 	 */
-	public function actionAxActiveDays()
+	public function actionAxPopup()
 	{
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -142,27 +237,30 @@ class SiteController extends FrontController
 			throw new CHttpException(400);
 		}
 
-		$monthTime = intval($request->getParam('month'));
-		$centerId = intval($request->getParam('center_id'));
-		$directionId = intval($request->getParam('activity_id'));
-		$serviceId = intval($request->getParam('service_id'));
+		$type = $request->getParam('type', '');
+		$itemId = intval($request->getParam('item'));
 
-		if ($serviceId) {
-			$directionId = null;
+		switch ($type) {
+			case 'm': $class = 'User'; break;
+			case 'a': $class = 'Direction'; break;
+			default: throw new CHttpException(400);
 		}
 
-		$center = Center::model()->findByPk($centerId);
-		if ( $center===null || $center->status != Center::STATUS_ACTIVE ) {
+		$item = $class::model()->findByPk($itemId);
+		if ($item === null) {
 			throw new CHttpException(404);
 		}
 
-		$monthTime = DateMap::currentMonth($monthTime);
-		$nextMonthTime = DateMap::nextMonth($monthTime);
+		if ($item instanceof User) {
+			$this->renderPartial('ajax/_masterPopup', array('item'=>$item));
+			Yii::app()->end();
+		} elseif ($item instanceof Direction) {
+			$this->renderPartial('ajax/_directionPopup', array('item'=>$item));
+			Yii::app()->end();
+		} else {
+			throw new CHttpException(404);
+		}
 
-		$data = Event::getActiveDays($monthTime, $nextMonthTime, $center->id, $directionId, $serviceId);
-
-		$result = array_values($data);
-		Yii::app()->end( json_encode(array('days'=>$result), JSON_NUMERIC_CHECK) );
 	}
 
 	/**
