@@ -8,10 +8,10 @@ class Kavychker
 	public static function baseFormat ($text, $purify=true)
 	{
 		$text = self::quotes ($text);
-		$text = '<p>'.nl2br($text);
+		$text = empty($text) ? '' : '<p>'.nl2br($text);
 		$text = mb_ereg_replace("<br />(\s)*<br />(\s)*","\n\n<p>",$text,"UTF-8");
 		$text = mb_ereg_replace("<p>(\s)*<p>","<p>",$text,"UTF-8");
-		$text = str_replace ('<br />',"\n<br>", $text);
+		$text = str_replace ('<br />',"<br>", $text);
 
 		if ($purify) {
 			$text = self::purify($text);

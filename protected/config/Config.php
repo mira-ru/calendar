@@ -17,6 +17,58 @@ class Config {
 		500 => 'Внутренняя ошибка сервера',
 	);
 
+	static public $routeMap = array(
+		User::MODEL_TYPE => 'user',
+		Service::MODEL_TYPE => 'service',
+		Hall::MODEL_TYPE => 'hall',
+		Direction::MODEL_TYPE => 'activity',
+		Center::MODEL_TYPE => 'center',
+	);
+
+	static public $modelMap = array(
+		User::MODEL_TYPE => 'User',
+		Service::MODEL_TYPE => 'Service',
+		Hall::MODEL_TYPE => 'Hall',
+		Direction::MODEL_TYPE => 'Direction',
+		Center::MODEL_TYPE => 'Center',
+	);
+
+	/**
+	 * Преобразует входной объект в набор параметров для выборок
+	 */
+	public static function mapRequestParams($model)
+	{
+		$data = array(
+			'centerId' => 0,
+			'serviceId' => 0,
+			'directionId' => 0,
+			'userId' => 0,
+			'hallId' => 0,
+		);
+
+		if ($model instanceof Center) {
+			$data['centerId'] = $model->id;
+		} elseif ($model instanceof Service) {
+			$data['centerId'] = $model->center_id;
+			$data['serviceId'] = $model->id;
+		} elseif ($model instanceof Direction) {
+			$data['centerId'] = $model->center_id;
+			$data['directionId'] = $model->id;
+		} elseif ($model instanceof User) {
+			$data['userId'] = $model->id;
+		} elseif ($model instanceof Hall) {
+			$data['hallId'] = $model->id;
+		} else {
+			throw new CException(500);
+		}
+		return $data;
+	}
+
+	public static function getIsWeekView($model)
+	{
+		return ( $model instanceof Direction || $model instanceof User || $model instanceof Hall );
+	}
+
 	/**
 	 * Генерация css для всех цветов
 	 */
@@ -29,8 +81,9 @@ class Config {
 		foreach ($colors as $color) {
 			$clearCode = ltrim($color, '#');
 			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
-			$content .= '.item-'.$clearCode.':before{background:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.':before{background-color:'.$color.' !important}';
 			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
+			$content .= '.item-'.$clearCode.'.expanded{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul{border-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul:before{background-color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.' ul li:first-child{color:'.$color.' !important}';

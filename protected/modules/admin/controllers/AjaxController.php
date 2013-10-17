@@ -26,7 +26,7 @@ class AjaxController extends AdminController
 
 		$data = $command->createCommand(
 			"SELECT t.id, t.name FROM `user` t"
-			. " WHERE t.name LIKE '%" . CHtml::encode($term) . "%'"
+			. " WHERE t.name LIKE '%" . CHtml::encode($term) . "%' AND t.status=".User::STATUS_ACTIVE
 			. " LIMIT 10"
 		)->queryAll();
 		$results = array();

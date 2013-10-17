@@ -20,6 +20,8 @@ class Hall extends CActiveRecord
 		self::STATUS_DELETED => 'Удален',
 	);
 
+	const MODEL_TYPE =3;
+
 	/**
 	 * @return string the associated database table name
 	 */
