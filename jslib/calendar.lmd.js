@@ -371,7 +371,7 @@ if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 		remote: '/site/axPopup' + getSubstr
 	});
 }
-if (common.isMobile.any() != null) {
+if (Common.isMobile.any() != null) {
 	$('html').addClass('handheld');
 }
 else {
@@ -406,6 +406,7 @@ $(document)
 		Common.showError(message);
 	});
  
+
 }),{
 "$": (function (require) { /* wrapped by builder */
 /*! jQuery v2.0.3 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
@@ -437,7 +438,7 @@ var jQuery = require("$");
 			day: 0,
 			type: '',
 			item: 0,
-			center_id:0,
+			center_id: 0,
 			search: false
 		},
 		filter : ''
@@ -994,8 +995,4 @@ var jQuery = require("$");
 },{},{});
 
 
-<<<<<<< HEAD
-//@ sourceMappingURL=/calendar/jslib/calendar.lmd.map?0.11407226021401584
-=======
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.5998478229157627
->>>>>>> 26e91130a4e7344bceacb8c229a388a31ea5980c
+//@ sourceMappingURL=/calendar/jslib/calendar.lmd.map?0.8044523380231112

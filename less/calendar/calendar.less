@@ -333,7 +333,7 @@
 		border: 1px solid #eee;
 		border-radius: 8px;
 		margin-top: -1px;
-		padding: 10px 16px;
+		padding: 14px 16px 4px;
 		& > li {
 			padding: 3px 0;
 			width: 33%;
@@ -691,6 +691,13 @@
 			margin-right: .5em;
 		}
 	}
+	.green {
+		color: #75c40f;
+	}
+	div + a.green {
+		display: inline-block;
+		margin-top: 5px;
+	}
 }
 .calendar-modal {
 	.pencil {
@@ -856,6 +863,15 @@
 					width: 100%;
 					&.text-right {
 						padding-top: 10px;
+					}
+				}
+			}
+			&.week-view {
+				#days {
+					li {
+						&.current{
+							background-size: 100% 100%;
+						}	
 					}
 				}
 			}

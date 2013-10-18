@@ -4,7 +4,7 @@
 			day: 0,
 			type: '',
 			item: 0,
-			center_id:0,
+			center_id: 0,
 			search: false
 		},
 		filter : ''
