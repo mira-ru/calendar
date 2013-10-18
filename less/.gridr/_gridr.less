@@ -18,6 +18,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	width: 100%;
+	color: @default-color;
 	-webkit-font-smoothing: subpixel-antialiased;
 }
 #error {
@@ -430,4 +431,40 @@ img {
 }
 .text-right {
 	text-align: right;
+}
+
+//Error page
+.error-page{
+	.error-number {
+		color: #fff;
+		position: relative;
+		margin-left: -200px;
+		img{
+			display: inline-block;
+		}
+		span{
+			left:50%;
+			font-size: @default-font-size*6;
+			top: 280px;
+			display: inline-block;
+			padding-left: 20px;
+			font-weight: bold;
+			position: absolute;
+		}
+	}
+
+	h1{
+		font-size: 38px;
+		font-weight: 700;
+		margin-bottom: 10px;
+		margin-top: 20px;
+		a{
+			color: #8CC507;
+			display: block;
+			font-size: 20px;
+			font-weight: 400;
+			margin-top: 15px;
+			text-decoration: none;
+		}
+	}
 }
