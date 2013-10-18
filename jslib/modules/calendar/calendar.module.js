@@ -1,5 +1,5 @@
 (function(require){
-	var calendar = {
+	var Calendar = {
 		state : {
 			day: 0,
 			type: '',
@@ -10,15 +10,15 @@
 		filter : ''
 	};
 
-	calendar.initialize = function(){
-		$.extend(true, calendar.state, defaultState);
+	Calendar.initialize = function(){
+		$.extend(true, Calendar.state, defaultState);
 		$('#days').on('click', 'li:not(.disabled, .current)', function(e){
 			var span = $(this),
 				day = $('i', span).data('day'),
 				current = $('.current', $(e.delegateTarget));
 			span.add(current).toggleClass('current');
-			calendar.setOptions({'day':day});
-			_getEvents(calendar.state);
+			Calendar.setOptions({'day':day});
+			_getEvents(Calendar.state);
 			$('#popover').hide('fast');
 		});
 
@@ -34,8 +34,8 @@
 					sid = li.data('service'),
 					text = li.parent().prev().text() + ' (' + (li.text() + '').toLowerCase() + ')';
 
-				calendar.setOptions({type:'service', item:sid});
-				_getEvents(calendar.state);
+				Calendar.setOptions({type:'service', item:sid});
+				_getEvents(Calendar.state);
 				_setFilterLabel(text);
 
 				li.parent().fadeOut('fast', function(){
@@ -47,8 +47,8 @@
 				var li = $(this),
 					id = li.data('id');
 
-				calendar.setOptions({type:'activity', item:id});
-				_getEvents(calendar.state);
+				Calendar.setOptions({type:'activity', item:id});
+				_getEvents(Calendar.state);
 				_setFilterLabel(li.text());
 
 				li.parent().fadeOut('fast', function(){
@@ -64,7 +64,7 @@
 				balloon = $('#popover');
 
 			// Получаем данные
-			var data = calendar.state;
+			var data = Calendar.state;
 			data.event_id = toggler.data('event');
 			var request = $.ajax({
 				url: '/site/axEvent',
@@ -98,12 +98,12 @@
 			minLength: 2,
 			appendTo: "#search div",
 			select: function( event, ui ) {
-				calendar.setOptions({type:ui.item.type,item:ui.item.item});
-				_getEvents(calendar.state);
-				_changeUrl(calendar.state, 'search='+ui.item.label);
+				Calendar.setOptions({type:ui.item.type,item:ui.item.item});
+				_getEvents(Calendar.state);
+				_changeUrl(Calendar.state, 'search='+ui.item.label);
 				$('.list-inline li.current').removeClass('current');
 				$('#services').slideUp('fast');
-				calendar.state.search = true;
+				Calendar.state.search = true;
 			},
 			position: {
 				my:'left top+10',
@@ -117,8 +117,8 @@
 			})
 			.end()
 			.find('i').click(function(){
-				if(calendar.state.search) {
-					location.href = '/c/'+calendar.state.day;
+				if(Calendar.state.search) {
+					location.href = '/c/'+Calendar.state.day;
 				} else {
 					$(this).siblings('input').val('');
 				}
@@ -135,10 +135,10 @@
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
 					str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('action-id')) ? 'a='+ev.data('action-id') : null ;
-				_changeUrl(calendar.state, str);
+				_changeUrl(Calendar.state, str);
 			})
 			.on('hide.bs.modal', function() {
-				_changeUrl(calendar.state);
+				_changeUrl(Calendar.state);
 			})
 			.on('hidden.bs.modal', function() {
 				$(this).removeData('bs.modal').empty();
@@ -147,16 +147,16 @@
 		$('#filter i').bind('click', _resetFilter);
 	};
 
-	calendar.reloadWithHash = function(){
+	Calendar.reloadWithHash = function(){
 		var hash = location.hash;
 		if(hash.length > 0){
 			location.href = hash.replace('#','');
 		}
 	};
 
-	calendar.setOptions = function(options){
-		$.extend(true, calendar.state, options);
-		_changeUrl(calendar.state);
+	Calendar.setOptions = function(options){
+		$.extend(true, Calendar.state, options);
+		_changeUrl(Calendar.state);
 	};
 
 	//подгрузка событий
@@ -185,12 +185,12 @@
 				days.html(msg.days);
 			}
 
-			if(calendar.state.type != 'center' && calendar.state.type != 'service'){
+			if(Calendar.state.type != 'center' && Calendar.state.type != 'service'){
 				var     params = '/' + data.type + '/' + data.item;
 				$(period[2]).attr('href','/c/' + msg.week.prev + params).attr('data-time', msg.week.prev);
 				$(period[3]).attr('href','/c/' + msg.week.next + params).attr('data-time', msg.week.next);
 			}
-			var layout = (calendar.state.type != 'center' && calendar.state.type != 'service') ? 1 : 0;
+			var layout = (Calendar.state.type != 'center' && Calendar.state.type != 'service') ? 1 : 0;
 			_toggleLayout(layout);
 		});
 	}
@@ -210,15 +210,15 @@
 	function _setFilterLabel(text) {
 		var filter = $('#filter');
 		filter.empty();
-		calendar.filter = $('<li>').appendTo(filter).text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
+		Calendar.filter = $('<li>').appendTo(filter).text(text).wrapInner('<span>').append('<i>').find('i').bind('click', _resetFilter);
 	}
 
 	// Сброс фильтра
 	function _resetFilter() {
 		$('#filter').empty();
-		calendar.setOptions({type:'center', item:calendar.state.center_id});
+		Calendar.setOptions({type:'center', item:Calendar.state.center_id});
 		// Обновляем таймлайн и расписание
-		_getEvents(calendar.state);
+		_getEvents(Calendar.state);
 	}
 
 	// замена url
@@ -244,7 +244,7 @@
 			$(this).attr('href','/c/' + time + params);
 		});
 	}
-	return calendar;
+	return Calendar;
 })
 
 

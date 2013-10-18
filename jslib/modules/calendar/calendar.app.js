@@ -1,11 +1,11 @@
-var	ui = require("UI"),
-	calendar = require("calendar"),
-	modal = require("modal"),
-	common = require("common");
+var	Ui = require("UI"),
+	Calendar = require("calendar"),
+	Modal = require("modal"),
+	Common = require("common");
 
-calendar.initialize();
+Calendar.initialize();
 var getStr = location.search;
-String.prototype.getQueryKey = common.getQueryKey;
+String.prototype.getQueryKey = Common.getQueryKey;
 if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 	var t = (getStr.getQueryKey('m', true)) ? 'm' : (getStr.getQueryKey('a', true)) ? 'a' : false;
 	var v = (t == ('m' || 'a')) ? getStr.getQueryKey('m') : getStr.getQueryKey('a');
@@ -47,5 +47,6 @@ $(document)
 		} else {
 			message = "Unknow Error";
 		}
-		common.showError(message);
+		Common.showError(message);
 	});
+ 
