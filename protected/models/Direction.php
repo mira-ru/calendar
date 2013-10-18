@@ -9,6 +9,7 @@
  * @property integer $service_id
  * @property string $name
  * @property string $url
+ * @property string $photo_url
  * @property string price
  * @property integer image_id
  * @property integer $create_time
@@ -52,11 +53,8 @@ class Direction extends CActiveRecord
 			array('name', 'length', 'max'=>255),
 			array('center_id', 'required'),
 			array('service_id', 'required'),
-			array('url', 'url', 'allowEmpty' => true,
-				'message' => 'Неправильный URL страницы',
-				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
-			),
-			array('url', 'length', 'max'=>512),
+			array('url, photo_url', 'urlCheck', 'message'=>'Invalid url format'),
+			array('url, photo_url', 'length', 'max'=>512),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			array('desc', 'length', 'max'=>5000),
 			array('price', 'length', 'max'=>2048),
@@ -65,6 +63,21 @@ class Direction extends CActiveRecord
 			// @todo Please remove those attributes that should not be searched.
 			array('id, center_id, service_id, name, status, create_time, update_time', 'safe', 'on'=>'search'),
 		);
+	}
+
+	public function urlCheck($attribute, $params)
+	{
+		if (empty($this->$attribute)) {
+			return true;
+		}
+		$message = isset($params['message']) ? $params['message'] : 'Invalid url format';
+		$result = StrUtil::videoUrlConvert($this->$attribute);
+
+		if ($result === false) {
+			$this->addError($attribute, $message);
+			return false;
+		}
+		return true;
 	}
 
 	public function init()
@@ -118,7 +131,8 @@ class Direction extends CActiveRecord
 			'center_id' => 'Центр',
 			'service_id' => 'Услуга',
 			'name' => 'Название',
-			'url' => 'URL страницы',
+			'url' => 'URL видео',
+			'photo_url' => 'URL фотоальбома',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
 			'price' => 'Цена',
