@@ -93,7 +93,36 @@
 				$('.expanded').removeClass('expanded');
 			}
 		});
-
+		$('#search').find('input').autocomplete({
+			source:'/ajax/search',
+			minLength: 2,
+			appendTo: "#search div",
+			select: function( event, ui ) {
+				calendar.setOptions({type:ui.item.type,item:ui.item.item});
+				_getEvents(calendar.state);
+				_changeUrl(calendar.state, 'search='+ui.item.label);
+				$('.list-inline li.current').removeClass('current');
+				$('#services').slideUp('fast');
+				calendar.state.search = true;
+			},
+			position: {
+				my:'left top+10',
+				at: "right bottom"
+			}
+		}).keyup(function(){
+				if($(this).val().length > 2)
+					$(this).siblings('i').fadeIn();
+				else
+					$(this).siblings('i').fadeOut();
+			})
+			.end()
+			.find('i').click(function(){
+				if(calendar.state.search) {
+					location.href = '/c/'+calendar.state.day;
+				} else {
+					$(this).siblings('input').val('');
+				}
+			});
 		$( window ).bind( 'load', function( event ) {
 			setTimeout( function(){
 				$( window ).bind( 'popstate', function( event ) {
@@ -186,7 +215,7 @@
 
 	// Сброс фильтра
 	function _resetFilter() {
-		$('.filter-items').empty();
+		$('#filter').empty();
 		calendar.setOptions({type:'center', item:calendar.state.center_id});
 		// Обновляем таймлайн и расписание
 		_getEvents(calendar.state);

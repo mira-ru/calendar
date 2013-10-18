@@ -1,48 +1,51 @@
 {
-    "name": "Miracentr Calendar",
-    
-    "path": "../modules/",
+	"name": "Miracentr Calendar",
 
-    "output": "../calendar.lmd.js",
+	"path": "../modules/",
 
-    "sourcemap": "../calendar.lmd.map",
-    "sourcemap_inline": true,
-    "sourcemap_www": "",
+	"output": "../calendar.lmd.js",
 
-    "www_root": "../../../",
+	"sourcemap": "../calendar.lmd.map",
+	"sourcemap_inline": true,
+	"sourcemap_www": "",
 
-    "modules": {
-	"$": {
-		"path": "vendor/jquery.js",
-		"exports": "jQuery"
+	"www_root": "../../../",
+
+	"modules": {
+		"$": {
+			"path": "vendor/jquery.js",
+			"exports": "jQuery"
+		},
+		"UI": {
+			"path": "vendor/jquery-ui.js",
+			"require": {
+				"jQuery": "$"
+			}
+		},
+		"main": {
+			"path": "calendar/app.js"
+		},
+		"calendar": {
+			"path": "calendar/module.js"
+		},
+		"common": "custom/common.js",
+		"modal": "vendor/bootstrap/Modal.js"
 	},
-	"main": {
-	        "path":"calendar/app.js",
-	        "require":{
-		        "jQuery":"$"
-	        }
-        },
-	"calendar": {
-		"path":"calendar/module.js"
-	},
-	"common": "custom/common.js",
-	"modal": "vendor/bootstrap/Modal.js"
-    },
-    "main": "main",
-    "global": "this",
-    "ie": false,
-    "async": true,
-    "lazy": false,
-    "pack": false,
-    "parallel": true,
-    "shortcuts": false,
-    "version": "1.0",
-    "stats": false,
-    "stats_coverage": false,
-    "stats_coverage_async": false,
-    "stats_sendto": false,
-    "stats_auto": false,
+	"main": "main",
+	"global": "this",
+	"ie": false,
+	"async": true,
+	"lazy": false,
+	"pack": false,
+	"parallel": true,
+	"shortcuts": false,
+	"version": "1.0",
+	"stats": false,
+	"stats_coverage": false,
+	"stats_coverage_async": false,
+	"stats_sendto": false,
+	"stats_auto": false,
 
-    "warn": true,
-    "log": true
+	"warn": true,
+	"log": true
 }

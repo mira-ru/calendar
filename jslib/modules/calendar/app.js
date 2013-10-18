@@ -1,7 +1,7 @@
-var     calendar = require("calendar"),
+var	ui = require("UI"),
+	calendar = require("calendar"),
 	modal = require("modal"),
 	common = require("common");
-
 
 calendar.initialize();
 var getStr = location.search;
