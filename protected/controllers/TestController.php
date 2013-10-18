@@ -39,6 +39,24 @@ class TestController extends AdminController
 		die();
 	}
 
+	public function actionMongo()
+	{
+		/** @var $mongo EMongoClient */
+		$mongo = Yii::app()->mongo;
+		FirePHP::getInstance()->fb(get_class($mongo));
+		$list = $mongo->getDB()->getCollectionNames();
+		FirePHP::getInstance()->fb($list);
+
+		$list = $mongo->calendar->find();
+		FirePHP::getInstance()->fb($list);
+		FirePHP::getInstance()->fb($list->count());
+
+		$list = $mongo->calendar->findOne();
+		FirePHP::getInstance()->fb($list);
+
+		die();
+	}
+
 	public function actionTyp()
 	{
 		$this->layout = '//layouts/empty';

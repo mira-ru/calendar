@@ -78,6 +78,15 @@ return CMap::mergeArray(array(
 			'enableProfiling' => true,
 			'enableParamLogging' => true,
 		),
+		'mongo'=>array(
+			'class'=>'application.components.core.EMongoClient',
+			'server'=>'mongodb://127.0.0.1:27017',
+			'options'=>array(
+				'username'=>'calendar',
+				'password'=>'12345',
+			),
+			'db'=>'calendar',
+		),
 		'sphinx' => array(
 			'class'=>'CDbConnection',
 			'connectionString' => 'mysql:host=127.0.0.1;port=9306;',
