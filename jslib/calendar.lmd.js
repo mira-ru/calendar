@@ -406,6 +406,7 @@ $(document)
 		Common.showError(message);
 	});
  
+
 }),{
 "$": (function (require) { /* wrapped by builder */
 /*! jQuery v2.0.3 | (c) 2005, 2013 jQuery Foundation, Inc. | jquery.org/license
@@ -994,8 +995,4 @@ var jQuery = require("$");
 },{},{});
 
 
-<<<<<<< HEAD
-//@ sourceMappingURL=/calendar/jslib/calendar.lmd.map?0.11407226021401584
-=======
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.5998478229157627
->>>>>>> 26e91130a4e7344bceacb8c229a388a31ea5980c
+//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.13757383823394775
