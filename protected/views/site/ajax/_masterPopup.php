@@ -34,6 +34,18 @@ $image = Yii::app()->image;
 					echo CHtml::tag('h1', array(), $h1);
 					?>
 					<?php echo $item->desc; ?>
+					<?php
+					if (!empty($item->url)) {
+						echo CHtml::openTag('div');
+						echo StrUtil::videoUrlConvert($item->url);
+						echo CHtml::closeTag('div');
+					}
+					if (!empty($item->photo_url)) {
+						echo CHtml::openTag('div');
+						echo StrUtil::videoUrlConvert($item->photo_url);
+						echo CHtml::closeTag('div');
+					}
+					?>
     					<div id="disqus_thread"></div>
     					<script>
 					resetDisqus = function(){

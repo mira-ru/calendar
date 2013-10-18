@@ -27,4 +27,86 @@ class StrUtil
 			return $text;
 		}
 	}
+
+	/**
+	 *
+	 */
+	public static function videoUrlConvert($url)
+	{
+		$url = trim($url, ' /');
+		$parse = parse_url ($url);
+		$params = isset($parse['query']) ? $parse['query'] : array();
+		if (!isset($parse['host'])) {
+			return false;
+		}
+
+		if ($parse['host']=="youtu.be")
+		{
+			if (!isset($parse['path']))
+				return false;
+
+			$v = $parse['path'];
+
+			$video =
+			    '<iframe title="YouTube video player" width="480" height="390" src="http://www.youtube.com/embed/'.$v.'?wmode=opaque" frameborder="0" allowfullscreen></iframe>';
+
+			return $video;
+		}
+
+		if ($parse['host']=="www.youtube.com" || $parse['host']=="youtube.com")
+		{
+			if (!isset($params['v']))
+				return false;
+
+			$v = $params['v'];
+
+			$video =
+			    '<iframe title="YouTube video player" width="480" height="390" src="http://www.youtube.com/embed/'.$v.'?wmode=opaque" frameborder="0" allowfullscreen></iframe>';
+
+			return $video;
+		}
+
+		if ($parse['host']=="vimeo.com")
+		{
+			if (!isset($parse['path']))
+				return false;
+
+			$v = $parse['path'];
+
+			$video =
+			    '<iframe src="http://player.vimeo.com/video'.$v.'" width="480" height="270" frameborder="0"></iframe>';
+
+			return $video;
+		}
+
+//		if ($parse['host']=="vk.com")
+//		{
+			// ВК не было, а надо
+			// http://vk.com/video-24154167_163272489
+			// <iframe src="http://vk.com/video_ext.php?oid=-24154167&id=163272489&hash=5533fa315ea273f0" width="607" height="360" frameborder="0"></iframe>
+//		}
+
+		if ($parse['host'] == 'fotki.yandex.ru') {
+
+			if ( isset($parse['path']) && preg_match('@^users/([-\w]+)/album/([\d]+)/slideshow$@u', trim($parse['path'], ' /'), $pathArray)) {
+				$user = $pathArray[1];
+				$id = $pathArray[2];
+			} else {
+				return false;
+			}
+
+			$video = '<object width="500" height="375">'
+			    	.'<param name="flashvars" value="author='.$user.'&mode=album&effects=1&time=5&id='.$id.'" />'
+			    	.'<param name="bgcolor" value="#000000" />'
+			    	.'<param name="movie" value="http://fotki.yandex.ru/swf/slideshow" />'
+			    	.'<param name="allowFullScreen" value="true" />'
+				.'<embed src="http://fotki.yandex.ru/swf/slideshow" allowFullScreen="true" width="500" height="375" '
+					.'flashvars="author='.$user.'&mode=album&effects=1&time=5&id='.$id.'" type="application/x-shockwave-flash" bgcolor="#000000" />'
+			    	.'</object>';
+			return $video;
+		}
+
+		return false;
+	}
 }
+

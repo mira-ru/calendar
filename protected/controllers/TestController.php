@@ -28,8 +28,14 @@ class TestController extends AdminController
 
 	public function actionUrl()
 	{
-		FirePHP::getInstance()->fb($this->createUrl('test', array('lol[test]'=>1)));
+		$this->layout = '//layouts/empty';
 
+//		$result = StrUtil::videoUrlConvert('http://fotki.yandex.ru/users/acerbial/album/40829/slideshow');
+		$result = StrUtil::videoUrlConvert('http://youtu.be/1z4dF_tUp_c');
+//		$result = StrUtil::videoUrlConvert('http://fotki.yandex.ru/users/yuricusmail-ru/album/378105/slideshow');
+		$this->render('typ', array('text'=>$result));
+
+		FirePHP::getInstance()->fb($result);
 		die();
 	}
 
