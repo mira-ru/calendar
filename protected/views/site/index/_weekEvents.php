@@ -3,7 +3,7 @@
  * @var $events array
  * @var $services array
  * @var $event Event
- * @var $checkedTime integer
+ * @var $currentTime integer
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
@@ -30,7 +30,7 @@ ksort($timePoints, SORT_NUMERIC);
 
 $emptyBlock = CHtml::tag('div', array('class'=>'col-150 empty'), '');
 
-$dow = date('w', $checkedTime);
+$dow = date('w', $currentTime);
 
 $renderItem = function($event, $services) {
 	$tmp = '';

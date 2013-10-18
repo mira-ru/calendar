@@ -56,7 +56,15 @@ if (!empty($users)) {
 	echo CHtml::closeTag('span');
 }
 ?>
-<span><i>Зал:</i><?php echo $event->hall->name; ?></span>
+<span><i>Место:</i><?php echo $event->hall->name; ?></span>
 <?php $dow = date('w', $event->start_time); ?>
 <span><i>Время:</i><?php echo DateMap::$smallDayMap[$dow].', '.date('H:i', $event->start_time).'-'.date('H:i', $event->end_time); ?></span>
 <div><?php echo $event->desc; ?></div>
+<?php echo CHtml::link(
+	'Расписание на неделю',
+	$this->createUrl('/site/index', array('class_id'=>Direction::MODEL_TYPE, 'id'=>$event->direction_id, 'time'=>$day)),
+	array(
+		'class'=>'green'
+	)
+);
+?>

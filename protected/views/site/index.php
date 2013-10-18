@@ -175,7 +175,7 @@ $this->bodyClass = array('calendar');
 									'halls'=>$halls,
 									'events'=>$events,
 									'services'=>$allServices,
-									'checkedTime'=>$currentTime,
+									'currentTime'=>$currentTime,
 								));
 							} else {
 								$this->renderPartial('index/_monthEvents', array(
