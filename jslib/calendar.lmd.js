@@ -372,7 +372,10 @@ if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 	});
 }
 if (common.isMobile.any() != null) {
-	$('body').addClass('touch');
+	$('html').addClass('handheld');
+}
+else {
+	$('html').addClass('screen');
 }
 $(document)
 	.ajaxError(
@@ -991,4 +994,4 @@ var jQuery = require("$");
 },{},{});
 
 
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.6889919110108167
+//@ sourceMappingURL=/calendar/jslib/calendar.lmd.map?0.11407226021401584

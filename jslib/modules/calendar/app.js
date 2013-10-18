@@ -16,7 +16,10 @@ if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 	});
 }
 if (common.isMobile.any() != null) {
-	$('body').addClass('touch');
+	$('html').addClass('handheld');
+}
+else {
+	$('html').addClass('screen');
 }
 $(document)
 	.ajaxError(

@@ -23,7 +23,7 @@ foreach ($halls as $hall) {
 			$hasEvents = true;
 			$htmlOptions = array('data-event'=>$event->id);
 
-			$timeStart = date('H-i', $event->start_time); $timeEnd = date('H-i', $event->end_time);
+			$timeStart = date('H-i', $event->start_time); $ts = date('H:i', $event->start_time); $te = date('H:i', $event->end_time);
 			// Продолжительность в минутах
 			$eventTime = ($event->end_time - $event->start_time) / 60;
 
@@ -41,7 +41,7 @@ foreach ($halls as $hall) {
 			$tmp .= CHtml::openTag('div', $htmlOptions);
 			$text = empty($event->direction) ? '' : $event->direction->name;
 			$tmp .= CHtml::tag('span', array(), $text);
-			$time = $timeStart.'&nbsp;&#150;&nbsp;'.$timeEnd;
+			$time = $ts.' — '.$te;
 			$tmp .= CHtml::tag('span', array(), $time);
 			$tmp .= CHtml::closeTag('div');
 		}
