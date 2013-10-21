@@ -2,7 +2,7 @@
 /* @var $this SiteController */
 /* @var $error array */
 
-$this->pageTitle=Yii::app()->name . ' - 404';
+$this->pageTitle=Yii::app()->name . ' - '.$error['code'];
 $this->breadcrumbs=array(
 	'Error',
 );

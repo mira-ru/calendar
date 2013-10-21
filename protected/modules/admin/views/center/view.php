@@ -22,6 +22,10 @@ $this->breadcrumbs=array(
 			'value' => Center::$statusNames[$model->status],
 		),
 		array(
+			'name'=>'view_type',
+			'value' => Config::$viewNames[$model->view_type],
+		),
+		array(
 			'name'=>'name',
 			'value' => $model->name,
 		),

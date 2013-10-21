@@ -33,6 +33,13 @@ class Config {
 		Center::MODEL_TYPE => 'Center',
 	);
 
+	const VIEW_NORMAL = 1;
+	const VIEW_LIST = 2;
+	public static $viewNames = array(
+		self::VIEW_NORMAL => 'Обычный',
+		self::VIEW_LIST => 'Списком',
+	);
+
 	/**
 	 * Преобразует входной объект в набор параметров для выборок
 	 */
@@ -67,6 +74,28 @@ class Config {
 	public static function getIsWeekView($model)
 	{
 		return ( $model instanceof Direction || $model instanceof User || $model instanceof Hall );
+	}
+
+	/**
+	 * Возвращает тип представления календаря
+	 * @param $model
+	 * @return mixed
+	 */
+	public static function getViewType($model)
+	{
+		$center = null;
+		if ($model instanceof Direction) {
+			$center = $model->center;
+		} elseif ($model instanceof Service) {
+			$center = $model->center;
+		} elseif ($model instanceof Center) {
+			$center = $model;
+		}
+		if ($center instanceof Center) {
+			return $center->view_type;
+		} else {
+			return self::VIEW_NORMAL;
+		}
 	}
 
 	/**

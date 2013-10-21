@@ -13,10 +13,6 @@
  *
  * @var $currentMonth integer
  * @var $nextMonth integer
- * @var $serviceId integer
- * @var $directionId integer
- * @var $userId integer
- * @var $hallId integer
  */
 
 // layout settings
@@ -27,9 +23,6 @@ $this->bodyClass = array('calendar');
 
 ?>
 <!-- PAGE CONTENT -->
-<script>
-	//Calendar.reloadWithHash();
-</script>
 <div id="wrap" class="grid <?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
 	<div id="header" class="grid">
 		<div class="flow align-middle">
