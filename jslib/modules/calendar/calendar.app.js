@@ -15,7 +15,7 @@ if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 		remote: '/site/axPopup' + getSubstr
 	});
 }
-if (common.isMobile.any() != null) {
+if (Common.isMobile.any() != null) {
 	$('html').addClass('handheld');
 }
 else {

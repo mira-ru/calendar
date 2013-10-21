@@ -371,7 +371,7 @@ if (getStr.getQueryKey('m', true) || getStr.getQueryKey('a', true)) {
 		remote: '/site/axPopup' + getSubstr
 	});
 }
-if (common.isMobile.any() != null) {
+if (Common.isMobile.any() != null) {
 	$('html').addClass('handheld');
 }
 else {
@@ -438,7 +438,7 @@ var jQuery = require("$");
 			day: 0,
 			type: '',
 			item: 0,
-			center_id:0,
+			center_id: 0,
 			search: false
 		},
 		filter : ''
@@ -569,7 +569,10 @@ var jQuery = require("$");
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
 					str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('action-id')) ? 'a='+ev.data('action-id') : null ;
-				_changeUrl(Calendar.state, str);
+				if(str != null){
+					_changeUrl(Calendar.state, str);
+				}
+
 			})
 			.on('hide.bs.modal', function() {
 				_changeUrl(Calendar.state);
@@ -661,7 +664,6 @@ var jQuery = require("$");
 			url = '/c/'+data.day + params,
 			menuLinks = $('.top-menu li:not(.current) a'),
 			periodLinks = $('.period-links a');
-
 		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);
@@ -995,4 +997,4 @@ var jQuery = require("$");
 },{},{});
 
 
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.13757383823394775
+//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.7567399989347905
