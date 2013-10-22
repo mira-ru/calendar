@@ -110,6 +110,8 @@ class Config {
 		foreach ($colors as $color) {
 			$clearCode = ltrim($color, '#');
 			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
+			$content .= '.link-'.$clearCode.'{color:'.$color.' !important; text-decoration:none}';
+			$content .= '.link-'.$clearCode.':hover{color:#94ce06 !important;}';
 			$content .= '.item-'.$clearCode.':before{background-color:'.$color.' !important}';
 			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.'.expanded{color:'.$color.' !important}';

@@ -57,7 +57,7 @@
 				});
 			});
 
-		$('#events .events-wrapper').on('click', 'div[class^="col-"]:not(.empty)', function(e){
+		$('#events .events-wrapper').on('click', 'div[class^="col-"]:not(.empty, .event-time, .event-info)', function(e){
 			e.stopImmediatePropagation();
 			var toggler = $(this),
 				pos = toggler.offset(),

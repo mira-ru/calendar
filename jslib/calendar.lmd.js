@@ -358,7 +358,7 @@ var	Ui = require("UI"),
 	Calendar = require("calendar"),
 	Modal = require("modal"),
 	Common = require("common");
-
+//window.$ = $;
 Calendar.initialize();
 var getStr = location.search;
 String.prototype.getQueryKey = Common.getQueryKey;
@@ -491,7 +491,7 @@ var jQuery = require("$");
 				});
 			});
 
-		$('#events .events-wrapper').on('click', 'div[class^="col-"]:not(.empty)', function(e){
+		$('#events .events-wrapper').on('click', 'div[class^="col-"]:not(.empty, .event-time, .event-info)', function(e){
 			e.stopImmediatePropagation();
 			var toggler = $(this),
 				pos = toggler.offset(),
@@ -997,4 +997,4 @@ var jQuery = require("$");
 },{},{});
 
 
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.06961048673838377
+//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.5035749713424593

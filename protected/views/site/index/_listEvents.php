@@ -45,6 +45,12 @@ foreach ($events as $event) {
 	    )
 	    : CHtml::tag('strong', array(), $event->direction->name);
 
+	if (!Yii::app()->getUser()->getIsGuest()) {
+		echo CHtml::link(''
+			, $this->createUrl('/admin/direction/update', array('id'=>$model->id))
+			, array('class'=>'pencil', 'target'=>'_blank'));
+	}
+
 	if (!empty($event->direction->desc)) {
 		echo CHtml::tag('p', array(), $event->direction->desc);
 	}

@@ -2,7 +2,7 @@ var	Ui = require("UI"),
 	Calendar = require("calendar"),
 	Modal = require("modal"),
 	Common = require("common");
-
+//window.$ = $;
 Calendar.initialize();
 var getStr = location.search;
 String.prototype.getQueryKey = Common.getQueryKey;
