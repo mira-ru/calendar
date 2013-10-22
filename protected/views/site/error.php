@@ -12,9 +12,9 @@ $this->breadcrumbs=array(
 		<div class="col-12 text-center">
 			<div class="error-number ">
 				<img class="image-responseble" src="/images/error.png" alt=""/>
-				<span>404</span>
+				<span><?php echo $error['code']; ?></span>
 			</div>
-			<h1 class="error">Документ не найден...<a href="/"><i>На главную</i> &rarr;</a></span></h1>
+			<h1 class="error"><?php echo $error['message']; ?>...<a href="/"><i>На главную</i> &rarr;</a></span></h1>
 		</div>
 	</div>
 </div>

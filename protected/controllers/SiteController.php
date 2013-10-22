@@ -278,7 +278,7 @@ class SiteController extends FrontController
 			if(Yii::app()->getRequest()->getIsAjaxRequest()) {
 				Yii::app()->end( json_encode( array('error'=>$error['code'], 'message'=>$error['message']), JSON_NUMERIC_CHECK ) );
 			} else
-				$this->render('error', $error);
+				$this->render('error',array('error' => $error));
 		}
 	}
 
