@@ -60,51 +60,66 @@ class SiteController extends FrontController
 		$currentMonth = DateMap::currentMonth($currentTime);
 		$nextMonth = DateMap::nextMonth($currentTime);
 
-		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 		// Список активных услуг на месяц
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId);
 		if ( !empty($serviceId) && empty($services[$serviceId]) ) { throw new CHttpException(404); }
 
-		// недельный вид
-		if ( Config::getIsWeekView($model) ) {
-			$timeStart = DateMap::currentWeek($currentTime);
-			$timeEnd = DateMap::nextWeek($currentTime);
+		if (Config::getViewType($model) == Config::VIEW_LIST) {
+			// вид списком
 
-			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
-		} else { // вид по дням
-			$timeStart = $currentTime;
-			$timeEnd = $currentTime + DateMap::TIME_DAY;
+			$this->render('index/listView', array(
+				'model' => $model,
+				'centerId' => $centerId,
+				'centers' => $centers,
+				'services' => $services,
+				'events' => $events,
+				'currentTime' => $currentTime,
+				'currentMonth' => $currentMonth,
+				'nextMonth' => $nextMonth,
+				'allServices' => $allServices,
+			));
 
-			$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+		} else {
+			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+			// недельный вид
+			if ( Config::getIsWeekView($model) ) {
+				$timeStart = DateMap::currentWeek($currentTime);
+				$timeEnd = DateMap::nextWeek($currentTime);
+
+				$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+			} else { // вид по дням
+				$timeStart = $currentTime;
+				$timeEnd = $currentTime + DateMap::TIME_DAY;
+
+				$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
+			}
+
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
+
+
+			$this->render('index/normalView', array(
+
+				'model' => $model,
+				'centerId' => $centerId,
+
+				'centers' => $centers,
+				'services' => $services,
+				'halls' => $halls,
+				'events' => $events,
+				'activeDays' => $activeDays,
+				'allServices' => $allServices,
+
+				'currentTime' => $currentTime,
+				'currentMonth' => $currentMonth,
+				'nextMonth' => $nextMonth,
+			));
 		}
-
-		$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
-		$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
-
-
-		$this->render('index', array(
-
-			'model' => $model,
-			'centerId' => $centerId,
-			'directionId' => $directionId,
-			'serviceId' => $serviceId,
-			'userId' => $userId,
-			'hallId' => $hallId,
-
-			'centers' => $centers,
-			'services' => $services,
-			'halls' => $halls,
-			'events' => $events,
-			'activeDays' => $activeDays,
-			'allServices' => $allServices,
-
-			'currentTime' => $currentTime,
-
-
-			'currentMonth' => $currentMonth,
-			'nextMonth' => $nextMonth,
-		));
 	}
 
 	/**
@@ -146,40 +161,57 @@ class SiteController extends FrontController
 
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
-		// выбрано направление - недельный вид
-		if ( Config::getIsWeekView($model) ) {
+		if (Config::getViewType($model) == Config::VIEW_LIST) {
+			// вид списком
+
+			$days = '';
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
-
-			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
-			$days = $this->renderPartial('index/_daysWeek', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
-
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
 
-			$html = $this->renderPartial('ajax/_weekEvents', array(
+			$html = $this->renderPartial('index/_listEvents', array(
+				'model'=>$model,
 				'events'=>$events,
-				'services'=>$services,
+				'centerId'=>$centerId,
 				'currentTime'=>$currentTime,
+				'allServices'=>$services,
 			), true);
+		} else {
+			// выбрано направление - недельный вид
+			if ( Config::getIsWeekView($model) ) {
+				$timeStart = DateMap::currentWeek($currentTime);
+				$timeEnd = DateMap::nextWeek($currentTime);
 
-		} else { // вид по дням
-			$timeStart = $currentTime;
-			$timeEnd = $currentTime + DateMap::TIME_DAY;
+				$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+				$days = $this->renderPartial('index/_daysWeek', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
 
-			$monthTime = DateMap::currentMonth($currentTime);
-			$nextMonthTime = DateMap::nextMonth($monthTime);
-			$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $centerId, $directionId, $serviceId, $userId, $hallId);
+				$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
 
-			$days = $this->renderPartial('index/_daysMonth', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
+				$html = $this->renderPartial('ajax/_weekEvents', array(
+					'events'=>$events,
+					'services'=>$services,
+					'currentTime'=>$currentTime,
+				), true);
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
-			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+			} else { // вид по дням
+				$timeStart = $currentTime;
+				$timeEnd = $currentTime + DateMap::TIME_DAY;
 
-			$html = $this->renderPartial('ajax/_monthEvents', array(
-				'halls'=>$halls,
-				'events'=>$events,
-				'services'=>$services,
-			), true);
+				$monthTime = DateMap::currentMonth($currentTime);
+				$nextMonthTime = DateMap::nextMonth($monthTime);
+				$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $centerId, $directionId, $serviceId, $userId, $hallId);
+
+				$days = $this->renderPartial('index/_daysMonth', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
+
+				$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+				$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
+				$html = $this->renderPartial('ajax/_monthEvents', array(
+					'halls'=>$halls,
+					'events'=>$events,
+					'services'=>$services,
+				), true);
+			}
 		}
 		$nextWeek = DateMap::nextWeek($currentTime);
 		$prevWeek = DateMap::prevWeek($currentTime);

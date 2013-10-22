@@ -17,7 +17,7 @@
 			    'class'=>'green'
 		    )
 	    )
-	    : $event->direction->name, $event->direction->url;
+	    : $event->direction->name;
 	if (!Yii::app()->getUser()->getIsGuest()) {
 		echo CHtml::link('',
 			$this->createUrl('/admin/event/update', array('id'=>$event->id)),
