@@ -8,7 +8,7 @@
 	/**
 	*	Custom body class
 	*/
-	$bodyclass = array('calendar', '');
+	$bodyclass = array('calendar');
 
 	/**
 	 *	Module ID
