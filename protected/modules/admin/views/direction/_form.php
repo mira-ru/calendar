@@ -73,6 +73,14 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group <?php if ($model->hasErrors('photo_url')) echo 'has-error'; ?>">
+		<?php echo $form->label($model,'photo_url', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->textField($model,'photo_url',array('size'=>60,'maxlength'=>512, 'class'=>'form-control')); ?>
+			<?php echo $form->error($model,'photo_url', array('class'=>'text-danger')); ?>
+		</div>
+	</div>
+
 	<div class="form-group">
 		<?php echo $form->label($model,'image_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">

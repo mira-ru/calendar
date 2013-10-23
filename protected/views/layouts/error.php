@@ -6,17 +6,16 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
-		<!-- Bootstrap core CSS -->
-		<link href="/css/bootstrap.css" rel="stylesheet">
-		<!-- Custom styles for this template -->
-		<link href="/css/custom/backend/empty.css" rel="stylesheet">
+		<?php
+		Yii::app()->less->register();
+
+		/** @var $cs EClientScript */
+		$cs = Yii::app()->getClientScript();
+		$cs->releaseCssFile('/css/generated/calendar.css');
+
+		?>
 	</head>
-	<body class="error">
-		<div class="container">
-			<?php echo $content; ?>
-		</div> <!-- /container -->
-		<!-- Bootstrap core JavaScript
-		================================================== -->
-		<!-- Placed at the end of the document so the pages load faster -->
+	<body class="error-page">
+		<?php echo $content; ?>
 	</body>
 </html>

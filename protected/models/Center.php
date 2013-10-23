@@ -7,7 +7,9 @@
  * @property integer $id
  * @property string $name
  * @property string $color
- * @property string $status
+ * @property integer $status
+ * @property integer $overview
+ * @property integer $detailed_view
  * @property integer $position
  * @property integer $create_time
  * @property integer $update_time
@@ -45,8 +47,8 @@ class Center extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-//			array('create_time, update_time', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
+			array('overview, detailed_view', 'in', 'range'=>array(Config::VIEW_DAY, Config::VIEW_WEEK, Config::VIEW_MONTH)),
 			array('name', 'length', 'max'=>255),
 			array('color', 'length', 'max'=>7),
 			array('color', 'required'),
@@ -78,6 +80,8 @@ class Center extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'name' => 'Название',
+			'overview' => 'Общий вид',
+			'detailed_view' => 'Подробный вид',
 			'color' => 'Цвет',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',

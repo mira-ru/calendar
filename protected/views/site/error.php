@@ -2,14 +2,19 @@
 /* @var $this SiteController */
 /* @var $error array */
 
-$this->pageTitle=Yii::app()->name . ' - 404';
+$this->pageTitle=Yii::app()->name . ' - '.$error['code'];
 $this->breadcrumbs=array(
 	'Error',
 );
 ?>
-<div class="row">
-	<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
-		<img class="img-responsive error" src="/images/error.png">
-		<h1 class="error">Документ не найден...<a href="/"><i>На главную</i> &rarr;</a></span></h1>
+<div id="wrap" class="grid ">
+	<div class="flow">
+		<div class="col-12 text-center">
+			<div class="error-number ">
+				<img class="image-responseble" src="/images/error.png" alt=""/>
+				<span><?php echo $error['code']; ?></span>
+			</div>
+			<h1 class="error"><?php echo $error['message']; ?>...<a href="/"><i>На главную</i> &rarr;</a></span></h1>
+		</div>
 	</div>
 </div>

@@ -8,6 +8,7 @@
  * @property integer $status
  * @property string $name
  * @property string $url
+ * @property string $photo_url
  * @property integer $image_id
  * @property string $desc
  * @property integer $create_time
@@ -51,16 +52,29 @@ class User extends CActiveRecord
 			array('image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
 			array('name', 'length', 'max'=>255),
-			array('url', 'url', 'allowEmpty' => true,
-				'message' => 'Неправильный URL страницы',
-				'pattern'=>'/^(http(s?)\:\/\/)?(([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)(\.[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)+(\/[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_-]*)*(\/?(\?([0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1}(&[0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя][-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]]*(=[-0-9a-zA-ZА-Яабвгдеёжзийклмнопрстуфхцчшщъыьэюя_\[\]\,\'\\\+%\$#]*){0,1})*){0,1})?))$/i',
-			),
-			array('url', 'length', 'max'=>512),
+			array('url, photo_url', 'urlCheck', 'message'=>'Invalid url format'),
+			array('url, photo_url', 'length', 'max'=>512),
 			array('desc', 'length', 'max'=>5000),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, name', 'safe', 'on'=>'search'),
 		);
+	}
+
+	public function urlCheck($attribute, $params)
+	{
+		if (empty($this->$attribute)) {
+			return true;
+		}
+
+		$message = isset($params['message']) ? $params['message'] : 'Invalid url format';
+		$result = StrUtil::videoUrlConvert($this->$attribute);
+
+		if ($result === false) {
+			$this->addError($attribute, $message);
+			return false;
+		}
+		return true;
 	}
 
 	public function behaviors()
@@ -85,7 +99,8 @@ class User extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'name' => 'ФИО',
-			'url' => 'URL страницы',
+			'url' => 'URL видео',
+			'photo_url' => 'URL фотоальбома',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
 			'create_time' => 'Дата создания',
