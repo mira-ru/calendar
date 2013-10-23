@@ -89,7 +89,8 @@ return CMap::mergeArray(array(
 			'class'=>'ext.yii-less.components.Less',
 			'mode'=>'server',
 			'files'=>array(
-				'less/calendar/calendar.less'                  => 'css/generated/calendar.css',
+				'less/calendar/calendar.less'         => 'css/generated/calendar.css',
+				'less/bad-browser/bad-browser.less'   => 'css/generated/bad-browser.css',
 			),
 			'options'=>array(
 				'compression'=>'yui',
