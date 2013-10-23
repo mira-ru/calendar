@@ -1,4 +1,5 @@
 var	Ui = require("UI"),
+	Cookie = require("cookie"),
 	Calendar = require("calendar"),
 	Modal = require("modal"),
 	Common = require("common");

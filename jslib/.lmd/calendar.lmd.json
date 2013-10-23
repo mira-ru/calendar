@@ -22,6 +22,9 @@
 				"jQuery": "$"
 			}
 		},
+		"cookie": {
+			"path": "vendor/jquery.cookie.js"
+		},
 		"main": {
 			"path": "calendar/calendar.app.js"
 		},

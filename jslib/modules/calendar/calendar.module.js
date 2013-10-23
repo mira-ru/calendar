@@ -104,6 +104,7 @@
 				$('.list-inline li.current').removeClass('current');
 				$('#services').slideUp('fast');
 				Calendar.state.search = true;
+				yaCounter22425796.reachGoal('search');
 			},
 			position: {
 				my:'left top+10',
@@ -135,10 +136,9 @@
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
 					str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('action-id')) ? 'a='+ev.data('action-id') : null ;
-				if(str != null){
+				if (str != null) {
 					_changeUrl(Calendar.state, str);
 				}
-
 			})
 			.on('hide.bs.modal', function() {
 				_changeUrl(Calendar.state);
