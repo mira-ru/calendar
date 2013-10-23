@@ -7,8 +7,6 @@
 $firstDay = DateMap::currentWeek($currentTime);
 
 for ($n=1; $n<=7; $n++) {
-	echo CHtml::openTag('td');
-
 	$htmlOptions = array('class'=>'');
 	$dayTime = $firstDay + ($n-1)*86400;
 
@@ -22,8 +20,10 @@ for ($n=1; $n<=7; $n++) {
 	if (empty($activeDays[$dayTime])) {
 		$htmlOptions['class'] .= ' disabled';
 	}
+	
+	echo CHtml::openTag('li', $htmlOptions);
 
-	echo CHtml::openTag('span', $htmlOptions);
+	echo CHtml::openTag('span');
 
 	$htmlOptions = array(
 		'data-weekday'=>DateMap::$smallDayMap[$dow],
@@ -37,5 +37,5 @@ for ($n=1; $n<=7; $n++) {
 	echo CHtml::tag('i', $htmlOptions, $dom);
 
 	echo CHtml::closeTag('span');
-	echo CHtml::closeTag('td');
+	echo CHtml::closeTag('li')."\n";
 }

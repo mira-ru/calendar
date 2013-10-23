@@ -11,6 +11,7 @@ lib.include('plugins.jquery-ui');
 
 // Class definition
 var Calendar = function () { 'use strict';
+
 	var _moduleOptions = {
 		'day': 0,
 		'type': '',
@@ -18,6 +19,7 @@ var Calendar = function () { 'use strict';
 		'center_id':0,
 		search: false
 	};
+
 	// Public method
 	function initialize (options) {
 		$.extend(true, _moduleOptions, options);
@@ -157,7 +159,7 @@ var Calendar = function () { 'use strict';
 			.on('shown.bs.modal', function(e) {
 				var ev = $(e.relatedTarget),
 				    str = (ev.data('master-id')) ? 'm='+ev.data('master-id') : (ev.data('action-id')) ? 'a='+ev.data('action-id') : null ;
-				_changeUrl(_moduleOptions, str);
+				//_changeUrl(_moduleOptions, str);
 			})
 			.on('hide.bs.modal', function() {
 				_changeUrl(_moduleOptions);
@@ -248,7 +250,7 @@ var Calendar = function () { 'use strict';
 			url = '/c/'+data.day + params,
 			menuLinks = $('.top-menu li:not(.current) a'),
 			periodLinks = $('.period-links a');
-
+		console.log(get);
 		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
 			history.pushState(null, null, url);

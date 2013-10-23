@@ -49,7 +49,7 @@ lib.getXHTTPTransport = function() {
 		try {
 			result = actions[i]();
 			break;
-		} catch (e) {}	
+		} catch (e) {}  
 	}
 	return result;
 }
@@ -153,7 +153,7 @@ lib.extend = function(newClass, superClass, props) {
 		
 		newClass.prototype = new inheritance();
 		newClass.superClass = superClass.prototype;
-	}	 
+	}
 	for(var i = 0; i < multiple.length; i++) {
 		Object.extend(newClass.prototype, multiple[i].prototype);
 	}
@@ -166,22 +166,22 @@ lib.extend = function(newClass, superClass, props) {
 lib.define = lib.extend;
 
 lib.createClass = function() {
-    return function() {
+	return function() {
 		var _this = arguments.callee.prototype;
 		_this.init.apply(this, arguments);
 		for(var i = 0, mixins = _this.constructor.mixins, length = mixins.length; i < length; i++){
 			mixins[i].init.apply(this);
 		}
-    }
+	}
 }
 
 lib.hasOwnProperty = function(obj, prop) {
-        if (Object.prototype.hasOwnProperty) {
-            return obj.hasOwnProperty(prop);
-        }
-        
-        return typeof obj[prop] != 'undefined' && 
-                obj.constructor.prototype[prop] !== obj[prop];
+	if (Object.prototype.hasOwnProperty) {
+		return obj.hasOwnProperty(prop);
+	}
+	
+	return typeof obj[prop] != 'undefined' && 
+		obj.constructor.prototype[prop] !== obj[prop];
 }
 
 lib.dump = function(text){};

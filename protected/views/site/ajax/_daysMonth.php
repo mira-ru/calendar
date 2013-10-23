@@ -9,8 +9,6 @@ $dayNumber = date('j', $currentTime);
 $currentMonth = DateMap::currentMonth($currentTime);
 
 for ($n=1; $n<=$daysOfMonth; $n++) {
-	echo CHtml::openTag('td');
-
 	$htmlOptions = array('class'=>'');
 	if ($n == $dayNumber) {
 		$htmlOptions['class'] = 'current';
@@ -23,7 +21,9 @@ for ($n=1; $n<=$daysOfMonth; $n++) {
 		$htmlOptions['class'] .= ' disabled';
 	}
 
-	echo CHtml::openTag('span', $htmlOptions);
+	echo CHtml::openTag('li', $htmlOptions);
+
+	echo CHtml::openTag('span');
 
 	$htmlOptions = array(
 		'data-weekday'=>DateMap::$smallDayMap[$dow],
@@ -36,5 +36,5 @@ for ($n=1; $n<=$daysOfMonth; $n++) {
 	echo CHtml::tag('i', $htmlOptions, $n);
 
 	echo CHtml::closeTag('span');
-	echo CHtml::closeTag('td');
+	echo CHtml::closeTag('li')."\n";
 }

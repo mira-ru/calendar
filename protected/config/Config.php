@@ -33,6 +33,17 @@ class Config {
 		Center::MODEL_TYPE => 'Center',
 	);
 
+
+
+	const VIEW_DAY = 1;
+	const VIEW_MONTH = 2;
+	const VIEW_WEEK = 3;
+	public static $viewNames = array(
+		self::VIEW_DAY => 'По дням',
+		self::VIEW_WEEK => 'По неделям',
+		self::VIEW_MONTH => 'По месяцам',
+	);
+
 	/**
 	 * Преобразует входной объект в набор параметров для выборок
 	 */
@@ -64,9 +75,34 @@ class Config {
 		return $data;
 	}
 
-	public static function getIsWeekView($model)
+	/**
+	 * Возвращает тип представления календаря
+	 * @param $model
+	 * @return mixed
+	 */
+	public static function getViewType($model)
 	{
-		return ( $model instanceof Direction || $model instanceof User || $model instanceof Hall );
+		$center = null;
+		if ($model instanceof Direction) {
+			$center = $model->center;
+		} elseif ($model instanceof Service) {
+			$center = $model->center;
+		} elseif ($model instanceof Center) {
+			$center = $model;
+		}
+		if ($center instanceof Center) {
+			if (( $model instanceof Direction || $model instanceof User || $model instanceof Hall )) {
+				return $center->detailed_view;
+			} else {
+				return $center->overview;
+			}
+		} else {
+			if (( $model instanceof Direction || $model instanceof User || $model instanceof Hall )) {
+				return self::VIEW_WEEK;
+			} else {
+				return self::VIEW_DAY;
+			}
+		}
 	}
 
 	/**
@@ -81,6 +117,8 @@ class Config {
 		foreach ($colors as $color) {
 			$clearCode = ltrim($color, '#');
 			$content .= '.c-'.$clearCode.'{background:'.$color.';}';
+			$content .= '.link-'.$clearCode.'{color:'.$color.' !important; text-decoration:none}';
+			$content .= '.link-'.$clearCode.':hover{color:#94ce06 !important;}';
 			$content .= '.item-'.$clearCode.':before{background-color:'.$color.' !important}';
 			$content .= ':not(.touch) .item-'.$clearCode.':hover{color:'.$color.' !important}';
 			$content .= '.item-'.$clearCode.'.expanded{color:'.$color.' !important}';

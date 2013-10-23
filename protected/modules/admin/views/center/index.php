@@ -59,6 +59,16 @@ Yii::app()->clientScript->registerScriptFile('/js/lib/mod/backend/arrowsUpDown.j
 			'value' => 'Center::$statusNames[$data->status]',
 		),
 		array(
+			'name'=>'overview',
+			'sortable' => false,
+			'value' => 'Config::$viewNames[$data->overview]',
+		),
+		array(
+			'name'=>'detailed_view',
+			'sortable' => false,
+			'value' => 'Config::$viewNames[$data->detailed_view]',
+		),
+		array(
 			'name'=>'name',
 			'sortable' => false,
 			'value' => '$data->name',
