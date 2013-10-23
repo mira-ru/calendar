@@ -72,6 +72,8 @@ $image = Yii::app()->image;
 					} else {
 						resetDisqus();
 					}
+					// Учитывание целей Яндекс-счетчиком
+					yaCounter22425796.reachGoal('direction');
 					</script>
 				</div>
 			</div>
