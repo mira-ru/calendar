@@ -8,7 +8,8 @@
  * @property string $name
  * @property string $color
  * @property integer $status
- * @property integer $view_type
+ * @property integer $overview
+ * @property integer $detailed_view
  * @property integer $position
  * @property integer $create_time
  * @property integer $update_time
@@ -47,7 +48,7 @@ class Center extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DELETED)),
-			array('view_type', 'in', 'range'=>array(Config::VIEW_NORMAL, Config::VIEW_LIST)),
+			array('overview, detailed_view', 'in', 'range'=>array(Config::VIEW_DAY, Config::VIEW_WEEK, Config::VIEW_MONTH)),
 			array('name', 'length', 'max'=>255),
 			array('color', 'length', 'max'=>7),
 			array('color', 'required'),
@@ -79,7 +80,8 @@ class Center extends CActiveRecord
 			'id' => 'ID',
 			'status' => 'Статус',
 			'name' => 'Название',
-			'view_type' => 'Вид',
+			'overview' => 'Общий вид',
+			'detailed_view' => 'Подробный вид',
 			'color' => 'Цвет',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',

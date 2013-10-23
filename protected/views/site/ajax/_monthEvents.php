@@ -1,54 +1,103 @@
 <?php
 /**
- * @var $hall Hall
+ * @var $model
  * @var $events array
- * @var $services array
- * @var $halls array
+ * @var $centerId integer
+ * @var $allServices array
+ *
+ * @var $currentTime integer
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 	return;
 }
 
-foreach ($halls as $hall) {
-	$tmp = '';
-	$hasEvents = false; // Наличие событий в принципе
+$center = Center::model()->findByPk($centerId);
+if ($center === null) { $center = new Center(); }
 
-	$tmp .= CHtml::tag('div', array('class'=>'text-center'), $hall->name);
-	$tmp .= CHtml::openTag('div', array('class'=>'row timeline-row'));
+/** @var $event Event */
+foreach ($events as $event) {
+	echo CHtml::openTag('div', array('class'=>'grid'));
 
-	/** @var $event Event */
-	foreach ($events as $event) {
-		if ($event->hall_id == $hall->id) {
-			$hasEvents = true;
-			$htmlOptions = array('data-event'=>$event->id);
+	$monthNumber = date('n', $event->start_time);
+	$dom = date('j', $event->start_time);
+	$dow = date('w', $event->start_time);
 
-			$timeStart = date('H-i', $event->start_time); $ts = date('H:i', $event->start_time); $te = date('H:i', $event->end_time);
-			// Продолжительность в минутах
-			$eventTime = ($event->end_time - $event->start_time) / 60;
+	$tmp = $dom.'/'.$monthNumber.', '.DateMap::$smallDayMap[$dow]."\n";
+	$tmp .= '<span>'.date('G', $event->start_time).'<sup>'.date('i', $event->start_time).'</sup> — '
+	    .date('G', $event->end_time).'<sup>'.date('i', $event->end_time).'</sup></span>';
 
-			if ($eventTime < 60) {
-				$eventTime = 60;
-			}
+	echo CHtml::tag('div', array('class'=>'col-2 event-time'), $tmp);
 
-			$colorClass = isset($services[$event->service_id]) ?
-			    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
+	echo CHtml::openTag('div', array('class'=>'col-10 event-info'));
 
-			$class = 'col-'.$eventTime.' start-'.$timeStart.' '.$colorClass;
+	// direction link
+	echo $event->direction->checkShowLink()
+	    ? CHtml::link(
+		    $event->direction->name,
+		    $this->createUrl('/site/index', array('class_id'=>Direction::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'a='.$event->direction_id)),
+		    array('data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->direction_id, 'type'=>'a')),
+			    'data-action-id'=>$event->direction_id,
+			    'data-toggle'=>'modal',
+			    'data-target'=>'#modal',
+			    'class'=>'green'
+		    )
+	    )
+	    : CHtml::tag('strong', array(), $event->direction->name);
 
-			$htmlOptions['class'] = $class;
-
-			$tmp .= CHtml::openTag('div', $htmlOptions);
-			$text = empty($event->direction) ? '' : $event->direction->name;
-			$tmp .= CHtml::tag('span', array(), $text);
-			$time = $ts.' — '.$te;
-			$tmp .= CHtml::tag('span', array(), $time);
-			$tmp .= CHtml::closeTag('div');
-		}
+	if (!Yii::app()->getUser()->getIsGuest()) {
+		echo CHtml::link(''
+			, $this->createUrl('/admin/direction/update', array('id'=>$model->id))
+			, array('class'=>'pencil', 'target'=>'_blank'));
 	}
-	$tmp .= CHtml::closeTag('div');
 
-	$htmlOptions = array();
-	if (!$hasEvents) { continue; }
-	echo CHtml::tag('div', $htmlOptions, $tmp);
+	if (!empty($event->direction->desc)) {
+		echo CHtml::tag('p', array(), $event->direction->desc);
+	}
+	/** @var $service Service */
+	$service = isset($allServices[$event->service_id]) ? $allServices[$event->service_id] : new Service();
+	$colorClass = 'link-'.ltrim($service->color,'#');
+	$users = $event->getUsers();
+	/** @var $hall Hall */
+	$hall = $event->hall;
+
+	echo CHtml::openTag('div');
+		echo CHtml::link(
+			$service->name,
+			$this->createUrl('/site/index', array('class_id'=>Service::MODEL_TYPE, 'id'=>$service->id, 'time'=>$currentTime)),
+			array('class'=>$colorClass)
+		).' / '."\n";
+
+		echo CHtml::openTag('span');
+			echo $center->name;
+			if (!empty($users)) {
+				echo ': ';
+				$cnt = 0;
+				foreach ($users as $user) {
+					if ($cnt==0) {
+						$cnt++;
+					} else {
+						echo ', ';
+					}
+					echo $user->checkShowLink()
+					    ? CHtml::link(
+						    $user->name,
+						    $this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'m='.$user->id)),
+						    array(
+							    'data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$user->id, 'type'=>'m')),
+							    'data-master-id'=>$user->id,
+							    'data-toggle'=>'modal',
+							    'data-target'=>'#modal',
+							    'class'=>'green'
+						    )
+					    )
+					    : $user->name;
+				}
+				echo ';';
+			}
+		echo CHtml::closeTag('span');
+		echo CHtml::tag('i', array(), $hall->name);
+	echo CHtml::closeTag('div');
+	echo CHtml::closeTag('div');
+	echo CHtml::closeTag('div');
 }

@@ -129,9 +129,8 @@ $this->bodyClass = array('calendar');
 			</div>
 			<div class="scroller">
 				<div id="events">
-
 					<div class="events-wrapper">
-						<?php $this->renderPartial('index/_listEvents', array(
+						<?php $this->renderPartial('ajax/_monthEvents', array(
 							'model'=>$model,
 							'events'=>$events,
 							'centerId'=>$centerId,
