@@ -211,6 +211,7 @@ class Direction extends CActiveRecord
 		$criteria->condition = 't.service_id=:sid AND t.status=:st';
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':sid'=>$serviceId, ':st'=>self::STATUS_ACTIVE);
 		$criteria->index = 'id';
+		$criteria->order = 't.name ASC';
 
 		return self::model()->findAll($criteria);
 	}

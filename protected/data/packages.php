@@ -7,16 +7,16 @@
  */
 
 return array(
-	'jquery'=>array(
-//		'js'=>array(YII_DEBUG ? 'jquery.js' : 'jquery.min.js'),
-		'js'=>array('Jquery.js'),
-		'baseUrl'=>'/js/lib',
-	),
-	'bootstrap'=>array(
-		'js'=>array('Bootstrap.js'),
-		'baseUrl'=>'/js/lib',
-		'depends'=>array('jquery'),
-	),
+//	'jquery'=>array(
+////		'js'=>array(YII_DEBUG ? 'jquery.js' : 'jquery.min.js'),
+//		'js'=>array(),
+//		'baseUrl'=>'/js/lib',
+//	),
+//	'bootstrap'=>array(
+//		'js'=>array(),
+//		'baseUrl'=>'/js/lib',
+//		'depends'=>array('jquery'),
+//	),
 	'yii'=>array(
 		'js'=>array('jquery.yii.js'),
 		'depends'=>array('jquery'),
@@ -50,7 +50,7 @@ return array(
 		'depends'=>array('jquery'),
 	),
 	'cookie'=>array(
-		'js'=>array('jquery.cookie.js'),
+		'js'=>array(),
 		'depends'=>array('jquery'),
 	),
 	'treeview'=>array(

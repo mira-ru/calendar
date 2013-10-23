@@ -6,23 +6,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
+		<script type="text/javascript" src="/js/lib/Jquery.js"></script>
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+
 		<?php
 		/** @var $cs CClientScript */
 		$cs = Yii::app()->getClientScript();
-		$cs->registerCoreScript('jquery');
-		$cs->registerCoreScript('bootstrap');
-		$cs->registerScriptFile('/js/lib/mod/backend/offcanvas.js', CClientScript::POS_END);
+		$cs->registerScriptFile('/jslib/modules/vendor/jquery.cookie.js', CClientScript::POS_HEAD);
+		$cs->registerScriptFile('/js/lib/Bootstrap.js');
 
+		$cs->registerScriptFile('/js/lib/mod/backend/offcanvas.js', CClientScript::POS_END);
 		$cs->registerCssFile('/css/bootstrap.css');
 		$cs->registerCssFile('/css/custom/backend/offcanvas.css');
-
-
 		?>
-		<!-- Bootstrap core CSS -->
-<!--		<link href="/css/bootstrap.css" rel="stylesheet">-->
-		<!-- Custom styles for this template -->
-<!--		<link href="/css/custom/backend/offcanvas.css" rel="stylesheet">-->
 	</head>
 	<body>
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">

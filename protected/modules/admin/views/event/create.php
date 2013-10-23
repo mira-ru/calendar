@@ -9,7 +9,7 @@ $image = Yii::app()->image;
 
 $centerList = CHtml::listData($centers, 'id', 'name');
 $serviceList = CHtml::listData($services, 'id', 'name');
-$hallList = CHtml::listData($halls, 'id', 'name');
+$hallList = array(''=>'не выбран')+CHtml::listData($halls, 'id', 'name');
 $directionList = CHtml::listData($directions, 'id', 'name');
 
 ?>

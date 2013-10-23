@@ -32,7 +32,6 @@ $emptyBlock = CHtml::tag('div', array('class'=>'col-150 empty'), '');
 
 $dow = date('w', $currentTime);
 
-
 $renderItem = function($event, $services) {
 	$tmp = '';
 	$htmlOptions = array('data-event'=>$event->id);
