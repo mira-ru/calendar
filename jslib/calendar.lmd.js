@@ -703,7 +703,7 @@ jQuery.cookie = function(name, value, options) {
 	function _changeUrl(data, get) {
 		var     params = (data.type != '' && data.item != 0) ? '/' + data.type + '/' + data.item : '',
 			url = '/c/'+data.day + params,
-			menuLinks = $('.top-menu li:not(.current) a'),
+			menuLinks = $('#centers li:not(.current) a'),
 			periodLinks = $('.period-links a');
 		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
@@ -714,6 +714,7 @@ jQuery.cookie = function(name, value, options) {
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
+			console.log(data.day);
 			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){
@@ -1038,4 +1039,4 @@ jQuery.cookie = function(name, value, options) {
 },{},{});
 
 
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.8691130441147834
+//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.6815430498681962
