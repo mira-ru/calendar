@@ -47,7 +47,7 @@ foreach ($events as $event) {
 
 	if (!Yii::app()->getUser()->getIsGuest()) {
 		echo CHtml::link(''
-			, $this->createUrl('/admin/direction/update', array('id'=>$model->id))
+			, $this->createUrl('/admin/event/update', array('id'=>$event->id))
 			, array('class'=>'pencil', 'target'=>'_blank'));
 	}
 
