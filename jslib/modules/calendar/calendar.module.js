@@ -228,7 +228,7 @@
 	function _changeUrl(data, get) {
 		var     params = (data.type != '' && data.item != 0) ? '/' + data.type + '/' + data.item : '',
 			url = '/c/'+data.day + params,
-			menuLinks = $('.top-menu li:not(.current) a'),
+			menuLinks = $('#centers li:not(.current) a'),
 			periodLinks = $('.period-links a');
 		url = (typeof get !== 'undefined') ? url + '?' + get : url;
 		if(window.history && history.pushState){
@@ -239,6 +239,7 @@
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
+			console.log(data.day);
 			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){

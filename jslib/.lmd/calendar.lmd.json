@@ -2,12 +2,14 @@
 	"name": "Miracentr Calendar",
 
 	"path": "../modules/",
-
-	"output": "../calendar.lmd.js",
+	"version": "1.0",
+	"output": "../calendar.lmd-<%= version %>.js",
 
 	"sourcemap": "../calendar.lmd.map",
 	"sourcemap_inline": true,
 	"sourcemap_www": "",
+
+
 
 	"www_root": "../../../",
 
@@ -42,7 +44,6 @@
 	"pack": false,
 	"parallel": true,
 	"shortcuts": false,
-	"version": "1.0",
 	"stats": false,
 	"stats_coverage": false,
 	"stats_coverage_async": false,
