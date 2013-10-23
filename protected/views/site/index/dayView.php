@@ -9,7 +9,6 @@
  * @var $halls array
  * @var $services array
  * @var $activeDays array
- * @var allServices array
  *
  * @var $currentMonth integer
  * @var $nextMonth integer
@@ -23,7 +22,7 @@ $this->bodyClass = array('calendar');
 
 ?>
 <!-- PAGE CONTENT -->
-<div id="wrap" class="grid <?php echo ( Config::getIsWeekView($model) ) ? 'week-view' : '';?>">
+<div id="wrap" class="grid">
 	<div id="header" class="grid">
 		<div class="flow align-middle">
 			<div class="col-2" id="logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="_img-responsible"></a></div>
@@ -128,16 +127,9 @@ $this->bodyClass = array('calendar');
 			<div class="scroller">
 				<ul id="days" class="list-inline list-justified">
 					<?php
-						// выбрано направление - недельный вид
-						if ( Config::getIsWeekView($model) ) {
-							$this->renderPartial('index/_daysWeek',
-								array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
-							);
-						} else {
-							$this->renderPartial('index/_daysMonth',
-								array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
-							);
-						}
+					$this->renderPartial('ajax/_daysMonth',
+						array('currentTime'=>$currentTime, 'activeDays'=>$activeDays)
+					);
 					?>
 				</ul>
 			</div>
@@ -162,21 +154,11 @@ $this->bodyClass = array('calendar');
 					</div>
 					<div class="events-wrapper">
 						<?php
-							// выбрано направление - недельный вид
-							if ( Config::getIsWeekView($model) ) {
-								$this->renderPartial('index/_weekEvents', array(
-									'halls'=>$halls,
-									'events'=>$events,
-									'services'=>$allServices,
-									'currentTime'=>$currentTime,
-								));
-							} else {
-								$this->renderPartial('index/_monthEvents', array(
-									'halls'=>$halls,
-									'events'=>$events,
-									'services'=>$services,
-								));
-							}
+						$this->renderPartial('ajax/_dayEvents', array(
+							'halls'=>$halls,
+							'events'=>$events,
+							'services'=>$services,
+						));
 						?>
 					</div>
 				</div>

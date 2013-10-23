@@ -23,11 +23,19 @@
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($model->hasErrors('view_type')) echo 'has-error'; ?>"">
-		<?php echo $form->label($model,'view_type', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($model->hasErrors('overview')) echo 'has-error'; ?>"">
+		<?php echo $form->label($model,'overview', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($model, 'view_type', Config::$viewNames, array('class'=>'form-control')); ?>
-			<?php echo $form->error($model,'view_type', array('class'=>'text-danger')); ?>
+			<?php echo $form->dropDownList($model, 'overview', Config::$viewNames, array('class'=>'form-control')); ?>
+			<?php echo $form->error($model,'overview', array('class'=>'text-danger')); ?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($model->hasErrors('detailed_view')) echo 'has-error'; ?>"">
+		<?php echo $form->label($model,'detailed_view', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'detailed_view', Config::$viewNames, array('class'=>'form-control')); ?>
+			<?php echo $form->error($model,'detailed_view', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 

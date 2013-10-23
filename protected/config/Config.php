@@ -33,11 +33,15 @@ class Config {
 		Center::MODEL_TYPE => 'Center',
 	);
 
-	const VIEW_NORMAL = 1;
-	const VIEW_LIST = 2;
+
+
+	const VIEW_DAY = 1;
+	const VIEW_MONTH = 2;
+	const VIEW_WEEK = 3;
 	public static $viewNames = array(
-		self::VIEW_NORMAL => 'Обычный',
-		self::VIEW_LIST => 'Списком',
+		self::VIEW_DAY => 'По дням',
+		self::VIEW_WEEK => 'По неделям',
+		self::VIEW_MONTH => 'По месяцам',
 	);
 
 	/**
@@ -71,11 +75,6 @@ class Config {
 		return $data;
 	}
 
-	public static function getIsWeekView($model)
-	{
-		return ( $model instanceof Direction || $model instanceof User || $model instanceof Hall );
-	}
-
 	/**
 	 * Возвращает тип представления календаря
 	 * @param $model
@@ -92,9 +91,17 @@ class Config {
 			$center = $model;
 		}
 		if ($center instanceof Center) {
-			return $center->view_type;
+			if (( $model instanceof Direction || $model instanceof User || $model instanceof Hall )) {
+				return $center->detailed_view;
+			} else {
+				return $center->overview;
+			}
 		} else {
-			return self::VIEW_NORMAL;
+			if (( $model instanceof Direction || $model instanceof User || $model instanceof Hall )) {
+				return self::VIEW_WEEK;
+			} else {
+				return self::VIEW_DAY;
+			}
 		}
 	}
 
