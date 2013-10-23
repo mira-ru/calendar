@@ -68,7 +68,16 @@ class SiteController extends FrontController
 
 		if ($viewType == Config::VIEW_MONTH) {
 			// вид списком
-			$events = Event::getByTime($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$timeStart = $currentTime;
+
+			$endMonth = DateMap::nextMonth($currentTime);
+			if ( ($currentTime + 2 * DateMap::TIME_WEEK) < $endMonth) {
+				$timeEnd = $endMonth;
+			} else {
+				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+			}
+
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
 			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 			$this->render('index/monthView', array(
@@ -188,8 +197,15 @@ class SiteController extends FrontController
 		if ( $viewType == Config::VIEW_MONTH ) {
 			// вид списком
 			$days = '';
-			$timeStart = DateMap::currentWeek($currentTime);
-			$timeEnd = DateMap::nextWeek($currentTime);
+			$timeStart = $currentTime;
+
+			$endMonth = DateMap::nextMonth($currentTime);
+			if ( $currentTime + 2 * DateMap::TIME_WEEK < $endMonth) {
+				$timeEnd = $endMonth;
+			} else {
+				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+			}
+
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
 
 			$html = $this->renderPartial('ajax/_monthEvents', array(
