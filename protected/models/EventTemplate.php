@@ -50,7 +50,7 @@ class EventTemplate extends CActiveRecord
 	const DRAFT_NO = 0;
 	public static $draftNames = array(
 		self::DRAFT_YES => 'Черновик',
-		self::DRAFT_NO => 'Релиз',
+		self::DRAFT_NO => 'Опубликован',
 	);
 
 	/**

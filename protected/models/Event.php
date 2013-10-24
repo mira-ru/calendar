@@ -236,7 +236,7 @@ class Event extends CActiveRecord
 	 * @param $endTime
 	 * @return array|CActiveRecord
 	 */
-	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
+	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null, $showDraft=false)
 	{
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'start_time >= :start AND end_time < :end';
@@ -259,6 +259,9 @@ class Event extends CActiveRecord
 		if ( !empty($hallId) ) {
 			$criteria->compare('hall_id', $hallId);
 		}
+		if ( !$showDraft ) {
+			$criteria->compare('is_draft', EventTemplate::DRAFT_NO);
+		}
 
 		return self::model()->findAll($criteria);
 	}
@@ -267,9 +270,9 @@ class Event extends CActiveRecord
 	 * Получение списка дней с событиями
 	 * (по центру и по направлениям)
 	 */
-	public static function getActiveDays($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null)
+	public static function getActiveDays($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null, $showDraft=false)
 	{
-		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId, $userId, $hallId);
+		$events = self::getByTime($startTime, $endTime, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 		$result = array();
 		/** @var $event Event */
 		foreach ($events as $event) {
