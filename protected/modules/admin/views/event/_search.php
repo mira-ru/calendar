@@ -55,6 +55,13 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 	</div>
 
 	<div class="form-group">
+		<?php echo $form->label($model,'is_draft', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'is_draft', array(''=>'Все')+EventTemplate::$draftNames, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<?php echo $form->label($model, 'users', array('class'=>'col-lg-2 control-label')); ?>
 
 		<div class="col-lg-5">
