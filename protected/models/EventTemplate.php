@@ -11,9 +11,11 @@
  * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
+ * @property integer $is_draft
  * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
+ * @property string $comment
  * @property integer $init_time - день первого события(timestamp)
  * @property integer $start_time
  * @property integer $end_time
@@ -42,6 +44,13 @@ class EventTemplate extends CActiveRecord
 	public static $typeNames = array(
 		self::TYPE_SINGLE => 'Одиночное событие',
 		self::TYPE_REGULAR => 'Регулярное событие',
+	);
+
+	const DRAFT_YES = 1;
+	const DRAFT_NO = 0;
+	public static $draftNames = array(
+		self::DRAFT_YES => 'Черновик',
+		self::DRAFT_NO => 'Опубликован',
 	);
 
 	/**
@@ -73,11 +82,12 @@ class EventTemplate extends CActiveRecord
 			array('center_id, service_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
+			array('is_draft', 'in', 'range'=>array(self::DRAFT_YES, self::DRAFT_NO)),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
-			array('desc', 'length', 'max'=>5000),
+			array('desc, comment', 'length', 'max'=>5000),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -184,6 +194,8 @@ class EventTemplate extends CActiveRecord
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 			'users' => 'Мастера',
+			'comment' => 'Внутренние комментарии',
+			'is_draft' => 'Состояние',
 		);
 	}
 
@@ -204,6 +216,7 @@ class EventTemplate extends CActiveRecord
 			throw new CHttpException(500);
 
 //		$this->name = $event->name;
+		$this->is_draft = $event->is_draft;
 		$this->image_id = $event->image_id;
 		$this->desc = $event->desc;
 		$this->direction_id = $event->direction_id;

@@ -65,19 +65,24 @@ class SiteController extends FrontController
 
 
 		$viewType = Config::getViewType($model);
+		$showDraft = !(Yii::app()->getUser()->getIsGuest());
 
 		if ($viewType == Config::VIEW_MONTH) {
 			// вид списком
 			$timeStart = $currentTime;
+			// В списочном виде выводим от текущей даты
+			if ($timeStart < time()) {
+				$timeStart = DateMap::currentDay(time());
+			}
 
-			$endMonth = DateMap::nextMonth($currentTime);
+			$endMonth = DateMap::nextMonth($timeStart);
 			if ( ($currentTime + 2 * DateMap::TIME_WEEK) < $endMonth) {
 				$timeEnd = $endMonth;
 			} else {
-				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 			$this->render('index/monthView', array(
@@ -99,9 +104,9 @@ class SiteController extends FrontController
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
 
-			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 			$this->render('index/weekView', array(
@@ -127,8 +132,8 @@ class SiteController extends FrontController
 			$timeStart = $currentTime;
 			$timeEnd = $currentTime + DateMap::TIME_DAY;
 
-			$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId);
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$activeDays = Event::getActiveDays($currentMonth, $nextMonth, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
 			$this->render('index/dayView', array(
 
@@ -193,20 +198,26 @@ class SiteController extends FrontController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 		$viewType = Config::getViewType($model);
+		$showDraft = !(Yii::app()->getUser()->getIsGuest());
 
 		if ( $viewType == Config::VIEW_MONTH ) {
 			// вид списком
 			$days = '';
 			$timeStart = $currentTime;
 
-			$endMonth = DateMap::nextMonth($currentTime);
+			if ($timeStart < time()) {
+				$timeStart = DateMap::currentDay(time());
+			}
+
+
+			$endMonth = DateMap::nextMonth($timeStart);
 			if ( $currentTime + 2 * DateMap::TIME_WEEK < $endMonth) {
 				$timeEnd = $endMonth;
 			} else {
-				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
 			$html = $this->renderPartial('ajax/_monthEvents', array(
 				'model'=>$model,
@@ -219,10 +230,10 @@ class SiteController extends FrontController
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
 
-			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 			$days = $this->renderPartial('ajax/_daysWeek', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
 			$html = $this->renderPartial('ajax/_weekEvents', array(
 				'events'=>$events,
@@ -235,11 +246,11 @@ class SiteController extends FrontController
 
 			$monthTime = DateMap::currentMonth($currentTime);
 			$nextMonthTime = DateMap::nextMonth($monthTime);
-			$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$activeDays = Event::getActiveDays($monthTime, $nextMonthTime, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
 			$days = $this->renderPartial('ajax/_daysMonth', array('currentTime'=>$currentTime, 'activeDays'=>$activeDays), true);
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 			$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 			$html = $this->renderPartial('ajax/_dayEvents', array(

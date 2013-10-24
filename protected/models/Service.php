@@ -27,6 +27,32 @@ class Service extends CActiveRecord
 	public function init()
 	{
 		$this->onAfterSave = array('Config', 'generateCss');
+		$this->onAfterSave = array($this, 'resetParams');
+	}
+
+	/**
+	 * Поддержание параметров в связанных событиях и направлениях
+	 * @return bool
+	 */
+	public function resetParams()
+	{
+		if ($this->getIsNewRecord()) {
+			return true;
+		}
+
+		Direction::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+		), 'service_id=:sid', array(':sid'=>$this->id));
+
+		Event::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+			'service_id'=>$this->id
+		), 'service_id=:sid', array(':sid'=>$this->id));
+
+		EventTemplate::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+			'service_id'=>$this->id
+		), 'service_id=:sid', array(':sid'=>$this->id));
 	}
 
 

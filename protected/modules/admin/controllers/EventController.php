@@ -117,9 +117,10 @@ class EventController extends AdminController
 			$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
 			$event->file = CUploadedFile::getInstance($event, 'file');
 
-			if (isset($_POST['Event'])) {
+			if ( isset($_POST['Event']) ) {
 				$event->attributes = $_POST['Event'];
 				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
+				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
 
 				$initTime = strtotime($date);
 
@@ -135,6 +136,7 @@ class EventController extends AdminController
 				if ($event->validate() && !$hasErrors) {
 					$currentTemplate = $event->getTemplate();
 					$currentTemplate->users = $template->users;
+					$currentTemplate->comment = $template->comment;
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {
@@ -150,7 +152,7 @@ class EventController extends AdminController
 					// осталось одиночное событие или регулярное и изменяем только текущее
 					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
+						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
 						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
 						$currentTemplate->save(false);
