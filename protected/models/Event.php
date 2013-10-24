@@ -10,6 +10,7 @@
  * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
+ * @property integer $is_draft
  * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
@@ -51,6 +52,7 @@ class Event extends CActiveRecord
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
+			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_YES, EventTemplate::DRAFT_NO)),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -64,7 +66,7 @@ class Event extends CActiveRecord
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id', 'safe', 'on'=>'search'),
+			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id, is_draft', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -132,6 +134,7 @@ class Event extends CActiveRecord
 			'image_id' => 'Фото',
 			'users' => 'Мастера',
 			'event_type' => 'Тип события',
+			'is_draft' => 'Состояние',
 		);
 	}
 
@@ -162,6 +165,7 @@ class Event extends CActiveRecord
 		$criteria->compare('t.hall_id', $this->hall_id);
 		$criteria->compare('t.center_id', $this->center_id);
 		$criteria->compare('t.direction_id', $this->direction_id);
+		$criteria->compare('t.is_draft', $this->is_draft);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
@@ -285,6 +289,7 @@ class Event extends CActiveRecord
 		$initTime = strtotime('TODAY', $time);
 
 		$event = new Event();
+		$event->is_draft = $template->is_draft;
 		$event->image_id = $template->image_id;
 		$event->desc = $template->desc;
 		$event->direction_id = $template->direction_id;
