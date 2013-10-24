@@ -45,6 +45,16 @@ class EventTemplate extends CActiveRecord
 	);
 
 	/**
+	 * @var bool флаг принудительного сохранения без валидации периодов событий
+	 */
+	public $forceSave = false;
+
+	/**
+	 * @var array массив id событий, которые пересекаются с событиями текущего шаблона
+	 */
+	public $similarEvents = array();
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -125,6 +135,7 @@ class EventTemplate extends CActiveRecord
 	public function init()
 	{
 		parent::init();
+		$this->onBeforeSave = array($this, 'validateEventsPeriod');
 		$this->onAfterSave = array($this, '_saveUsers');
 		$this->onAfterSave = array($this, 'makeLinks');
 	}
@@ -270,6 +281,33 @@ class EventTemplate extends CActiveRecord
 		} catch (Exception $e) {
 			$transaction->rollback();
 		}
+	}
+
+
+	/**
+	 * Валидация интервалов всех событий текущего шаблона на предмет
+	 * пересечения со временем других событий
+	 * @return bool
+	 */
+	public function validateEventsPeriod()
+	{
+		if ( $this->forceSave )
+			return true;
+
+		$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
+		$initTime = $this->init_time; // время начала события
+
+		for ($i=0; $i<$count; $i++) {
+
+			$similar = array();
+			if ( !Event::validateEventPeriod($this, $initTime, $similar) )
+				$this->similarEvents+=$similar;
+
+			$initTime += DateMap::TIME_WEEK; // интервал событий - неделя
+		}
+
+		// "уборка" дублирующихся id событий
+		$this->similarEvents = array_unique($this->similarEvents);
 	}
 
 }

@@ -300,6 +300,37 @@ class Event extends CActiveRecord
 	}
 
 	/**
+	 * Валидация нового временного интервала события (линка)
+	 * @param $template EventTemplate
+	 * @param $time integer
+	 * @param $similar array
+	 * @return bool|array
+	 */
+	public static function validateEventPeriod($template, $time, &$similar=null)
+	{
+		$initTime = strtotime('TODAY', $time);
+
+		$condition = '((start_time < :et and :et <= end_time) or (:st <= start_time and start_time < :et) or '
+			. '(:st < end_time and end_time <= :et))';
+
+		$condition.= ' and hall_id=:hid';
+
+		$params = array(
+			':st'=>$template->start_time + $initTime,
+			':et'=>$template->end_time + $initTime,
+			':hid'=>$template->hall_id,
+		);
+
+		$similar = Yii::app()->db->createCommand()->select('id')->from(self::model()->tableName())
+			->where($condition, $params)->queryColumn();
+
+		if ( count($similar) == 0 )
+			return true;
+		else
+			return false;
+	}
+
+	/**
 	 * Список объектов юзеров шаблона
 	 */
 	public function getUsers()
