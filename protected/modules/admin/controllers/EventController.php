@@ -150,7 +150,7 @@ class EventController extends AdminController
 					// осталось одиночное событие или регулярное и изменяем только текущее
 					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
+						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
 						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
 
 						$currentTemplate->save(false);
