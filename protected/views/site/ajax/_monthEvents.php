@@ -55,8 +55,8 @@ foreach ($events as $event) {
 			, array('class'=>'pencil', 'target'=>'_blank'));
 	}
 
-	if (!empty($event->direction->desc)) {
-		echo CHtml::tag('p', array(), $event->direction->desc);
+	if (!empty($event->direction->short_desc)) {
+		echo CHtml::tag('p', array(), $event->direction->short_desc);
 	}
 	/** @var $service Service */
 	$service = isset($allServices[$event->service_id]) ? $allServices[$event->service_id] : new Service();
