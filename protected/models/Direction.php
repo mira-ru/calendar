@@ -6,6 +6,7 @@
  * The followings are the available columns in table 'direction':
  * @property integer $id
  * @property integer $status
+ * @property integer $center_id
  * @property integer $service_id
  * @property string $name
  * @property string $url
@@ -17,7 +18,6 @@
  */
 class Direction extends CActiveRecord
 {
-	public $center_id;
 	// Загруженный файл
 	public $file;
 
@@ -83,16 +83,37 @@ class Direction extends CActiveRecord
 	public function init()
 	{
 		parent::init();
-		$this->onAfterFind = array($this, 'setCenter');
-		$this->onAfterSave = array($this, 'setCenter');
+		$this->onAfterSave = array($this, 'resetParams');
 	}
 
-	public function setCenter()
+	/**
+	 * Поддержание параметров в связанных событиях
+	 * @return bool
+	 */
+	public function resetParams()
 	{
-		$service = $this->service;
-		if ($service!==null) {
-			$this->center_id = $service->center_id;
+		if ($this->getIsNewRecord()) {
+			return true;
 		}
+
+		$sql = 'SELECT t.id, t.service_id, s.center_id FROM direction as t '
+		    .'INNER JOIN service as s ON t.service_id=s.id WHERE t.id='.intval($this->id);
+
+		$data = Yii::app()->db->createCommand($sql)->queryRow();
+		if (empty($data)) {
+			return true;
+		}
+		Event::model()->updateAll(array(
+			'center_id'=>$data['center_id'],
+			'service_id'=>$data['service_id']
+		), 'direction_id=:did', array(':did'=>$data['id']));
+
+		EventTemplate::model()->updateAll(array(
+			'center_id'=>$data['center_id'],
+			'service_id'=>$data['service_id']
+		), 'direction_id=:did', array(':did'=>$data['id']));
+
+
 	}
 
 	public function behaviors()
@@ -167,10 +188,7 @@ class Direction extends CActiveRecord
 		}
 
 		$criteria->compare('t.service_id', $this->service_id);
-		if (!empty($this->center_id)) {
-			$criteria->join = 'INNER JOIN service as s ON s.id=t.service_id';
-			$criteria->compare('s.center_id', $this->center_id);
-		}
+		$criteria->compare('t.center_id', $this->center_id);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {

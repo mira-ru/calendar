@@ -17,7 +17,11 @@ if ($center === null) { $center = new Center(); }
 
 /** @var $event Event */
 foreach ($events as $event) {
-	echo CHtml::openTag('div', array('class'=>'grid'));
+	$class = 'grid';
+	if ($event->is_draft == EventTemplate::DRAFT_YES) {
+		$class .= ' -disabled';
+	}
+	echo CHtml::openTag('div', array('class'=>$class));
 
 	$monthNumber = date('n', $event->start_time);
 	$dom = date('j', $event->start_time);
