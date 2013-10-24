@@ -35,6 +35,9 @@ foreach ($halls as $hall) {
 			    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
 
 			$class = 'col-'.$eventTime.' start-'.$timeStart.' '.$colorClass;
+			if ($event->is_draft == EventTemplate::DRAFT_YES) {
+				$class .= ' -disabled';
+			}
 
 			$htmlOptions['class'] = $class;
 
