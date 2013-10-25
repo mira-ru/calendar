@@ -26,6 +26,5 @@
 	<body class="<?php foreach($this->bodyClass as $class) { echo $class.' ';} ?>">
 		<?php echo $content; ?>
 
-		<script src="/jslib/feedback.lmd.js"></script>
 	</body>
 </html>
