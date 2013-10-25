@@ -70,12 +70,16 @@ class SiteController extends FrontController
 		if ($viewType == Config::VIEW_MONTH) {
 			// вид списком
 			$timeStart = $currentTime;
+			// В списочном виде выводим от текущей даты
+			if ($timeStart < time()) {
+				$timeStart = DateMap::currentDay(time());
+			}
 
-			$endMonth = DateMap::nextMonth($currentTime);
+			$endMonth = DateMap::nextMonth($timeStart);
 			if ( ($currentTime + 2 * DateMap::TIME_WEEK) < $endMonth) {
 				$timeEnd = $endMonth;
 			} else {
-				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
 
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
@@ -201,11 +205,16 @@ class SiteController extends FrontController
 			$days = '';
 			$timeStart = $currentTime;
 
-			$endMonth = DateMap::nextMonth($currentTime);
+			if ($timeStart < time()) {
+				$timeStart = DateMap::currentDay(time());
+			}
+
+
+			$endMonth = DateMap::nextMonth($timeStart);
 			if ( $currentTime + 2 * DateMap::TIME_WEEK < $endMonth) {
 				$timeEnd = $endMonth;
 			} else {
-				$timeEnd = $currentTime + 2 * DateMap::TIME_WEEK;
+				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
 
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);

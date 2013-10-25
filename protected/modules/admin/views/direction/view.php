@@ -37,6 +37,16 @@
 			'value'=>empty($model->center_id) ? 'Центр не указан' : $model->center->name,
 		),
 		array(
+			'name'=>'desc',
+			'type'=>'raw',
+			'value' => $model->desc,
+		),
+		array(
+			'name'=>'short_desc',
+			'type'=>'raw',
+			'value' => $model->short_desc,
+		),
+		array(
 			'name'=> 'create_time',
 			'value'=>date("d.m.Y", $model->create_time),
 		),

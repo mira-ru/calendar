@@ -11,6 +11,8 @@
  * @property string $name
  * @property string $url
  * @property string $photo_url
+ * @property string $desc
+ * @property string $short_desc
  * @property string price
  * @property integer image_id
  * @property integer $create_time
@@ -58,6 +60,7 @@ class Direction extends CActiveRecord
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			array('desc', 'length', 'max'=>5000),
 			array('price', 'length', 'max'=>2048),
+			array('short_desc', 'length', 'max'=>512),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -124,7 +127,7 @@ class Direction extends CActiveRecord
 			),
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
-				'attributes' => array('desc', 'price'),
+				'attributes' => array('desc', 'price', 'short_desc'),
 			),
 		);
 	}
@@ -156,6 +159,7 @@ class Direction extends CActiveRecord
 			'photo_url' => 'URL фотоальбома',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
+			'short_desc' => 'Краткое описание',
 			'price' => 'Цена',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
