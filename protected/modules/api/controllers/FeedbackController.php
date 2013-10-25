@@ -24,7 +24,24 @@ class FeedbackController extends ApiController
 	 */
 	public function actionList()
 	{
-		$models = Feedback::model()->findAll();
+		if ( count($_GET) > 0 ) {
+
+			$filter_vars = array();
+
+			foreach($_GET as $var=>$value) {
+
+				if ( Feedback::model()->hasAttribute($var) && $value)
+					$filter_vars[$var] = $value;
+				else
+					RESTfulHelper::sendResponse(500, "Parameter <b>$var</b> is not allowed");
+			}
+
+			$models = Feedback::model()->findAllByAttributes($filter_vars);
+
+		} else
+			$models = Feedback::model()->findAll();
+
+
 		if(empty($models))
 			RESTfulHelper::sendResponse(200, 'No items where found');
 
