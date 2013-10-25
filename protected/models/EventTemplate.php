@@ -64,6 +64,11 @@ class EventTemplate extends CActiveRecord
 	public $similarEvents = array();
 
 	/**
+	 * @var атрибут используется для генерации ошибки валидации
+	 */
+	public $error = null;
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -101,7 +106,9 @@ class EventTemplate extends CActiveRecord
 			array('start_time, end_time', 'timeCheck'),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 
-			array('users', 'safe'),
+			array('error', 'validateEventsPeriod'),
+
+			array('users, forceSave', 'safe'),
 
 			// The following rule is used by search().
 //			array('id, status, type, name', 'safe', 'on'=>'search'),
@@ -145,9 +152,9 @@ class EventTemplate extends CActiveRecord
 	public function init()
 	{
 		parent::init();
-		$this->onBeforeSave = array($this, 'validateEventsPeriod');
 		$this->onAfterSave = array($this, '_saveUsers');
 		$this->onAfterSave = array($this, 'makeLinks');
+		$this->onAfterValidate = array($this, 'validateEventsPeriod');
 	}
 
 	/**
@@ -321,6 +328,9 @@ class EventTemplate extends CActiveRecord
 
 		// "уборка" дублирующихся id событий
 		$this->similarEvents = array_unique($this->similarEvents);
+
+		if ( count($this->similarEvents) > 0 )
+			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
 	}
 
 }
