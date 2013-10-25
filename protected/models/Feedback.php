@@ -11,6 +11,17 @@
  */
 class Feedback extends CActiveRecord
 {
+
+	const STATUS_NEUTRAL = 0;
+	const STATUS_POSITIVE = 1;
+	const STATUS_NEGATIVE = 2;
+
+	public static $statusNames = array(
+		self::STATUS_NEUTRAL => 'Предложение',
+		self::STATUS_POSITIVE => 'Благодарность',
+		self::STATUS_NEGATIVE => 'Жалоба',
+	);
+
 	/**
 	 * @return string the associated database table name
 	 */
