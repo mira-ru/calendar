@@ -54,11 +54,11 @@ class Event extends CActiveRecord
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_YES, EventTemplate::DRAFT_NO)),
 
-			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
-			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
-
-			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
-			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
+//			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
+//			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
+//
+//			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
+//			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
 
 			array('desc', 'length', 'max'=>5000),
 
@@ -346,6 +346,12 @@ class Event extends CActiveRecord
 					Yii::app()->controller->createUrl('/admin/event/index', array('Event[user_id]'=> $user->id) ));
 		}
 		return $tmp;
+	}
+
+
+	public function createTemplate()
+	{
+
 	}
 
 	/**

@@ -136,7 +136,7 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
-		$this->onAfterSave = array($this, 'makeLinks');
+//		$this->onAfterSave = array($this, 'makeLinks');
 	}
 
 	/**
@@ -146,16 +146,8 @@ class EventTemplate extends CActiveRecord
 	 */
 	public function makeLinks()
 	{
-		if ($this->status != self::STATUS_ACTIVE || !$this->makeLinks)
-			return false;
-
-		if ($this->getIsNewRecord()) {
-			$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
-			$initTime = $this->init_time; // время начала события
-		} else {
-			$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
-			$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
-		}
+		$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
+		$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
 
 		for ($i=0; $i<$count; $i++) {
 
@@ -204,7 +196,6 @@ class EventTemplate extends CActiveRecord
 		if ( !$event instanceof Event || !isset(self::$typeNames[$type]) )
 			throw new CHttpException(500);
 
-//		$this->name = $event->name;
 		$this->is_draft = $event->is_draft;
 		$this->image_id = $event->image_id;
 		$this->desc = $event->desc;

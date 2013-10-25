@@ -20,6 +20,7 @@ class EventController extends AdminController
 	public function actionCreate()
 	{
 		$template = new EventTemplate();
+		$event = new Event();
 
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -30,40 +31,53 @@ class EventController extends AdminController
 
 		if($request->getIsPostRequest())
 		{
-			if (isset($_POST['EventTemplate'])) {
+			if ( isset($_POST['EventTemplate']) && isset($_POST['Event'])) {
+				$event->attributes = $_POST['Event'];
 				$template->attributes = $_POST['EventTemplate'];
+
 				// установка времени события в течении дня
 				$template->start_time = strtotime($startTime) - strtotime('TODAY');
 				$template->end_time = strtotime($endTime) - strtotime('TODAY');
-
-				$time = strtotime($date);
-				$template->init_time = $time;
-				if ($time)
-					$template->day_of_week = date('w', $time);
-				else
-					$template->day_of_week = -1;
-
 				$template->status = EventTemplate::STATUS_ACTIVE;
-			}
-			$template->file = CUploadedFile::getInstance($template, 'file');
+				$initTime = strtotime($date);
 
-			if ($template->validate()) { // Создание событий
+				$event->start_time = $template->start_time + $initTime;
+				$event->end_time = $template->end_time + $initTime;
+
+				if ($initTime)
+					$event->day_of_week = date('w', $initTime);
+				else
+					$event->day_of_week = -1;
+
+			}
+			$event->file = CUploadedFile::getInstance($template, 'file');
+
+			if ( $template->validate(array('type', 'status', 'start_time', 'end_time')) && $event->validate() ) { // Создание событий
 				// сохраняем картинку
-				if ($template->file instanceof CUploadedFile) {
+				if ($event->file instanceof CUploadedFile) {
 					$file = $template->file->getTempName();
 					$fileId = Yii::app()->image->putImage($file, $template->file->getName());
 					if (empty($fileId)) {
 						throw new CHttpException(500);
 					}
 
-					$template->image_id = $fileId;
+					$event->image_id = $fileId;
 				}
 
+				$template->updateFromEvent($event, $template->type, $initTime);
 				$template->save(false);
+				$event->template_id = $template->id;
+				$event->save(false);
+
+				$template->makeLinks();
+
 				$this->redirect(
 					Yii::app()->getUser()->getReturnUrl(array('index'))
 				);
 			}
+//			FirePHP::getInstance()->fb($event->attributes);
+//			FirePHP::getInstance()->fb($event->getErrors());
+//			FirePHP::getInstance()->fb($template->getErrors());
 		}
 
 		if (!$request->getIsPostRequest()) {
@@ -76,8 +90,12 @@ class EventController extends AdminController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
 		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
 		$this->render('create',array(
 			'template' => $template,
+			'event' => $event,
+
+
 			'centers' => $centers,
 			'services' => $services,
 			'directions' => $directions,
