@@ -8,7 +8,6 @@ class FeedbackController extends FrontController
 		$this->bodyClass = array('feedback');
 		$this->layout = '//layouts/feedback';
 
-		//print_r($messages);
 		$this->render('index');
 
 		return;
