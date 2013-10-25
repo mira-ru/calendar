@@ -19,7 +19,7 @@ return CMap::mergeArray(array(
 	),
 
 	'modules'=>array(
-		'admin',
+		'admin', 'api',
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'trololo',
@@ -62,6 +62,13 @@ return CMap::mergeArray(array(
 				array(
 					'class' => 'application.components.urlRules.IndexUrlRule',
 				),
+				// api routing
+				array('api/<model>/list', 'pattern'=>'api/<model:\w+>', 'verb'=>'GET'),
+				array('api/<model>/view', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'GET'),
+				array('api/<model>/update', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'PUT'),
+				array('api/<model>/delete', 'pattern'=>'api/<model:\w+>/<id:\d+>', 'verb'=>'DELETE'),
+				array('api/<model>/create', 'pattern'=>'api/<model:\w+>', 'verb'=>'POST'),
+				// end api routing
 
 				'<controller:\w+>/<id:\d+>'              => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
