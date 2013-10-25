@@ -1,0 +1,43 @@
+{
+	"name": "Miracentr Calendar",
+
+	"path": "../modules/",
+	"version": "1.0",
+	"output": "../feedback.lmd.js",
+
+	"sourcemap": "../feedback.lmd.map",
+	"sourcemap_inline": true,
+	"sourcemap_www": "",
+
+
+
+	"www_root": "../../../",
+
+	"modules": {
+		"$": {
+			"path": "vendor/jquery.js",
+			"exports": "jQuery"
+		},
+		"main": {
+			"path": "feedback/feedback.app.js"
+		},
+		"common": "custom/common.js",
+		"modal": "vendor/bootstrap/Modal.js"
+	},
+	"main": "main",
+	"global": "this",
+	"ie": false,
+	"async": true,
+	"lazy": false,
+	"pack": false,
+	"parallel": true,
+	"shortcuts": false,
+	"stats": false,
+	"stats_coverage": false,
+	"stats_coverage_async": false,
+	"stats_sendto": false,
+	"stats_auto": false,
+
+	"warn": true,
+	"log": true
+}
