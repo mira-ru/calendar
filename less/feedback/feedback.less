@@ -105,7 +105,7 @@ body {
 	background: #f3f6ee;
 	border-radius: 4px;
 	box-shadow: 0 0 0 10px rgba(0,0,0,0.2);
-	margin-top: 50px;
+	margin: 50px 0 50px;
 	padding: 25px;
 	h1.title {
 		background: #dbe5c5 url(data:image/gif;base64,R0lGODlhEAAIAIABAPP27v///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQAAgAAAIUjB+Au+DMnIRHWmpzzLpybnxiUAAAOw==) 0% 100% repeat-x;
@@ -119,8 +119,6 @@ body {
 	}
 }
 #tabs {
-	border-bottom: 1px solid #eee;
-	margin-bottom: 25px;
 	padding-bottom: 15px;
 	text-align: center;
 	a {
@@ -207,8 +205,15 @@ body {
 }
 #list {
 	div {
-		border-bottom: 1px dotted #ddd;
-		margin-bottom: 25px;
+		border-top: 1px solid rgba(255,255,255,1);
+		border-bottom: 1px solid rgba(0,0,0,0.15);
+		padding: 15px 0 15px;
+		&:first-child {
+			border-top: none;
+		}
+		&:last-child {
+			border-bottom: none;
+		}
 		h1 {
 			font-size: 22px;
 			line-height: 1.1;

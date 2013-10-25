@@ -41,9 +41,9 @@ $this->breadcrumbs=array(
 	{{/items}}
 </script>
 <script id="tabsView" type="text/ejs">
-	<a data-type="neutral" class="current"><i>Предложения</i></a>
-	<a data-type="positive"><i>Благодарности</i></a>
-	<a data-type="negative"><i>Жалобы</i></a>	
+	<a data-type="neutral" class="<%= state.attr('type') == 'neutral' ? 'current' : '' %>"><i>Предложения</i></a>
+	<a data-type="positive" class="<%= state.attr('type') == 'positive' ? 'current' : '' %>"><i>Благодарности</i></a>
+	<a data-type="negative" class="<%= state.attr('type') == 'negative' ? 'current' : '' %>"><i>Жалобы</i></a>	
 </script>
 <script>
 (function(){
@@ -52,10 +52,13 @@ $this->breadcrumbs=array(
 		$('.hidden').slideDown('400');
 	});
 
-	var Feedback = can.Map({
-		defaults: {
-			type: 'neutral'
-		}
+	can.route(':type');
+	can.route.ready();
+
+	var Feedback = can.Map.extend({
+		// defaults: {
+		// 	type: 'neutral'
+		// }
 	},{
 		type: function(newVal) {
 			this.attr('type', newVal);
@@ -65,11 +68,14 @@ $this->breadcrumbs=array(
 	var AppControl = can.Control.extend({
 		init: function(){
 			var app = this;
-			var state = this.options.state = new Feedback();
+			var state = this.options.state = new Feedback({
+				type: can.route.attr('type') || 'positive'
+			});
 
 			new Tabs('#tabs', {state: state});
 
 			var items = can.compute(function(){
+				console.log(2);
 				var params = {
 					type: state.attr('type')
 				};
@@ -88,22 +94,19 @@ $this->breadcrumbs=array(
 			can.route.attr('type', state.attr('type'));
 		},
 		'{can.route} type': function(route) {
+			console.log(1);
 			this.options.state.type(route.attr('type'));
 		}
 	});
 
 	var Tabs = can.Control.extend({
 		init: function(){
-			this.element.html(
-				can.view('#tabsView'),
-				this.options
-			);
+			this.element.html(can.view('tabsView', this.options));
 		},
-		'a click': function(el, ev){
+		'a:not(.current) click': function(el, ev){
 			ev.preventDefault();
 			var state = this.options.state;
 			state.attr('type', el.data('type'));
-			el.siblings('.current').andSelf().toggleClass('current');
 			$('.hidden').slideUp('400', function(){
 				$('input:checked').removeAttr('checked');
 			});
@@ -155,16 +158,10 @@ $this->breadcrumbs=array(
 			// this.element.find('tbody').css('opacity', 1);
 			var data = $.extend({}, this.options, {items: items})
 			this.element.html( can.view(this.options.template, data) );
-			console.log(items);
+			//console.log(items);
 		}
 	});
 
 	new AppControl(document.body);
-
-	can.route(':type');
-
-	// can.route('', {type: 'neutral'});
-
-	can.route.ready();
 })();
 </script>
