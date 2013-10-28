@@ -12,14 +12,14 @@
 class Feedback extends CActiveRecord
 {
 
-	const STATUS_NEUTRAL = 0;
-	const STATUS_POSITIVE = 1;
-	const STATUS_NEGATIVE = 2;
+	const TYPE_NEUTRAL = 0;
+	const TYPE_POSITIVE = 1;
+	const TYPE_NEGATIVE = 2;
 
 	public static $statusNames = array(
-		self::STATUS_NEUTRAL => 'Предложение',
-		self::STATUS_POSITIVE => 'Благодарность',
-		self::STATUS_NEGATIVE => 'Жалоба',
+		self::TYPE_NEUTRAL => 'Предложение',
+		self::TYPE_POSITIVE => 'Благодарность',
+		self::TYPE_NEGATIVE => 'Жалоба',
 	);
 
 	/**
@@ -38,12 +38,12 @@ class Feedback extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('status', 'numerical', 'integerOnly'=>true),
+			array('type', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>255),
 			array('text', 'length', 'max'=>2000),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, status, name, text', 'safe', 'on'=>'search'),
+			array('id, type, name, text', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,7 +65,7 @@ class Feedback extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'status' => 'Status',
+			'type' => 'Type',
 			'name' => 'Name',
 			'text' => 'Text',
 		);
@@ -88,7 +88,7 @@ class Feedback extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 	//	$criteria->compare('id',$this->id);
-		$criteria->compare('status',$this->status);
+		$criteria->compare('type',$this->type);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('text',$this->text,true);
 

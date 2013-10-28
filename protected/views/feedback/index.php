@@ -12,11 +12,11 @@ $this->breadcrumbs=array(
 		<div class="col-6 skip-3 pass-3">
 			<div class="feedback-form">
 				<h1 class="title">Книга отзывов и предложений</h1>
-				<div id="form">
-					<form id="feedbackForm">
-						<label class="radio"><input type="radio" value="0" name="status"><span class="icon-lightbulb">я хочу предложить</span></label>
-						<label class="radio"><input type="radio" value="1" name="status"><span class="icon-heart-outline">я хочу поблагодарить</span></label>
-						<label class="radio"><input type="radio" value="2" name="status"><span class="icon-warning-outline">я хочу пожаловаться</span></label>
+				<div class="form">
+					<form id="form">
+						<label class="radio"><input type="radio" value="1" name="type"><span class="icon-lightbulb">я хочу предложить</span></label>
+						<label class="radio"><input type="radio" value="2" name="type"><span class="icon-heart-outline">я хочу поблагодарить</span></label>
+						<label class="radio"><input type="radio" value="3" name="type"><span class="icon-warning-outline">я хочу пожаловаться</span></label>
 						<div class="hidden">
 							<label>
 								<textarea rows="10" placeholder="Написать что-нибудь очень желательно" name="text"></textarea>
@@ -37,15 +37,15 @@ $this->breadcrumbs=array(
 		</div>
 	</div>
 </div>
-<script id="feedbackList" type="text/mustache">
+<script id="listView" type="text/mustache">
 	{{#items}}
-		<div><h1>{{name}}:</h1><p>«{{text}}»</p></div>
+		<div><h1>{{#if name}}{{name}}{{else}}Noname{{/name}}:</h1><p>«{{text}}»</p></div>
 	{{/items}}
 </script>
 <script id="tabsView" type="text/ejs">
-	<a data-type="neutral" class="<%= state.attr('type') == 'neutral' ? 'current' : '' %>"><i>Предложения</i></a>
-	<a data-type="positive" class="<%= state.attr('type') == 'positive' ? 'current' : '' %>"><i>Благодарности</i></a>
-	<a data-type="negative" class="<%= state.attr('type') == 'negative' ? 'current' : '' %>"><i>Жалобы</i></a>	
+	<a data-type-id="1" class="<%= state.attr('type') == 1 ? 'current' : '' %>"><i>Предложения</i></a>
+	<a data-type-id="2" class="<%= state.attr('type') == 2 ? 'current' : '' %>"><i>Благодарности</i></a>
+	<a data-type-id="3" class="<%= state.attr('type') == 3 ? 'current' : '' %>"><i>Жалобы</i></a>	
 </script>
 <script>
 (function(){
@@ -54,69 +54,13 @@ $this->breadcrumbs=array(
 		$('.hidden').slideDown('400');
 	});
 
-	can.route(':type');
-	can.route.ready();
+	can.route(':type', {type: 'neutral'}).ready();
 
-	var types = {
-		'neutral' : 0,
-		'positive' : 1,
-		'negative' : 2
-	}
+	var types = ['', 'neutral', 'positive', 'negative'];
 
-	var Feedback = can.Map.extend({
-		// defaults: {
-		// 	type: 'neutral'
-		// }
-	},{
-		type: function(newVal) {
-			this.attr('type', newVal);
-		}
-	});
-
-	var AppControl = can.Control.extend({
-		init: function(){
-			var app = this;
-			var state = this.options.state = new Feedback({
-				type: can.route.attr('type') || 'positive'
-			});
-
-			new Tabs('#tabs', {state: state});
-
-			var items = can.compute(function(){
-				console.log(2);
-				var params = {
-					status: types[state.attr('type')]
-				};
-				var feeds = Feed.findAll(params);
-				return feeds;
-			});
-			
-			new List("#list", {
-				items: items,
-				template: "feedbackList"
-			});
-			
-			this.on();
-		},
-		'{state} type': function(state) {
-			can.route.attr('type', state.attr('type'));
-		},
-		'{can.route} type': function(route) {
-			this.options.state.type(route.attr('type'));
-		}
-	});
-
-	var Tabs = can.Control.extend({
-		init: function(){
-			this.element.html(can.view('tabsView', this.options));
-		},
-		'a:not(.current) click': function(el, ev){
-			ev.preventDefault();
-			var state = this.options.state;
-			state.attr('type', el.data('type'));
-			$('.hidden').slideUp('400', function(){
-				$('input:checked').removeAttr('checked');
-			});
+	var Feedback = can.Map.extend({}, {
+		change: function(value) {
+			this.attr('type', value);
 		}
 	});
 
@@ -128,6 +72,66 @@ $this->breadcrumbs=array(
 		destroy: 'DELETE /api/feedback/{id}'
 	},{});
 
+	var AppControl = can.Control.extend({
+		init: function() {
+			var app = this;
+			var state = app.options.state = new Feedback({
+				type: $.inArray(can.route.attr('type'), types) || 1
+			});
+
+			new Form('#form', {state: state});
+
+			new Tabs('#tabs', {state: state});
+
+			var items = can.compute(function(){
+				var params = {
+					type: state.attr('type')
+				};
+				var feeds = Feed.findAll(params);
+				feeds.then();
+				return feeds;
+			});
+
+			new List('#list', {
+				items: items,
+				template: 'listView'
+			});
+
+			app.on();
+		},
+		'{state} type': function(state) {
+			can.route.attr('type', types[state.attr('type')]);
+		},
+		'{can.route} type': function(route) {
+			this.options.state.change($.inArray(route.attr('type'), types));
+		}
+	});
+
+	var Form = can.Control.extend({
+		'button click': function(){
+			var self = this;
+			var data = can.deparam(this.element.serialize());
+			var feed = new Feed(data);
+			feed.save(function(created){
+				self.options.state.change(created.type);
+				hideForm();
+			});
+			return false;
+		}
+	});
+
+	var Tabs = can.Control.extend({
+		init: function(el, options) {
+			el.html(can.view('tabsView', options));
+		},
+		'a:not(.current) click': function(el, ev) {
+			ev.preventDefault();
+			var state = this.options.state;
+			state.attr('type', el.data('type-id'));
+			hideForm();
+		}
+	})
+
 	var List = can.Control.extend({
 		init: function(){
 			this.update();
@@ -135,20 +139,26 @@ $this->breadcrumbs=array(
 		'{items} change': 'update',
 		update: function(){
 			var items = this.options.items();
-			// if (can.isDeferred( items )) {
-			// 	this.element.find('tbody').css('opacity', 0.5)
-			// 	items.then(this.proxy('draw'));
-			// } else {
+			if (can.isDeferred( items )) {
+				this.element.css('opacity', 0.5);
+				items.then(this.proxy('draw'));
+			} else {
 				this.draw(items);
-			// }
+			}
 		},
 		draw: function(items){
-			// this.element.find('tbody').css('opacity', 1);
+			this.element.css('opacity', 1);
 			var data = $.extend({}, this.options, {items: items})
 			this.element.html( can.view(this.options.template, data) );
-			//console.log(items);
 		}
 	});
+
+	function hideForm() {
+		$('.hidden').slideUp('400', function(){
+			$('input:checked').removeAttr('checked');
+			$('input:not(:radio), textarea', $(this)).val('');
+		});		
+	}
 
 	new AppControl(document.body);
 })();
