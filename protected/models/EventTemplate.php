@@ -24,11 +24,6 @@
  */
 class EventTemplate extends CActiveRecord
 {
-	// Загруженный файл
-	public $file;
-	// Флаг создания линков после сохранения
-	public $makeLinks = true;
-
 	private $_users = null;
 
 	const STATUS_ACTIVE = 1;
@@ -89,7 +84,6 @@ class EventTemplate extends CActiveRecord
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
 			array('start_time, end_time', 'timeCheck'),
-			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 
 			array('users', 'safe'),
 
@@ -136,26 +130,16 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
-		$this->onAfterSave = array($this, 'makeLinks');
 	}
 
 	/**
-	 * Создание линков при сохранении шаблонов.
-	 * Attention! Сохраняется только при создании шаблона
-	 * и смене типа на регулярное событие
+	 * Создание событий по шаблону.
+	 *
 	 */
 	public function makeLinks()
 	{
-		if ($this->status != self::STATUS_ACTIVE || !$this->makeLinks)
-			return false;
-
-		if ($this->getIsNewRecord()) {
-			$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
-			$initTime = $this->init_time; // время начала события
-		} else {
-			$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
-			$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
-		}
+		$count = $this->type == self::TYPE_SINGLE ? 0 : 11;
+		$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
 
 		for ($i=0; $i<$count; $i++) {
 
@@ -204,7 +188,6 @@ class EventTemplate extends CActiveRecord
 		if ( !$event instanceof Event || !isset(self::$typeNames[$type]) )
 			throw new CHttpException(500);
 
-//		$this->name = $event->name;
 		$this->is_draft = $event->is_draft;
 		$this->image_id = $event->image_id;
 		$this->desc = $event->desc;
