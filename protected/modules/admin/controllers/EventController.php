@@ -133,6 +133,8 @@ class EventController extends AdminController
 				else
 					$event->day_of_week = -1;
 
+				$event->initTime = $initTime;
+
 				if ($event->validate() && !$hasErrors) {
 					$currentTemplate = $event->getTemplate();
 					$currentTemplate->users = $template->users;

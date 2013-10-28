@@ -28,8 +28,25 @@ class Event extends CActiveRecord
 	// Загруженный файл
 	public $file;
 
+	public $initTime;
+
 	private $_template = null;
 	private $_users = null;
+
+	/**
+	 * @var bool флаг принудительного сохранения без валидации периодов событий
+	 */
+	public $forceSave = false;
+
+	/**
+	 * @var array массив id событий, которые пересекаются с событиями текущего шаблона
+	 */
+	public $similarEvents = array();
+
+	/**
+	 * @var атрибут используется для генерации ошибки валидации
+	 */
+	public $error = null;
 
 	/**
 	 * @return string the associated database table name
@@ -67,6 +84,7 @@ class Event extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id, is_draft', 'safe', 'on'=>'search'),
+			array('forceSave, initTime', 'safe'),
 		);
 	}
 
@@ -136,6 +154,12 @@ class Event extends CActiveRecord
 			'event_type' => 'Тип события',
 			'is_draft' => 'Состояние',
 		);
+	}
+
+	public function init()
+	{
+		parent::init();
+		$this->onAfterValidate = array($this, 'validatePeriod');
 	}
 
 	/**
@@ -314,7 +338,7 @@ class Event extends CActiveRecord
 	 * @param $similar array
 	 * @return bool|array
 	 */
-	public static function validateEventPeriod($template, $time, &$similar=null)
+	public static function eventPeriodChecker($start_time, $end_time, $hall_id, $time, &$similar=null)
 	{
 		$initTime = strtotime('TODAY', $time);
 
@@ -324,9 +348,9 @@ class Event extends CActiveRecord
 		$condition.= ' and hall_id=:hid';
 
 		$params = array(
-			':st'=>$template->start_time + $initTime,
-			':et'=>$template->end_time + $initTime,
-			':hid'=>$template->hall_id,
+			':st'=>$start_time + $initTime,
+			':et'=>$end_time + $initTime,
+			':hid'=>$hall_id,
 		);
 
 		$similar = Yii::app()->db->createCommand()->select('id')->from(self::model()->tableName())
@@ -336,6 +360,20 @@ class Event extends CActiveRecord
 			return true;
 		else
 			return false;
+	}
+
+	/**
+	 *
+	 */
+	public function validatePeriod()
+	{
+		if ( $this->forceSave )
+			return true;
+
+		$result = self::eventPeriodChecker($this->initTime + $this->start_time, $this->initTime + $this->end_time, $this->hall_id, 0, $this->similarEvents);
+
+		if ( count($this->similarEvents) > 0 )
+			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
 	}
 
 	/**

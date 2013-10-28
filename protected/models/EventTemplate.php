@@ -320,7 +320,7 @@ class EventTemplate extends CActiveRecord
 		for ($i=0; $i<$count; $i++) {
 
 			$similar = array();
-			if ( !Event::validateEventPeriod($this, $initTime, $similar) )
+			if ( !Event::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, $initTime, $similar) )
 				$this->similarEvents+=$similar;
 
 			$initTime += DateMap::TIME_WEEK; // интервал событий - неделя

@@ -7,13 +7,20 @@
 
 <div class="panel panel-danger">
 	<div class="panel-heading">
-		<h3 class="panel-title"><?php echo $template->getError('error'); ?></h3>
+		<h3 class="panel-title">Временной интервал события пересекается с другими событиями</h3>
 	</div>
 	<div class="panel-body" style="background-color: #f5f5f5">
 		<?php
+
+		if ( isset($event) )
+			$similarEventsIds = array_unique(array_merge($template->similarEvents + $event->similarEvents));
+		else
+			$similarEventsIds = $template->similarEvents;
+
+
 		$similarEvents = new CActiveDataProvider('Event', array(
 			'criteria'=>array(
-				'condition'=>'id in ('.implode(',', $template->similarEvents).')'
+				'condition'=>'id in ('.implode(',', $similarEventsIds).')'
 			),
 			'pagination'=>array('pageSize'=>10)
 		));
@@ -69,7 +76,8 @@
 		)); ?>
 	</div>
 
-	<?php echo CHtml::activeHiddenField($template, 'forceSave', array('id'=>'forceSave')); ?>
+	<?php echo CHtml::activeHiddenField($template, 'forceSave', array('id'=>'forceSaveEvnt')); ?>
+	<?php echo isset($event) ? CHtml::activeHiddenField($event, 'forceSave', array('id'=>'forceSaveTmpl')) : ''; ?>
 
 	<p style="padding: 10px;">
 		<button type="button" class="btn btn-danger forceSaveButton">Игнорировать предупреждение и сохранить событие с текущими настройками</button>
@@ -77,7 +85,8 @@
 
 	<?php Yii::app()->clientScript->registerScript('forceSave', '
 		$(".forceSaveButton").click(function(){
-			$("#forceSave").val("1");
+			$("#forceSaveEvnt").val("1");
+			$("#forceSaveTmpl").val("1");
 			$("#event-form").submit();
 		});
 	', CClientScript::POS_READY);?>
