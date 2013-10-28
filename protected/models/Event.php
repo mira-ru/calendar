@@ -319,9 +319,10 @@ class Event extends CActiveRecord
 
 	/**
 	 * @param $template EventTemplate
+	 * @param $dayTime смещение в днях при обновлениии события
 	 * @throws Exception
 	 */
-	public function updateYoungEvents($template)
+	public function updateYoungEvents($template, $dayTime)
 	{
 		if ($this->getIsNewRecord()) {
 			return false;
@@ -329,7 +330,6 @@ class Event extends CActiveRecord
 		if ( !$template instanceof EventTemplate ) {
 			throw new CException('Invalid template', 500);
 		}
-		$templateAttr = $template->getAttributes();
 
 		$template->is_draft = $this->is_draft;
 		$template->image_id = $this->image_id;
@@ -341,7 +341,7 @@ class Event extends CActiveRecord
 		$template->day_of_week = $this->day_of_week;
 		$template->start_time = $this->start_time - DateMap::currentDay($this->start_time);
 		$template->end_time = $this->end_time - DateMap::currentDay($this->end_time);
-		$template->init_time = DateMap::currentDay($this->start_time);
+		$template->init_time += $dayTime;
 
 		$template->save(false);
 
@@ -353,21 +353,11 @@ class Event extends CActiveRecord
 		try {
 			/** @var $event Event */
 			foreach ($events as $event) {
-				if ($event->hall_id == $templateAttr['hall_id']) {
-					$event->hall_id = $template->hall_id;
-				}
-				// делаем изменения времени и даты взаимозависимыми
-				if ( $event->day_of_week == $templateAttr['day_of_week'] ) {
-					$startTime = $event->start_time - DateMap::currentDay($event->start_time);
-					$endTime = $event->end_time - DateMap::currentDay($event->end_time);
-
-					if ($startTime == $templateAttr['start_time'] && $endTime == $templateAttr['end_time']) {
-						// расчет новых времени начала (смещаем все события на разницу в init_time и start_time)
-						$event->day_of_week = $template->day_of_week;
-						$event->start_time = $event->start_time - $templateAttr['start_time'] - $templateAttr['init_time'] + $template->init_time + $template->start_time;
-						$event->end_time = $event->end_time - $templateAttr['end_time'] - $templateAttr['init_time'] + $template->init_time + $template->end_time;
-					}
-				}
+				$event->hall_id = $template->hall_id;
+				// расчет новых времени начала (смещаем все события на разницу в init_time и start_time)
+				$event->day_of_week = $template->day_of_week;
+				$event->start_time = DateMap::currentDay($event->start_time) + $dayTime + $template->start_time;
+				$event->end_time = DateMap::currentDay($event->end_time) + $dayTime + $template->end_time;
 
 				$event->is_draft = $template->is_draft;
 				$event->image_id = $template->image_id;

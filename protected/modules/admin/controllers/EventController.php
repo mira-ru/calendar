@@ -139,6 +139,10 @@ class EventController extends AdminController
 				$initTime = DateMap::currentDay(strtotime($date));
 
 				// установка времени события в течении дня
+				// Разница в днях при изменении даты (для корректного обновления событий)
+				$dTime = $initTime - DateMap::currentDay($event->start_time);
+
+
 				$event->start_time = strtotime($startTime) - strtotime('TODAY') + $initTime;
 				$event->end_time = strtotime($endTime) - strtotime('TODAY') + $initTime;
 
@@ -167,7 +171,7 @@ class EventController extends AdminController
 					if (($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE; // ?
-						$event->updateYoungEvents($template);
+						$event->updateYoungEvents($template, $dTime);
 					} elseif (($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
 						// ok
 					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
@@ -176,6 +180,7 @@ class EventController extends AdminController
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE;
 						$template->type = EventTemplate::TYPE_SINGLE;
+						$template->init_time = $initTime;
 						$template->save(false);
 						$event->removeYoungEvents();
 
@@ -183,6 +188,7 @@ class EventController extends AdminController
 						// Событие стало регулярным
 						$template->status = EventTemplate::STATUS_ACTIVE;
 						$template->type = EventTemplate::TYPE_REGULAR;
+						$template->init_time = $initTime;
 						// Сохраняем и создаем линки шаблона
 						$template->save(false);
 						$template->makeLinks();
@@ -192,7 +198,7 @@ class EventController extends AdminController
 
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE;
-						$event->updateYoungEvents($template);
+						$event->updateYoungEvents($template, $dTime);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}

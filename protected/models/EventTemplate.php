@@ -138,7 +138,7 @@ class EventTemplate extends CActiveRecord
 	 */
 	public function makeLinks()
 	{
-		$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
+		$count = $this->type == self::TYPE_SINGLE ? 0 : 11;
 		$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
 
 		for ($i=0; $i<$count; $i++) {
