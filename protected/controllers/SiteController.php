@@ -70,13 +70,22 @@ class SiteController extends FrontController
 		if ($viewType == Config::VIEW_MONTH) {
 			// вид списком
 			$timeStart = $currentTime;
-			// В списочном виде выводим от текущей даты
+
+			// отображаем расписание всегда от текущего числа и позже
 			if ($timeStart < time()) {
 				$timeStart = DateMap::currentDay(time());
 			}
+			// просматриваем текущий месяц всегда с текущего числа
+			if ( DateMap::currentMonth(time()) == DateMap::currentMonth($currentTime) ) {
+				$timeStart = DateMap::currentDay(time());
+			}
+			// просматриваем следующий месяц всегда с первого числа
+			if ( DateMap::currentMonth(time()) < DateMap::currentMonth($currentTime) ) {
+				$timeStart = DateMap::currentMonth($currentTime);
+			}
 
 			$endMonth = DateMap::nextMonth($timeStart);
-			if ( ($currentTime + 2 * DateMap::TIME_WEEK) < $endMonth) {
+			if ( ($timeStart + 2 * DateMap::TIME_WEEK) < $endMonth) {
 				$timeEnd = $endMonth;
 			} else {
 				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
