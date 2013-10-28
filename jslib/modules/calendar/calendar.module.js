@@ -239,7 +239,6 @@
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			console.log(data.day);
 			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){

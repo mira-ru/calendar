@@ -2,6 +2,8 @@
 /**
  * @var $this UserController
  * @var $template EventTemplate
+ * @var $event Event
+ *
  * @var $date string
  * @var $image ImageComponent
  */
@@ -29,14 +31,15 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		),
 	)); ?>
 
-	<?php if ( $template->hasErrors('error') ) : ?>
-		<?php $this->renderPartial('_similarEventsAlert', array('template'=>$template)); ?>
+	<?php if ( $template->hasErrors('error') || $event->hasErrors('error') ) : ?>
+		<?php $this->renderPartial('_similarEventsAlert', array('template'=>$template, 'event'=>$event)); ?>
 	<?php endif; ?>
 
-	<div class="form-group <?php if ($template->hasErrors('center_id')) echo 'has-error'; ?>"">
-		<?php echo $form->label($template, 'center_id', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
+		<?php echo $form->label($event, 'center_id', array('class'=>'col-lg-2 control-label')); ?>
+
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($template, 'center_id', $centerList,
+			<?php echo $form->dropDownList($event, 'center_id', $centerList,
 				array(
 					'class'=>'form-control',
 					'prompt'=>'Выберите центр',
@@ -48,14 +51,14 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 					)
 				)
 			); ?>
-			<?php echo $form->error($template,'center_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'center_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('service_id')) echo 'has-error'; ?>"">
-		<?php echo $form->label($template, 'service_id', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('service_id')) echo 'has-error'; ?>"">
+		<?php echo $form->label($event, 'service_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($template, 'service_id', $serviceList,
+			<?php echo $form->dropDownList($event, 'service_id', $serviceList,
 				array(
 					'class'=>'form-control',
 					'id'=>'services',
@@ -68,21 +71,21 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 				)
 			);
 			?>
-			<?php echo $form->error($template,'service_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'service_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('direction_id')) echo 'has-error'; ?>"">
-		<?php echo $form->label($template, 'direction_id', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('direction_id')) echo 'has-error'; ?>"">
+		<?php echo $form->label($event, 'direction_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($template, 'direction_id', $directionList,
+			<?php echo $form->dropDownList($event, 'direction_id', $directionList,
 				array(
 					'class'=>'form-control',
 					'id'=>'directions',
 				)
 			);
 			?>
-			<?php echo $form->error($template,'direction_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'direction_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
@@ -108,16 +111,16 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('hall_id')) echo 'has-error'; ?>"">
-		<?php echo $form->label($template, 'hall_id', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('hall_id')) echo 'has-error'; ?>"">
+		<?php echo $form->label($event, 'hall_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($template, 'hall_id', $hallList, array('class'=>'form-control')); ?>
-			<?php echo $form->error($template,'hall_id', array('class'=>'text-danger')); ?>
+			<?php echo $form->dropDownList($event, 'hall_id', $hallList, array('class'=>'form-control')); ?>
+			<?php echo $form->error($event,'hall_id', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
 
-	<div class="form-group <?php if ($template->hasErrors('day_of_week')) echo 'has-error'; ?>">
+	<div class="form-group <?php if ($event->hasErrors('day_of_week')) echo 'has-error'; ?>">
 		<label class="col-lg-2 control-label">Дата события</label>
 		<div class="col-lg-5">
 			<?php
@@ -134,27 +137,27 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 				),
 			));
 			?>
-			<?php echo $form->error($template,'day_of_week', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'day_of_week', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('start_time')) echo 'has-error'; ?>">
+	<div class="form-group <?php if ($event->hasErrors('start_time')) echo 'has-error'; ?>">
 		<?php echo CHtml::label('Время с', '',array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-2">
 			<?php echo CHtml::textField('start_time', $startTime, array('maxlength'=>5, 'class'=>'form-control')); ?>
-			<?php echo $form->error($template,'start_time', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'start_time', array('class'=>'text-danger')); ?>
 		</div>
 		<?php echo CHtml::label('по', '',array('class'=>'col-lg-1')); ?>
 		<div class="col-lg-2">
 			<?php echo CHtml::textField('end_time', $endTime, array('maxlength'=>5, 'class'=>'form-control')); ?>
-			<?php echo $form->error($template,'end_time', array('class'=>'text-danger')); ?>
+			<?php echo $form->error($event,'end_time', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 
 	<div class="form-group">
-		<?php echo $form->label($template,'image_id', array('class'=>'col-lg-2 control-label')); ?>
+		<?php echo $form->label($event,'image_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo CHtml::image($image->getPreview($template->image_id, 'crop_150'), '', array('width'=>150, 'height'=>150)); ?>
+			<?php echo CHtml::image($image->getPreview($event->image_id, 'crop_150'), '', array('width'=>150, 'height'=>150)); ?>
 		</div>
 	</div>
 
@@ -162,25 +165,25 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		<div class="col-lg-2"></div>
 		<div class="col-lg-5">
 			<?php
-			echo CHtml::activeFileField($template, 'file');
-			if ($template->hasErrors('file')) {
-				echo CHtml::tag('p', array('class'=>'help-block'), $template->getError('file'));
+			echo CHtml::activeFileField($event, 'file');
+			if ($event->hasErrors('file')) {
+				echo CHtml::tag('p', array('class'=>'help-block'), $event->getError('file'));
 			}
 			?>
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('desc')) echo 'has-error'; ?>">
-		<?php echo $form->label($template, 'desc', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($event, 'desc', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-8">
 			<?php
-			echo CHtml::activeTextArea($template, 'desc', array(
-				'value'=>Kavychker::deformat($template->desc),
+			echo CHtml::activeTextArea($event, 'desc', array(
+				'value'=>Kavychker::deformat($event->desc),
 				'maxlength'=>5000,
 				'class'=>'col-lg-12',
 				'rows'=>20,
 			));
-			echo $form->error($template,'desc', array('class'=>'text-danger'));
+			echo $form->error($event,'desc', array('class'=>'text-danger'));
 			?>
 		</div>
 	</div>
@@ -199,11 +202,11 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
-	<div class="form-group <?php if ($template->hasErrors('is_draft')) echo 'has-error'; ?>">
-		<?php echo $form->label($template,'is_draft', array('class'=>'col-lg-2 control-label')); ?>
+	<div class="form-group <?php if ($event->hasErrors('is_draft')) echo 'has-error'; ?>">
+		<?php echo $form->label($event,'is_draft', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($template, 'is_draft', EventTemplate::$draftNames, array('class'=>'form-control')); ?>
-			<?php echo $form->error($template,'is_draft', array('class'=>'text-danger')); ?>
+			<?php echo $form->dropDownList($event, 'is_draft', EventTemplate::$draftNames, array('class'=>'form-control')); ?>
+			<?php echo $form->error($event,'is_draft', array('class'=>'text-danger')); ?>
 		</div>
 	</div>
 

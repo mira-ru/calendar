@@ -20,6 +20,7 @@ class EventController extends AdminController
 	public function actionCreate()
 	{
 		$template = new EventTemplate();
+		$event = new Event();
 
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -30,39 +31,50 @@ class EventController extends AdminController
 
 		if($request->getIsPostRequest())
 		{
-			if (isset($_POST['EventTemplate'])) {
+			if ( isset($_POST['EventTemplate']) && isset($_POST['Event'])) {
+				$event->attributes = $_POST['Event'];
 				$template->attributes = $_POST['EventTemplate'];
+
 				// установка времени события в течении дня
 				$template->start_time = strtotime($startTime) - strtotime('TODAY');
 				$template->end_time = strtotime($endTime) - strtotime('TODAY');
-
-				$time = strtotime($date);
-				$template->init_time = $time;
-				if ($time)
-					$template->day_of_week = date('w', $time);
-				else
-					$template->day_of_week = -1;
-
 				$template->status = EventTemplate::STATUS_ACTIVE;
-			}
-			$template->file = CUploadedFile::getInstance($template, 'file');
 
-			if ($template->validate()) { // Создание событий
-				// сохраняем картинку
-				if ($template->file instanceof CUploadedFile) {
-					$file = $template->file->getTempName();
-					$fileId = Yii::app()->image->putImage($file, $template->file->getName());
-					if (empty($fileId)) {
-						throw new CHttpException(500);
+				$initTime = DateMap::currentDay(strtotime($date));
+
+				$event->start_time = $template->start_time + $initTime;
+				$event->end_time = $template->end_time + $initTime;
+
+				if ($initTime)
+					$event->day_of_week = date('w', $initTime);
+				else
+					$event->day_of_week = -1;
+
+				$event->file = CUploadedFile::getInstance($template, 'file');
+
+				if ( $template->validate(array('type', 'status', 'comment')) && $event->validate() ) { // Создание событий
+					// сохраняем картинку
+					if ($event->file instanceof CUploadedFile) {
+						$file = $template->file->getTempName();
+						$fileId = Yii::app()->image->putImage($file, $template->file->getName());
+						if (empty($fileId)) {
+							throw new CHttpException(500);
+						}
+
+						$event->image_id = $fileId;
 					}
 
-					$template->image_id = $fileId;
-				}
+					$template->updateFromEvent($event, $template->type, $initTime);
+					$template->save(false);
+					$event->template_id = $template->id;
+					$event->save(false);
 
-				$template->save(false);
-				$this->redirect(
-					Yii::app()->getUser()->getReturnUrl(array('index'))
-				);
+					$template->makeLinks();
+
+					$this->redirect(
+						Yii::app()->getUser()->getReturnUrl(array('index'))
+					);
+				}
 			}
 		}
 
@@ -76,8 +88,11 @@ class EventController extends AdminController
 		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
 		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
 		$this->render('create',array(
 			'template' => $template,
+			'event' => $event,
+
 			'centers' => $centers,
 			'services' => $services,
 			'directions' => $directions,
@@ -101,7 +116,7 @@ class EventController extends AdminController
 		if ($event===null)
 			throw new CHttpException(404);
 
-		$template = new EventTemplate();
+		$template = $event->getTemplate(); //new EventTemplate();
 
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -112,21 +127,24 @@ class EventController extends AdminController
 		$date = $request->getParam('date');
 
 		if ($request->getIsPostRequest()) {
-
-			$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
-			$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
-			$event->file = CUploadedFile::getInstance($event, 'file');
-
 			if ( isset($_POST['Event']) ) {
 				$event->attributes = $_POST['Event'];
+				$event->file = CUploadedFile::getInstance($event, 'file');
+
 				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
 				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
+				$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
+				$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
 
-				$initTime = strtotime($date);
+				$initTime = DateMap::currentDay(strtotime($date));
 
 				// установка времени события в течении дня
-				$event->start_time = strtotime($startTime) - strtotime('TODAY');
-				$event->end_time = strtotime($endTime) - strtotime('TODAY');
+				// Разница в днях при изменении даты (для корректного обновления событий)
+				$dTime = $initTime - DateMap::currentDay($event->start_time);
+
+
+				$event->start_time = strtotime($startTime) - strtotime('TODAY') + $initTime;
+				$event->end_time = strtotime($endTime) - strtotime('TODAY') + $initTime;
 
 				if ($initTime)
 					$event->day_of_week = date('w', $initTime);
@@ -136,9 +154,7 @@ class EventController extends AdminController
 				$event->initTime = $initTime;
 
 				if ($event->validate() && !$hasErrors) {
-					$currentTemplate = $event->getTemplate();
-					$currentTemplate->users = $template->users;
-					$currentTemplate->comment = $template->comment;
+					$template->save(false); // Применение свойтв к шаблону (не привязаннных к событиям)
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {
@@ -151,59 +167,44 @@ class EventController extends AdminController
 						$event->image_id = $fileId;
 					}
 
+					$event->save(false);
+
 					// осталось одиночное событие или регулярное и изменяем только текущее
-					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
+					if (($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						$currentTemplate->save(false);
-
-					} elseif (($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
-						$currentTemplate->makeLinks = false;
-						$currentTemplate->save(false);
+						$template->status = EventTemplate::STATUS_ACTIVE; // ?
+						$event->updateYoungEvents($template, $dTime);
+					} elseif (($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
 						// ok
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
+					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
 						// Сменили тип на одиночное событие, прибиваем младшие копии события
 
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$template->type = EventTemplate::TYPE_SINGLE;
+						$template->init_time = $initTime;
+						$template->save(false);
 						$event->removeYoungEvents();
-						$currentTemplate->save(false);
 
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
+					} elseif ($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
 						// Событие стало регулярным
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$template->type = EventTemplate::TYPE_REGULAR;
+						$template->init_time = $initTime;
+						// Сохраняем и создаем линки шаблона
+						$template->save(false);
+						$template->makeLinks();
 
-						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						// Сохраняем и создаем линки на событие
-						$currentTemplate->save(false);
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
+					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
 						// Обновляем все события
-						$event->removeYoungEvents();
 
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						// Сохраняем и создаем линки на событие
-						$currentTemplate->save(false);
-
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$event->updateYoungEvents($template, $dTime);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}
 
-					// Установка времени самого события
-					$event->start_time += $initTime;
-					$event->end_time += $initTime;
-					$event->save(false);
-
-					$template->type = $currentTemplate->type;
-					$template->image_id = $currentTemplate->image_id;
 					$this->redirect(
 						Yii::app()->getUser()->getReturnUrl(array('index'))
 					);
@@ -212,7 +213,6 @@ class EventController extends AdminController
 		}
 
 		if (!$request->getIsPostRequest()) {
-			$template = $event->getTemplate();
 			$date = date('d.m.Y', $event->start_time);
 			$startTime = date('H.i', $event->start_time);
 			$endTime = date('H.i', $event->end_time);
