@@ -377,7 +377,7 @@ class Event extends CActiveRecord
 		if ( $this->forceSave )
 			return true;
 
-		$result = self::eventPeriodChecker($this->initTime + $this->start_time, $this->initTime + $this->end_time, $this->hall_id, 0, $this->similarEvents);
+		$result = self::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, 0, $this->similarEvents);
 
 		if ( count($this->similarEvents) > 0 )
 			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
@@ -388,7 +388,7 @@ class Event extends CActiveRecord
 	 * @param $dayTime смещение в днях при обновлениии события
 	 * @throws Exception
 	 */
-	public function updateYoungEvents($template, $dayTime)
+	public function updateYoungEvents($template, $dayTime, $noValidation=true)
 	{
 		if ($this->getIsNewRecord()) {
 			return false;
@@ -408,6 +408,10 @@ class Event extends CActiveRecord
 		$template->start_time = $this->start_time - DateMap::currentDay($this->start_time);
 		$template->end_time = $this->end_time - DateMap::currentDay($this->end_time);
 		$template->init_time += $dayTime;
+
+		// валидация шаблона по времени
+		if ( !$noValidation && !$template->validateEventsPeriod() )
+			return false;
 
 		$template->save(false);
 
@@ -438,6 +442,8 @@ class Event extends CActiveRecord
 			$transaction->rollback();
 			throw $e;
 		}
+
+		return true;
 	}
 
 	/**

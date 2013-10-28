@@ -313,8 +313,12 @@ class EventTemplate extends CActiveRecord
 		// "уборка" дублирующихся id событий
 		$this->similarEvents = array_unique($this->similarEvents);
 
-		if ( count($this->similarEvents) > 0 )
+		if ( count($this->similarEvents) > 0 ) {
 			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
+			return false;
+		}
+
+		return true;
 	}
 
 }
