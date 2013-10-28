@@ -307,6 +307,13 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 					.'\';}'
 				)); ?>
 		</div>
+
+		<div class="'col-lg-2">
+			<?php echo CHtml::link('Клонировать',
+				$this->createUrl('/admin/event/create', array('id'=>$event->id)),
+				array('class'=>'btn btn-success')
+			); ?>
+		</div>
 	</div>
 
 <?php $this->endWidget(); ?>

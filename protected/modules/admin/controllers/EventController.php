@@ -17,13 +17,23 @@ class EventController extends AdminController
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($id=null)
 	{
-		$template = new EventTemplate();
-		$event = new Event();
-
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
+
+		$id = intval($id);
+		if (!empty($id) && !$request->getIsPostRequest()) {
+			/** @var $event Event */
+			$event = Event::model()->findByPk($id);
+			if ($event===null) {
+				throw new CHttpException(404);
+			}
+			$template = $event->getTemplate();
+		} else {
+			$template = new EventTemplate();
+			$event = new Event();
+		}
 
 		$date = $request->getParam('date');
 		$startTime = $request->getParam('start_time');
