@@ -58,7 +58,7 @@ class Event extends CActiveRecord
 			array('day_of_week', 'compare', 'operator'=>'>=', 'compareValue'=>0, 'message'=>'Invalid date'),
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
-			array('start_time, end_time', 'timeCheck', 'max'=>21*3600, 'min'=>7*3600),
+			array('start_time, end_time', 'timeCheck', 'max'=>23*3600, 'min'=>7*3600),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -82,13 +82,13 @@ class Event extends CActiveRecord
 
 		$time = $this->$attribute - DateMap::currentDay($this->$attribute);
 		if (isset($params['min']) && $time < $params['min']) {
-			$message = 'некорректно указано время (с 7.00 до 21.00)';
+			$message = 'некорректно указано время (с 7.00 до 23.00)';
 			$this->addError($attribute, $message);
 			return false;
 		}
 
 		if (isset($params['max']) && $time > $params['max']) {
-			$message = 'некорректно указано время (с 7.00 до 21.00)';
+			$message = 'некорректно указано время (с 7.00 до 23.00)';
 			$this->addError($attribute, $message);
 			return false;
 		}

@@ -81,9 +81,13 @@ class EventController extends AdminController
 
 					$template->makeLinks();
 
-					$this->redirect(
-						Yii::app()->getUser()->getReturnUrl(array('index'))
-					);
+					$url = $this->createUrl('/site/index', array(
+						'class_id'=>Direction::MODEL_TYPE,
+						'id'=>$event->direction_id,
+						'time'=>DateMap::currentDay($event->start_time)
+					));
+
+					$this->redirect($url);
 				}
 			}
 		}
