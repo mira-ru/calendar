@@ -49,6 +49,21 @@ class EventTemplate extends CActiveRecord
 	);
 
 	/**
+	 * @var bool флаг принудительного сохранения без валидации периодов событий
+	 */
+	public $forceSave = false;
+
+	/**
+	 * @var array массив id событий, которые пересекаются с событиями текущего шаблона
+	 */
+	public $similarEvents = array();
+
+	/**
+	 * @var атрибут используется для генерации ошибки валидации
+	 */
+	public $error = null;
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -85,7 +100,9 @@ class EventTemplate extends CActiveRecord
 
 			array('start_time, end_time', 'timeCheck'),
 
-			array('users', 'safe'),
+			array('error', 'validateEventsPeriod'),
+
+			array('users, forceSave', 'safe'),
 
 			// The following rule is used by search().
 //			array('id, status, type, name', 'safe', 'on'=>'search'),
@@ -130,6 +147,8 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
+		$this->onAfterSave = array($this, 'makeLinks');
+		$this->onAfterValidate = array($this, 'validateEventsPeriod');
 	}
 
 	/**
@@ -266,6 +285,40 @@ class EventTemplate extends CActiveRecord
 		} catch (Exception $e) {
 			$transaction->rollback();
 		}
+	}
+
+
+	/**
+	 * Валидация интервалов всех событий текущего шаблона на предмет
+	 * пересечения со временем других событий
+	 * @return bool
+	 */
+	public function validateEventsPeriod()
+	{
+		if ( $this->forceSave )
+			return true;
+
+		$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
+		$initTime = $this->init_time; // время начала события
+
+		for ($i=0; $i<$count; $i++) {
+
+			$similar = array();
+			if ( !Event::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, $initTime, $similar) )
+				$this->similarEvents+=$similar;
+
+			$initTime += DateMap::TIME_WEEK; // интервал событий - неделя
+		}
+
+		// "уборка" дублирующихся id событий
+		$this->similarEvents = array_unique($this->similarEvents);
+
+		if ( count($this->similarEvents) > 0 ) {
+			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
+			return false;
+		}
+
+		return true;
 	}
 
 }

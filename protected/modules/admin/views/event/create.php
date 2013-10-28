@@ -31,8 +31,13 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		),
 	)); ?>
 
+	<?php if ( $template->hasErrors('error') || $event->hasErrors('error') ) : ?>
+		<?php $this->renderPartial('_similarEventsAlert', array('template'=>$template, 'event'=>$event)); ?>
+	<?php endif; ?>
+
 	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
 		<?php echo $form->label($event, 'center_id', array('class'=>'col-lg-2 control-label')); ?>
+
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($event, 'center_id', $centerList,
 				array(

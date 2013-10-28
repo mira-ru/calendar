@@ -29,6 +29,10 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		),
 	)); ?>
 
+	<?php if ( $template->hasErrors('error') || $event->hasErrors('error') ) : ?>
+		<?php $this->renderPartial('_similarEventsAlert', array('template'=>$template, 'event'=>$event)); ?>
+	<?php endif; ?>
+
 	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
 		<?php
 		if (empty($event->center_id)) {

@@ -99,8 +99,8 @@ class EventController extends AdminController
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
-		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$event->center_id));
+		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$event->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
 
 		$this->render('create',array(
@@ -185,7 +185,7 @@ class EventController extends AdminController
 					if (($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE; // ?
-						$event->updateYoungEvents($template, $dTime);
+						$event->updateYoungEvents($template, $dTime, $template->forceSave);
 					} elseif (($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
 						// ok
 					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
@@ -204,15 +204,17 @@ class EventController extends AdminController
 						$template->type = EventTemplate::TYPE_REGULAR;
 						$template->init_time = $initTime;
 						// Сохраняем и создаем линки шаблона
-						$template->save(false);
-						$template->makeLinks();
+						if ( $template->validateEventsPeriod() ) {
+							$template->save(false);
+							$template->makeLinks();
+						}
 
 					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
 						// Обновляем все события
 
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE;
-						$event->updateYoungEvents($template, $dTime);
+						$event->updateYoungEvents($template, $dTime, $template->forceSave);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}

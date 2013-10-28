@@ -28,8 +28,25 @@ class Event extends CActiveRecord
 	// Загруженный файл
 	public $file;
 
+	public $initTime;
+
 	private $_template = null;
 	private $_users = null;
+
+	/**
+	 * @var bool флаг принудительного сохранения без валидации периодов событий
+	 */
+	public $forceSave = false;
+
+	/**
+	 * @var array массив id событий, которые пересекаются с событиями текущего шаблона
+	 */
+	public $similarEvents = array();
+
+	/**
+	 * @var атрибут используется для генерации ошибки валидации
+	 */
+	public $error = null;
 
 	/**
 	 * @return string the associated database table name
@@ -63,6 +80,7 @@ class Event extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id, is_draft', 'safe', 'on'=>'search'),
+			array('forceSave, initTime', 'safe'),
 		);
 	}
 
@@ -146,6 +164,12 @@ class Event extends CActiveRecord
 			'event_type' => 'Тип события',
 			'is_draft' => 'Состояние',
 		);
+	}
+
+	public function init()
+	{
+		parent::init();
+		$this->onAfterValidate = array($this, 'validatePeriod');
 	}
 
 	/**
@@ -318,11 +342,53 @@ class Event extends CActiveRecord
 	}
 
 	/**
+	 * Валидация нового временного интервала события (линка)
+	 * @param $template EventTemplate
+	 * @param $time integer
+	 * @param $similar array
+	 * @return bool|array
+	 */
+	public static function eventPeriodChecker($start_time, $end_time, $hall_id, $time, &$similar=null)
+	{
+		$initTime = strtotime('TODAY', $time);
+
+		$condition = '((start_time < :et and :et <= end_time) or (:st <= start_time and start_time < :et) or '
+			. '(:st < end_time and end_time <= :et))';
+
+		$condition.= ' and hall_id=:hid';
+
+		$params = array(
+			':st'=>$start_time + $initTime,
+			':et'=>$end_time + $initTime,
+			':hid'=>$hall_id,
+		);
+
+		$similar = Yii::app()->db->createCommand()->select('id')->from(self::model()->tableName())
+			->where($condition, $params)->queryColumn();
+
+		if ( count($similar) == 0 )
+			return true;
+		else
+			return false;
+	}
+
+	public function validatePeriod()
+	{
+		if ( $this->forceSave )
+			return true;
+
+		$result = self::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, 0, $this->similarEvents);
+
+		if ( count($this->similarEvents) > 0 )
+			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
+	}
+
+	/**
 	 * @param $template EventTemplate
 	 * @param $dayTime смещение в днях при обновлениии события
 	 * @throws Exception
 	 */
-	public function updateYoungEvents($template, $dayTime)
+	public function updateYoungEvents($template, $dayTime, $noValidation=true)
 	{
 		if ($this->getIsNewRecord()) {
 			return false;
@@ -342,6 +408,10 @@ class Event extends CActiveRecord
 		$template->start_time = $this->start_time - DateMap::currentDay($this->start_time);
 		$template->end_time = $this->end_time - DateMap::currentDay($this->end_time);
 		$template->init_time += $dayTime;
+
+		// валидация шаблона по времени
+		if ( !$noValidation && !$template->validateEventsPeriod() )
+			return false;
 
 		$template->save(false);
 
@@ -373,6 +443,7 @@ class Event extends CActiveRecord
 			throw $e;
 		}
 
+		return true;
 	}
 
 	/**
