@@ -24,11 +24,6 @@
  */
 class EventTemplate extends CActiveRecord
 {
-	// Загруженный файл
-	public $file;
-	// Флаг создания линков после сохранения
-	public $makeLinks = true;
-
 	private $_users = null;
 
 	const STATUS_ACTIVE = 1;
@@ -89,7 +84,6 @@ class EventTemplate extends CActiveRecord
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
 			array('start_time, end_time', 'timeCheck'),
-			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 
 			array('users', 'safe'),
 
@@ -136,13 +130,11 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
-//		$this->onAfterSave = array($this, 'makeLinks');
 	}
 
 	/**
-	 * Создание линков при сохранении шаблонов.
-	 * Attention! Сохраняется только при создании шаблона
-	 * и смене типа на регулярное событие
+	 * Создание событий по шаблону.
+	 *
 	 */
 	public function makeLinks()
 	{

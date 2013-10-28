@@ -54,15 +54,11 @@ class Event extends CActiveRecord
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_YES, EventTemplate::DRAFT_NO)),
 
-//			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
-//			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
-//
-//			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
-//			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
-
 			array('desc', 'length', 'max'=>5000),
+			array('day_of_week', 'compare', 'operator'=>'>=', 'compareValue'=>0, 'message'=>'Invalid date'),
+			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
-			array('start_time, end_time', 'timeCheck'),
+			array('start_time, end_time', 'timeCheck', 'max'=>21*3600, 'min'=>7*3600),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -78,13 +74,27 @@ class Event extends CActiveRecord
 	 */
 	public function timeCheck($attribute, $params)
 	{
-		$message = 'Неверно указан временной интервал';
-		if ( empty($this->start_time) || empty($this->end_time) ) {
-			$this->addError('start_time' , $message);
+		if ( empty($this->$attribute) ) {
+			$message = 'Время не указано';
+			$this->addError($attribute, $message);
+			return false;
+		}
+
+		$time = $this->$attribute - DateMap::currentDay($this->$attribute);
+		if (isset($params['min']) && $time < $params['min']) {
+			$message = 'некорректно указано время (с 7.00 до 21.00)';
+			$this->addError($attribute, $message);
+			return false;
+		}
+
+		if (isset($params['max']) && $time > $params['max']) {
+			$message = 'некорректно указано время (с 7.00 до 21.00)';
+			$this->addError($attribute, $message);
 			return false;
 		}
 
 		if ($this->start_time >= $this->end_time) {
+			$message = 'Время начала должно быть меньше времени окончания';
 			$this->addError('start_time' , $message);
 			return false;
 		}
@@ -308,6 +318,74 @@ class Event extends CActiveRecord
 	}
 
 	/**
+	 * @param $template EventTemplate
+	 * @throws Exception
+	 */
+	public function updateYoungEvents($template)
+	{
+		if ($this->getIsNewRecord()) {
+			return false;
+		}
+		if ( !$template instanceof EventTemplate ) {
+			throw new CException('Invalid template', 500);
+		}
+		$templateAttr = $template->getAttributes();
+
+		$template->is_draft = $this->is_draft;
+		$template->image_id = $this->image_id;
+		$template->desc = $this->desc;
+		$template->direction_id = $this->direction_id;
+		$template->hall_id = $this->hall_id;
+		$template->center_id = $this->center_id;
+		$template->service_id = $this->service_id;
+		$template->day_of_week = $this->day_of_week;
+		$template->start_time = $this->start_time - DateMap::currentDay($this->start_time);
+		$template->end_time = $this->end_time - DateMap::currentDay($this->end_time);
+		$template->init_time = DateMap::currentDay($this->start_time);
+
+		$template->save(false);
+
+		$events = self::model()->findAllByAttributes(array('template_id'=>$template->id), 'id>:id', array(':id'=>$this->id));
+
+		/** @var $transaction CDbTransaction */
+		$transaction = Yii::app()->db->beginTransaction();
+
+		try {
+			/** @var $event Event */
+			foreach ($events as $event) {
+				if ($event->hall_id == $templateAttr['hall_id']) {
+					$event->hall_id = $template->hall_id;
+				}
+				// делаем изменения времени и даты взаимозависимыми
+				if ( $event->day_of_week == $templateAttr['day_of_week'] ) {
+					$startTime = $event->start_time - DateMap::currentDay($event->start_time);
+					$endTime = $event->end_time - DateMap::currentDay($event->end_time);
+
+					if ($startTime == $templateAttr['start_time'] && $endTime == $templateAttr['end_time']) {
+						// расчет новых времени начала (смещаем все события на разницу в init_time и start_time)
+						$event->day_of_week = $template->day_of_week;
+						$event->start_time = $event->start_time - $templateAttr['start_time'] - $templateAttr['init_time'] + $template->init_time + $template->start_time;
+						$event->end_time = $event->end_time - $templateAttr['end_time'] - $templateAttr['init_time'] + $template->init_time + $template->end_time;
+					}
+				}
+
+				$event->is_draft = $template->is_draft;
+				$event->image_id = $template->image_id;
+				$event->desc = $template->desc;
+				$event->direction_id = $template->direction_id;
+				$event->center_id = $template->center_id;
+				$event->service_id = $template->service_id;
+				$event->save(false);
+			}
+			$transaction->commit();
+		} catch (Exception $e) {
+			$transaction->rollback();
+			throw $e;
+		}
+
+	}
+
+	/**
 	 * Список объектов юзеров шаблона
 	 */
 	public function getUsers()
@@ -349,10 +427,6 @@ class Event extends CActiveRecord
 	}
 
 
-	public function createTemplate()
-	{
-
-	}
 
 	/**
 	 * Обновляет младшие события
