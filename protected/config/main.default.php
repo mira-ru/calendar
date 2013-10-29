@@ -94,7 +94,7 @@ return CMap::mergeArray(array(
 			),
 			'options'=>array(
 				'compression'=>'yui',
-				'compilerPath'=>dirname(__FILE__).'/../scripts/less/bin/lessc',
+				'compilerPath'=>dirname(__FILE__).'/../scripts/node_modules/.bin/lessc',
 				'nodePath'=>'/usr/bin/node',
 				'forceCompile'=>true,
 			),
