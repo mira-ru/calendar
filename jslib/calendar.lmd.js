@@ -714,7 +714,6 @@ jQuery.cookie = function(name, value, options) {
 
 		menuLinks.each(function(){
 			var id= $(this).attr('data-center');
-			console.log(data.day);
 			$(this).attr('href','/c/' + data.day + '/center/'+ id);
 		});
 		periodLinks.each(function(){
@@ -1039,4 +1038,4 @@ jQuery.cookie = function(name, value, options) {
 },{},{});
 
 
-//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.6815430498681962
+//@ sourceMappingURL=/calendar\jslib\calendar.lmd.map?0.3907286871690303

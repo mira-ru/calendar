@@ -3,7 +3,7 @@
 
 	"path": "../modules/",
 	"version": "1.0",
-	"output": "../calendar.lmd-<%= version %>.js",
+	"output": "../calendar.lmd.js",
 
 	"sourcemap": "../calendar.lmd.map",
 	"sourcemap_inline": true,

@@ -153,6 +153,7 @@ $this->bodyClass = array('calendar');
 						<div><span>19<sup>00</sup></span></div>
 						<div><span>20<sup>00</sup></span></div>
 						<div><span>21<sup>00</sup></span></div>
+						<div><span>22<sup>00</sup></span></div>
 					</div>
 					<div class="events-wrapper">
 						<?php
