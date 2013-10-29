@@ -43,12 +43,6 @@ $image = Yii::app()->image;
 					?>
 					<?php echo $item->desc; ?>
 					<?php
-					if (!empty($item->price)) {
-						echo CHtml::tag('h4', array(), '<strong>Стоимость занятий</strong>');
-						echo $item->price;
-					}
-					?>
-					<?php
 					if (!empty($item->url)) {
 						echo CHtml::openTag('div');
 						echo StrUtil::videoUrlConvert($item->url);
@@ -58,6 +52,12 @@ $image = Yii::app()->image;
 						echo CHtml::openTag('div');
 						echo StrUtil::videoUrlConvert($item->photo_url);
 						echo CHtml::closeTag('div');
+					}
+					?>
+					<?php
+					if (!empty($item->price)) {
+						echo CHtml::tag('h4', array(), '<strong>Стоимость занятий</strong>');
+						echo $item->price;
 					}
 					?>
     					<div id="disqus_thread"></div>

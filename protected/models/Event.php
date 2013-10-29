@@ -69,6 +69,7 @@ class Event extends CActiveRecord
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
+			array('hall_id', 'required', 'message'=>'Укажите зал'),
 			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_YES, EventTemplate::DRAFT_NO)),
 
 			array('desc', 'length', 'max'=>5000),

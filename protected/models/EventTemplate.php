@@ -147,7 +147,6 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
-		$this->onAfterSave = array($this, 'makeLinks');
 		$this->onAfterValidate = array($this, 'validateEventsPeriod');
 	}
 
