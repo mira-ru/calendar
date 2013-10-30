@@ -214,8 +214,8 @@ class EventTemplate extends CActiveRecord
 		$this->center_id = $event->center_id;
 		$this->service_id = $event->service_id;
 		$this->day_of_week = $event->day_of_week;
-		$this->start_time = $event->start_time;
-		$this->end_time = $event->end_time;
+		$this->start_time = $event->start_time - DateMap::currentDay($event->start_time);
+		$this->end_time = $event->end_time - DateMap::currentDay($event->end_time);
 		$this->type = $type;
 		$this->init_time = $initTime;
 	}
