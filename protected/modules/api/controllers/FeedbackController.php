@@ -9,14 +9,14 @@ class FeedbackController extends ApiController
 	public function actionView($id=null)
 	{
 		if( !$id )
-			RESTfulHelper::sendResponse(500, 'Error: Parameter <b>id</b> is missing' );
+			$this->response(500, 'Error: Parameter <b>id</b> is missing' );
 
 		$model = Feedback::model()->findByPk((int) $id);
 
 		if(is_null($model))
-			RESTfulHelper::sendResponse(404, 'No Item found with id '.$_GET['id']);
+			$this->response(404, 'No Item found with id '.$_GET['id']);
 		else
-			RESTfulHelper::sendResponse(200, CJSON::encode($model));
+			$this->response(200, CJSON::encode($model));
 	}
 
 	/**
@@ -24,32 +24,17 @@ class FeedbackController extends ApiController
 	 */
 	public function actionList()
 	{
-		if ( count($_GET) > 0 ) {
-
-			$filter_vars = array();
-
-			foreach($_GET as $var=>$value) {
-
-				if ( Feedback::model()->hasAttribute($var) && $value)
-					$filter_vars[$var] = $value;
-				else
-					RESTfulHelper::sendResponse(500, "Parameter <b>$var</b> is not allowed");
-			}
-
-			$models = Feedback::model()->findAllByAttributes($filter_vars);
-
-		} else
-			$models = Feedback::model()->findAll();
-
+		$criteria = $this->genCriteria($_GET);
+		$models = Feedback::model()->findAll($criteria);
 
 		if(empty($models))
-			RESTfulHelper::sendResponse(200, 'No items where found');
+			$this->response(200, 'No items where found');
 
 		$rows = array();
 		foreach($models as $model)
 			$rows[] = $model->attributes;
 
-		RESTfulHelper::sendResponse(200, CJSON::encode($rows));
+		$this->response(200, CJSON::encode($rows));
 	}
 
 	/**
@@ -64,13 +49,13 @@ class FeedbackController extends ApiController
 			if($model->hasAttribute($var))
 				$model->$var = $value;
 			else
-				RESTfulHelper::sendResponse(500, "Parameter <b>$var</b> is not allowed");
+				$this->response(500, "Parameter <b>$var</b> is not allowed");
 		}
 
 		if($model->save())
-			RESTfulHelper::sendResponse(200, CJSON::encode($model));
+			$this->response(200, CJSON::encode($model));
 		else
-			RESTfulHelper::sendResponse(500, $this->_generateErrMsg($model, "Couldn't create object"));
+			$this->response(500, $this->_generateErrMsg($model, "Couldn't create object"));
 	}
 
 	/**
@@ -84,20 +69,20 @@ class FeedbackController extends ApiController
 
 		$model = Feedback::model()->findByPk((int) $id);
 		if($model === null)
-			RESTfulHelper::sendResponse(400, "Error: Didn't find any model with ID <b>$id</b>.");
+			$this->response(400, "Error: Didn't find any model with ID <b>$id</b>.");
 
 		foreach($put_vars as $var=>$value) {
 			if($model->hasAttribute($var))
 				$model->$var = $value;
 			else {
-				RESTfulHelper::sendResponse(500, "Parameter <b>$var</b> is not allowed>");
+				$this->response(500, "Parameter <b>$var</b> is not allowed>");
 			}
 		}
 
 		if($model->save())
-			RESTfulHelper::sendResponse(200, CJSON::encode($model));
+			$this->response(200, CJSON::encode($model));
 		else
-			RESTfulHelper::sendResponse(500, $this->_generateErrMsg($model, "Couldn't update object"));
+			$this->response(500, $this->_generateErrMsg($model, "Couldn't update object"));
 
 	}
 
@@ -109,13 +94,13 @@ class FeedbackController extends ApiController
 	{
 		$model = Feedback::model()->findByPk((int) $id);
 		if($model === null)
-			RESTfulHelper::sendResponse(400, "Error: Didn't find any model with ID <b>$id</b>.");
+			$this->response(400, "Error: Didn't find any model with ID <b>$id</b>.");
 
 		$num = $model->delete();
 		if($num>0)
-			RESTfulHelper::sendResponse(200, $num);    //this is the only way to work with backbone
+			$this->response(200, $num);    //this is the only way to work with backbone
 		else
-			RESTfulHelper::sendResponse(500, "Error: Couldn't delete model with ID <b>$id</b>.");
+			$this->response(500, "Error: Couldn't delete model with ID <b>$id</b>.");
 	}
 
 	/**
