@@ -23,6 +23,7 @@ class EventController extends AdminController
 		$request = Yii::app()->getRequest();
 
 		$id = intval($id);
+		// Срабатывает при открытии страницы
 		if (!empty($id) && !$request->getIsPostRequest()) {
 			/** @var $event Event */
 			$event = Event::model()->findByPk($id);
@@ -75,6 +76,7 @@ class EventController extends AdminController
 					}
 
 					$template->updateFromEvent($event, $template->type, $initTime);
+
 					$template->save(false);
 					$event->template_id = $template->id;
 					$event->save(false);
@@ -93,9 +95,15 @@ class EventController extends AdminController
 		}
 
 		if (!$request->getIsPostRequest()) {
-			$date = date('d.m.Y');
-			$startTime = '7.00';
-			$endTime = '8.00';
+			if (!empty($id)) {
+				$date = date('d.m.Y', $event->start_time);
+				$startTime = date('H:i', $event->start_time);
+				$endTime = date('H:i', $event->end_time);
+			} else {
+				$date = date('d.m.Y');
+				$startTime = '7.00';
+				$endTime = '8.00';
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
@@ -185,7 +193,7 @@ class EventController extends AdminController
 					if (($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE; // ?
-						$event->updateYoungEvents($template, $dTime, $template->forceSave);
+						$event->updateYoungEvents($template, $dTime);
 					} elseif (($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
 						// ok
 					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
@@ -214,7 +222,7 @@ class EventController extends AdminController
 
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE;
-						$event->updateYoungEvents($template, $dTime, $template->forceSave);
+						$event->updateYoungEvents($template, $dTime);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}

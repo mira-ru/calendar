@@ -389,7 +389,7 @@ class Event extends CActiveRecord
 	 * @param $dayTime смещение в днях при обновлениии события
 	 * @throws Exception
 	 */
-	public function updateYoungEvents($template, $dayTime, $noValidation=true)
+	public function updateYoungEvents($template, $dayTime)
 	{
 		if ($this->getIsNewRecord()) {
 			return false;
@@ -411,7 +411,7 @@ class Event extends CActiveRecord
 		$template->init_time += $dayTime;
 
 		// валидация шаблона по времени
-		if ( !$noValidation && !$template->validateEventsPeriod() )
+		if ( !$template->validateEventsPeriod() )
 			return false;
 
 		$template->save(false);
