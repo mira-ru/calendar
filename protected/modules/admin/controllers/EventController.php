@@ -306,7 +306,8 @@ class EventController extends AdminController
 		$template = $event->getTemplate();
 		if ($template->type == EventTemplate::TYPE_SINGLE) {
 			$event->delete();
-			$template->delete();
+			$template->status = EventTemplate::STATUS_DISABLED;
+			$template->save(false);
 		} elseif ($template->type == EventTemplate::TYPE_REGULAR) {
 			$event->removeYoungEvents();
 			$event->delete();
