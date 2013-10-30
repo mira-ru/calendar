@@ -1,0 +1,57 @@
+{
+	"name": "Miracentr Calendar",
+
+	"path": "../",
+	"version": "1.0",
+	"output": "js/calendar.lmd.js",
+
+	"sourcemap": "js/calendar.lmd.map",
+	"sourcemap_inline": true,
+	"sourcemap_www": "",
+	"module_path":"lib/js/",
+
+
+
+	"www_root": "/",
+
+	"modules": {
+		"$": {
+			"path": "<%= module_path %>vendor/jquery.js",
+			"exports": "jQuery"
+		},
+		"UI": {
+			"path": "<%= module_path %>vendor/jquery-ui.js",
+			"require": {
+				"jQuery": "$"
+			}
+		},
+		"cookie": {
+			"path": "<%= module_path %>vendor/jquery.cookie.js"
+		},
+		"main": {
+			"path": "<%= module_path %>calendar/calendar.app.js"
+		},
+		"calendar": {
+			"path": "<%= module_path %>calendar/calendar.module.js"
+		},
+		"common": "<%= module_path %>custom/common.js",
+		"modal": "<%= module_path %>vendor/bootstrap/Modal.js"
+	},
+	"main": "main",
+	"global": "this",
+	"ie": false,
+	"async": true,
+	"lazy": false,
+	"pack": false,
+	"parallel": true,
+	"shortcuts": false,
+	"stats": false,
+	"stats_coverage": false,
+	"stats_coverage_async": false,
+	"stats_sendto": false,
+	"stats_auto": false,
+
+	"warn": true,
+	"log": true,
+	"cache":true
+}

@@ -33,7 +33,7 @@ $('.search-button').click(function(){
 </div><!-- search-form -->
 
 <?php // Подключаем скрипт для смены позиций элементов в списке
-Yii::app()->clientScript->registerScriptFile('/js/lib/mod/backend/arrowsUpDown.js'); ?>
+Yii::app()->clientScript->registerScriptFile('/lib/js/backend/arrowsUpDown.js'); ?>
 
 <?php $this->widget('widgets.CustomGridView', array(
 	'id'=>'center-grid',
