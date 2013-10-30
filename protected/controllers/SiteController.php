@@ -235,6 +235,7 @@ class SiteController extends FrontController
 				'currentTime'=>$currentTime,
 				'allServices'=>$services,
 			), true);
+			$layout = 'list-view';
 		} elseif ( $viewType == Config::VIEW_WEEK) {
 			$timeStart = DateMap::currentWeek($currentTime);
 			$timeEnd = DateMap::nextWeek($currentTime);
@@ -249,6 +250,7 @@ class SiteController extends FrontController
 				'services'=>$services,
 				'currentTime'=>$currentTime,
 			), true);
+			$layout = 'week-view';
 		} elseif ( $viewType == Config::VIEW_DAY ) {
 			$timeStart = $currentTime;
 			$timeEnd = $currentTime + DateMap::TIME_DAY;
@@ -267,6 +269,7 @@ class SiteController extends FrontController
 				'events'=>$events,
 				'services'=>$services,
 			), true);
+			$layout = '';
 		} else {
 			throw new CHttpException(500);
 		}
@@ -274,7 +277,7 @@ class SiteController extends FrontController
 		$nextWeek = DateMap::nextWeek($currentTime);
 		$prevWeek = DateMap::prevWeek($currentTime);
 
-		Yii::app()->end( json_encode(array('html'=>$html, 'days'=>$days, 'week'=>array('next'=>$nextWeek, 'prev'=>$prevWeek))) );
+		Yii::app()->end( json_encode(array('layout'=>$layout, 'html'=>$html, 'days'=>$days, 'week'=>array('next'=>$nextWeek, 'prev'=>$prevWeek))) );
 	}
 
 	/**
