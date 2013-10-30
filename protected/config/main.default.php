@@ -34,7 +34,7 @@ return CMap::mergeArray(array(
 			'compilerPath'=>dirname(__FILE__).'/../scripts/node_modules/.bin/lmd',
 			'packages'=>array('calendar'=>'js/calendar.lmd.js'),
 			'nodePath'=>'/usr/bin/node',
-			'forceCompile'=>true,
+			'forceCompile'=>false,
 		),
 		'image'=>array(
 			'class'=>'ext.imgLoader.ImageComponent',
@@ -103,7 +103,7 @@ return CMap::mergeArray(array(
 				'compression'=>'yui',
 				'compilerPath'=>dirname(__FILE__).'/../scripts/node_modules/.bin/lessc',
 				'nodePath'=>'/usr/bin/node',
-				'forceCompile'=>true,
+				'forceCompile'=>false,
 			),
 		),
 		'init'=>array(
