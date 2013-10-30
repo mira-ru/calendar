@@ -31,7 +31,7 @@ class LmdCompiler extends CApplicationComponent
 		if ($version !== null) {
 			$command .= ' --version="'.$version.'"';
 		}
-		$command .= ' > /dev/null';
+		//$command .= ' > /dev/null';
 
 		$return = 0;
 		$output = array();
