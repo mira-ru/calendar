@@ -13,6 +13,10 @@ class EClientScript extends CClientScript
 	{
 
 		parent::init();
+		if (YII_DEBUG) {
+			$this->_suffix = time();
+			return;
+		}
 
 		if (empty($this->timeFile)) {
 			return;
@@ -63,5 +67,10 @@ class EClientScript extends CClientScript
 	public function getVersion()
 	{
 		return $this->_suffix;
+	}
+
+	public function registerLmdFile()
+	{
+
 	}
 }

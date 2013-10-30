@@ -29,6 +29,13 @@ return CMap::mergeArray(array(
 
 	// application components
 	'components'=>array(
+		'lmd'=>array(
+			'class'=>'ext.yii-lmd.LmdCompiler',
+			'compilerPath'=>dirname(__FILE__).'/../scripts/node_modules/.bin/lmd',
+			'packages'=>array('calendar'=>'js/calendar.lmd.js'),
+			'nodePath'=>'/usr/bin/node',
+			'forceCompile'=>true,
+		),
 		'image'=>array(
 			'class'=>'ext.imgLoader.ImageComponent',
 		),
@@ -89,12 +96,12 @@ return CMap::mergeArray(array(
 			'class'=>'ext.yii-less.components.Less',
 			'mode'=>'server',
 			'files'=>array(
-				'less/calendar/calendar.less'         => 'css/generated/calendar.css',
-				'less/bad-browser/bad-browser.less'   => 'css/generated/bad-browser.css',
+				'lib/less/calendar/calendar.less'         => 'css/calendar.css',
+				'lib/less/bad-browser/bad-browser.less'   => 'css/bad-browser.css',
 			),
 			'options'=>array(
 				'compression'=>'yui',
-				'compilerPath'=>dirname(__FILE__).'/../scripts/less/bin/lessc',
+				'compilerPath'=>dirname(__FILE__).'/../scripts/node_modules/.bin/lessc',
 				'nodePath'=>'/usr/bin/node',
 				'forceCompile'=>true,
 			),

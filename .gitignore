@@ -3,6 +3,6 @@
 /protected/config/console.php
 /assets/*
 /protected/runtime/*
-/css/generated/*
-/css/custom/calendar.css
+/css/*
+/js/*
 /uploads/*

@@ -7,9 +7,9 @@
 		<meta name="author" content="">
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 		<!-- Bootstrap core CSS -->
-		<link href="/css/bootstrap.css" rel="stylesheet">
+		<link href="/lib/css/bootstrap.css" rel="stylesheet">
 		<!-- Custom styles for this template -->
-		<link href="/css/custom/backend/empty.css" rel="stylesheet">
+		<link href="/lib/css/empty.css" rel="stylesheet">
 		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	</head>
 	<body>

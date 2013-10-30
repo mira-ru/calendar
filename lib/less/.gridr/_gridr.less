@@ -1,0 +1,475 @@
+@import '_normalize';
+@import '_variables';
+@import '_mixins';
+.gFontImport (@name, @weights, @subsets) {
+	@import url('http://fonts.googleapis.com/css?family=PT+Sans:400,700&subset=cyrillic,latin');
+}
+.gFontImport("PT+Sans","400,700","cyrillic,latin");
+
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+html, body {
+	font-family: 'PT Sans';
+	font-size: @default-font-size;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	color: @default-color;
+	-webkit-font-smoothing: subpixel-antialiased;
+}
+#error {
+	background: red;
+	color: #fff;
+	display: none;
+	height: 30px;
+	line-height: 30px;
+	opacity: 0.7;
+	position: fixed;
+	text-align: center;
+	width: 100%;
+	z-index: 2000;
+}
+.-loading {
+	position: relative;
+	opacity:0.60;
+	&:after {
+		background: url('/images/src/loader.gif') 50% 50% no-repeat;
+		content: '';
+		display: block;
+		height: 32px;
+		left: 50%;
+		margin: -16px 0 0 -16px;
+		position: absolute;
+		top: 50%;
+		width: 32px;
+	}
+}
+.-disabled{
+	opacity: 0.7;
+}
+.grid {
+	font-size: 0;
+	width: 100%;
+}
+.flow {
+	font-size: 0;
+	line-height: 0;
+	list-style: none;
+	margin: 0 auto;
+	padding: (@default-gutter / 2) 0;
+	position: relative;
+	text-rendering: optimizelegibility; 
+	&.align-middle {
+		& > [class*="col-"] {
+			vertical-align: middle;
+		}
+	}
+	&.align-bottom {
+		& > [class*="col-"] {
+			vertical-align: bottom;
+		}
+	}
+}
+[class*="col-"] {
+	display: inline-block;
+	font-size: 1rem;
+	line-height: 1.5;
+	padding-left: (@default-gutter / 2);
+	padding-right: (@default-gutter / 2);
+	position: relative;
+	text-rendering: auto;
+	vertical-align: top;
+	.flow {
+		margin: 0 -(@default-gutter / 2);
+		padding: 0;
+		width: auto;
+	}
+}
+.col-1  { 
+	width: percentage((1 / @default-grid-columns)); 
+}
+.col-2  { 
+	width: percentage((2 / @default-grid-columns)); 
+}
+.col-3  { 
+	width: percentage((3 / @default-grid-columns)); 
+}
+.col-4  { 
+	width: percentage((4 / @default-grid-columns)); 
+}
+.col-5  { 
+	width: percentage((5 / @default-grid-columns)); 
+}
+.col-6  { 
+	width: percentage((6 / @default-grid-columns)); 
+}
+.col-7  { 
+	width: percentage((7 / @default-grid-columns)); 
+}
+.col-8  { 
+	width: percentage((8 / @default-grid-columns)); 
+}
+.col-9  { 
+	width: percentage((9 / @default-grid-columns)); 
+}
+.col-10 { 
+	width: percentage((10/ @default-grid-columns)); 
+}
+.col-11 { 
+	width: percentage((11/ @default-grid-columns)); 
+}
+.col-12 { 
+	width: 100%; 
+}
+
+// Skip columns. Skipping offset BEFORE column
+
+.skip-1  { 
+	margin-left: percentage((1 / @default-grid-columns)); 
+}
+.skip-2  { 
+	margin-left: percentage((2 / @default-grid-columns)); 
+}
+.skip-3  { 
+	margin-left: percentage((3 / @default-grid-columns)); 
+}
+.skip-4  { 
+	margin-left: percentage((4 / @default-grid-columns)); 
+}
+.skip-5  { 
+	margin-left: percentage((5 / @default-grid-columns)); 
+}
+.skip-6  { 
+	margin-left: percentage((6 / @default-grid-columns)); 
+}
+.skip-7  { 
+	margin-left: percentage((7 / @default-grid-columns)); 
+}
+.skip-8  { 
+	margin-left: percentage((8 / @default-grid-columns)); 
+}
+.skip-9  { 
+	margin-left: percentage((9 / @default-grid-columns)); 
+}
+.skip-10 { 
+	margin-left: percentage((10/ @default-grid-columns)); 
+}
+.skip-11 { 
+	margin-left: percentage((11/ @default-grid-columns)); 
+}
+
+// Pass columns. Passing offset AFTER column
+
+.pass-1  { 
+	margin-right: percentage((1 / @default-grid-columns)); 
+}
+.pass-2  { 
+	margin-right: percentage((2 / @default-grid-columns)); 
+}
+.pass-3  { 
+	margin-right: percentage((3 / @default-grid-columns)); 
+}
+.pass-4  { 
+	margin-right: percentage((4 / @default-grid-columns)); 
+}
+.pass-5  { 
+	margin-right: percentage((5 / @default-grid-columns)); 
+}
+.pass-6  { 
+	margin-right: percentage((6 / @default-grid-columns)); 
+}
+.pass-7  { 
+	margin-right: percentage((7 / @default-grid-columns)); 
+}
+.pass-8  { 
+	margin-right: percentage((8 / @default-grid-columns)); 
+}
+.pass-9  { 
+	margin-right: percentage((9 / @default-grid-columns)); 
+}
+.pass-10 { 
+	margin-right: percentage((10/ @default-grid-columns)); 
+}
+.pass-11 { 
+	margin-right: percentage((11/ @default-grid-columns)); 
+}
+.handheld {
+	.col-1  { 
+		width: 8.334%;
+	}
+	.col-2  { 
+		width: 16.667%;
+	}
+	.col-3  { 
+		width: 25%;
+	}
+	.col-4  { 
+		width: 33.334%;
+	}
+	.col-5  { 
+		width: 41.667%;
+	}
+	.col-6  { 
+		width: 50%;
+	}
+	.col-7  { 
+		width: 58.334%;
+	}
+	.col-8  { 
+		width: 66.667%;
+	}
+	.col-9  { 
+		width: 75%;
+	}
+	.col-10 { 
+		width: 83.334%;
+	}
+	.col-11 { 
+		width: 91.667%;
+	}
+	.col-12 { 
+		width: 100%; 
+	}
+
+	// Skip columns. Skipping offset BEFORE column
+
+	.skip-1  { 
+		margin-left: 8.334%;
+	}
+	.skip-2  { 
+		margin-left: 16.667%;
+	}
+	.skip-3  { 
+		margin-left: 25%;
+	}
+	.skip-4  { 
+		margin-left: 33.334%;
+	}
+	.skip-5  { 
+		margin-left: 41.667%;
+	}
+	.skip-6  { 
+		margin-left: 50%;
+	}
+	.skip-7  { 
+		margin-left: 58.334%;
+	}
+	.skip-8  { 
+		margin-left: 66.667%;
+	}
+	.skip-9  { 
+		margin-left: 75%;
+	}
+	.skip-10 { 
+		margin-left: 83.334%;
+	}
+	.skip-11 { 
+		margin-left: 91.667%;
+	}
+	.skip-12 { 
+		margin-left: 100%; 
+	}
+
+	// Pass columns. Passing offset AFTER column
+
+	.pass-1  { 
+		margin-right: 8.334%;
+	}
+	.pass-2  { 
+		margin-right: 16.667%;
+	}
+	.pass-3  { 
+		margin-right: 25%;
+	}
+	.pass-4  { 
+		margin-right: 33.334%;
+	}
+	.pass-5  { 
+		margin-right: 41.667%;
+	}
+	.pass-6  { 
+		margin-right: 50%;
+	}
+	.pass-7  { 
+		margin-right: 58.334%;
+	}
+	.pass-8  { 
+		margin-right: 66.667%;
+	}
+	.pass-9  { 
+		margin-right: 75%;
+	}
+	.pass-10 { 
+		margin-right: 83.334%;
+	}
+	.pass-11 { 
+		margin-right: 91.667%;
+	}
+	.pass-12 { 
+		margin-right: 100%; 
+	}
+}
+.flow {
+	@media screen {
+		// Mobile
+		@media (min-width: 240px) {
+			// background: blue;
+			width: 100%;
+		}
+		// iPhone portrait
+		@media (min-width: 320px) {
+			// background: green;
+			width: 100%;
+		}
+		// iPhone portrait
+		@media (min-width: 480px) {
+			// background: yellow;
+			width: 480px;
+		}
+		// Tablet portrait
+		@media (min-width: 600px) {
+			// background: red;
+			width: 600px;
+		}
+		// Tablet landscape
+		@media (min-width: 900px) {
+			// background: darken(pink, 10%);
+			width: 900px;
+		}
+		// Screen
+		@media (min-width: 1200px) {
+			// background: gray;
+			width: 1200px;
+		}
+		// Wide screen
+		@media (min-width: 1800px) {
+			// background: black;
+			width: 80%;
+		}
+	}
+}
+[class*="col-"] {
+	@media screen {
+		// Mobile
+		@media (min-width: 240px) {
+		}
+		// iPhone portrait
+		@media (min-width: 320px) {
+		}
+		// iPhone portrait
+		@media (min-width: 480px) {
+		}
+		// Tablet portrait
+		@media (min-width: 600px) {
+		}
+		// Tablet landscape
+		@media (min-width: 900px) {
+		}
+		// Screen
+		@media (min-width: 1200px) {
+		}
+		// Wide screen
+		@media (min-width: 1800px) {
+		}
+	}	
+}
+.col-wrap {
+	@media screen {
+		@media (min-width: 240px) and (max-width: 479px) {
+			display: block;
+			width: 100%;
+		}
+	}
+}
+img {
+	display: block;
+	font-size: 0;
+	line-height: 0;
+	margin: 0;
+	.img-responsive();
+}
+
+// Responsive
+
+// Images
+
+.img-round {
+	border-radius: 50%;
+}
+
+// List inline
+
+.list-inline {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	li {
+		display: inline-block;
+	}
+}
+
+.list-justified {
+	margin-bottom: 0;
+	text-align: justify;
+	text-align-last: justify;
+	text-justify: newspaper;
+	zoom: 1;
+	&:after {
+		content: '\00a0';
+		display: inline-block;
+		height: 0;
+		vertical-align: top;
+		width: 100%;
+	}
+}
+
+// Helpers
+
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+
+//Error page
+.error-page{
+	.error-number {
+		color: #fff;
+		position: relative;
+		margin-left: -200px;
+		img{
+			display: inline-block;
+		}
+		span{
+			left:50%;
+			font-size: @default-font-size*6;
+			top: 280px;
+			display: inline-block;
+			padding-left: 20px;
+			font-weight: bold;
+			position: absolute;
+		}
+	}
+
+	h1{
+		font-size: 38px;
+		font-weight: 700;
+		margin-bottom: 10px;
+		margin-top: 20px;
+		a{
+			color: #8CC507;
+			display: block;
+			font-size: 20px;
+			font-weight: 400;
+			margin-top: 15px;
+			text-decoration: none;
+		}
+	}
+}
+
+
