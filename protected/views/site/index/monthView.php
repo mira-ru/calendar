@@ -94,7 +94,7 @@ $this->bodyClass = array('calendar');
 					$monthNumber = date('n', $currentTime);
 					$yearNumber = date('Y', $currentTime);
 					$prevMonthTime = DateMap::prevMonth($currentTime);
-					if ($prevMonthTime >= DateMap::currentMonth(time())) {
+					if ($prevMonthTime > DateMap::currentMonth(time())) {
 						echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
 							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
 							array('class'=>'prev', 'data-time'=>$prevMonthTime)
