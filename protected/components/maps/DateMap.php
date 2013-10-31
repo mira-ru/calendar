@@ -32,12 +32,12 @@ class DateMap {
 
 	public static function prevMonth($timestamp)
 	{
-		return strtotime( date('Y-m', strtotime("last month", $timestamp)) );
+		return strtotime( date('Y-m', strtotime("last month", strtotime( date('Y-m', $timestamp) ) )) );
 	}
 
 	public static function nextMonth($timestamp)
 	{
-		return strtotime( date('Y-m', strtotime("next month", $timestamp)) );
+		return strtotime( date('Y-m', strtotime("next month", strtotime( date('Y-m', $timestamp) ) )) );
 	}
 
 	public static function currentMonth($timestamp)
