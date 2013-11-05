@@ -178,7 +178,6 @@ class Service extends CActiveRecord
 	 */
 	public static function getActiveByTime($startTime, $endTime, $centerId, $showDraft=false)
 	{
-		FirePHP::getInstance()->fb($showDraft);
 		$criteria = new CDbCriteria();
 		$criteria->select = 'DISTINCT t.*';
 		$criteria->join = 'INNER JOIN event as e ON e.service_id=t.id AND e.start_time >= :start AND e.end_time < :end AND e.center_id=:cid';
