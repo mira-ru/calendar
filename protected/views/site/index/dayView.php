@@ -12,6 +12,7 @@
  *
  * @var $currentMonth integer
  * @var $nextMonth integer
+ * @var $showDraft bool
  */
 
 // layout settings
@@ -68,7 +69,7 @@ $this->bodyClass = array('calendar');
 								echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
 
 								/** @var $direction Direction */
-								foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
+								foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id, $showDraft) as $direction) {
 									echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 								}
 
