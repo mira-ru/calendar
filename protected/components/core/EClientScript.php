@@ -13,11 +13,6 @@ class EClientScript extends CClientScript
 	{
 
 		parent::init();
-		if (YII_DEBUG) {
-			$this->_suffix = time();
-			return;
-		}
-
 		if (empty($this->timeFile)) {
 			return;
 		}

@@ -24,6 +24,7 @@ class InitComponent extends CComponent
 	{
 		setlocale(LC_TIME, 'ru_RU.utf8');
 		mb_regex_encoding ('utf-8');
+		date_default_timezone_set('Asia/Novosibirsk');
 	}
 
 	/**

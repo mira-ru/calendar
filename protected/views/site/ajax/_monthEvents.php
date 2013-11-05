@@ -73,9 +73,9 @@ foreach ($events as $event) {
 		).' / '."\n";
 
 		echo CHtml::openTag('span');
-			echo $center->name;
+//			echo $center->name;
 			if (!empty($users)) {
-				echo ': ';
+//				echo ': ';
 				$cnt = 0;
 				foreach ($users as $user) {
 					if ($cnt==0) {

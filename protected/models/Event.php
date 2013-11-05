@@ -351,16 +351,14 @@ class Event extends CActiveRecord
 	 */
 	public static function eventPeriodChecker($start_time, $end_time, $hall_id, $time, &$similar=null)
 	{
-		$initTime = strtotime('TODAY', $time);
-
 		$condition = '((start_time < :et and :et <= end_time) or (:st <= start_time and start_time < :et) or '
 			. '(:st < end_time and end_time <= :et))';
 
 		$condition.= ' and hall_id=:hid';
 
 		$params = array(
-			':st'=>$start_time + $initTime,
-			':et'=>$end_time + $initTime,
+			':st'=>$start_time,
+			':et'=>$end_time,
 			':hid'=>$hall_id,
 		);
 
@@ -389,7 +387,7 @@ class Event extends CActiveRecord
 	 * @param $dayTime смещение в днях при обновлениии события
 	 * @throws Exception
 	 */
-	public function updateYoungEvents($template, $dayTime, $noValidation=true)
+	public function updateYoungEvents($template, $dayTime)
 	{
 		if ($this->getIsNewRecord()) {
 			return false;
@@ -411,7 +409,7 @@ class Event extends CActiveRecord
 		$template->init_time += $dayTime;
 
 		// валидация шаблона по времени
-		if ( !$noValidation && !$template->validateEventsPeriod() )
+		if ( !$template->validateEventsPeriod() )
 			return false;
 
 		$template->save(false);
