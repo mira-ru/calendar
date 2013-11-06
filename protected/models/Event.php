@@ -357,8 +357,8 @@ class Event extends CActiveRecord
 		$condition.= ' and hall_id=:hid';
 
 		$params = array(
-			':st'=>$start_time,
-			':et'=>$end_time,
+			':st'=>$start_time + $time,
+			':et'=>$end_time + $time,
 			':hid'=>$hall_id,
 		);
 
