@@ -18,3 +18,8 @@ $this->breadcrumbs=array(
 		</div>
 	</div>
 </div>
+<script>
+	window.onload = function(){
+		yaCounter22425796.reachGoal('error'+<?php echo $error['code']; ?>);
+	};
+</script>
