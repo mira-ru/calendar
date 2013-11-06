@@ -11,7 +11,7 @@
 
 		/** @var $cs EClientScript */
 		$cs = Yii::app()->getClientScript();
-		$cs->releaseCssFile('/css/generated/calendar.css');
+		$cs->releaseCssFile('/css/calendar.css');
 
 		?>
 	</head>

@@ -176,7 +176,7 @@ class Service extends CActiveRecord
 	 * @param $endTime
 	 * @param $centerId
 	 */
-	public static function getActiveByTime($startTime, $endTime, $centerId)
+	public static function getActiveByTime($startTime, $endTime, $centerId, $showDraft=false)
 	{
 		$criteria = new CDbCriteria();
 		$criteria->select = 'DISTINCT t.*';
@@ -184,6 +184,12 @@ class Service extends CActiveRecord
 		$criteria->condition = 't.center_id=:cid AND t.status=:st';
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId, ':st'=>self::STATUS_ACTIVE);
 		$criteria->index = 'id';
+		$criteria->order = 't.name ASC';
+
+		if (!$showDraft) {
+			$criteria->condition .= ' AND e.is_draft='.EventTemplate::DRAFT_NO;
+		}
+
 
 		return self::model()->findAll($criteria);
 	}

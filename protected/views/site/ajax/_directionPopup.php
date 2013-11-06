@@ -56,7 +56,7 @@ $image = Yii::app()->image;
 					?>
 					<?php
 					if (!empty($item->price)) {
-						echo CHtml::tag('h4', array(), '<strong>Стоимость занятий</strong>');
+						echo CHtml::tag('h4', array(), '<strong>Стоимость</strong>');
 						echo $item->price;
 					}
 					?>
