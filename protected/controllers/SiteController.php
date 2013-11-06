@@ -59,14 +59,14 @@ class SiteController extends FrontController
 		$currentMonth = DateMap::currentMonth($currentTime);
 		$nextMonth = DateMap::nextMonth($currentTime);
 
+		$showDraft = !(Yii::app()->getUser()->getIsGuest());
+
 		// Список активных услуг на месяц
-		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId);
+		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId, $showDraft);
 		if ( !empty($serviceId) && empty($services[$serviceId]) ) { throw new CHttpException(404); }
 
 
 		$viewType = Config::getViewType($model);
-		$showDraft = !(Yii::app()->getUser()->getIsGuest());
-
 		if ($viewType == Config::VIEW_MONTH) {
 			// вид списком
 			$timeStart = $currentTime;
@@ -104,6 +104,7 @@ class SiteController extends FrontController
 				'currentMonth' => $currentMonth,
 				'nextMonth' => $nextMonth,
 				'allServices' => $allServices,
+				'showDraft' => $showDraft,
 			));
 			return;
 
@@ -133,6 +134,7 @@ class SiteController extends FrontController
 				'currentTime' => $currentTime,
 				'currentMonth' => $currentMonth,
 				'nextMonth' => $nextMonth,
+				'showDraft' => $showDraft,
 			));
 			return;
 
@@ -158,6 +160,7 @@ class SiteController extends FrontController
 				'currentTime' => $currentTime,
 				'currentMonth' => $currentMonth,
 				'nextMonth' => $nextMonth,
+				'showDraft' => $showDraft,
 			));
 
 			return;

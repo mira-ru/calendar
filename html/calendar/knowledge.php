@@ -2,7 +2,7 @@
 /**
  *	Custom *.css files.
  */
-$styles = array('calendar/calendar');
+$styles = array('/lib/less/calendar/calendar');
 
 
 /**
@@ -77,6 +77,7 @@ include('../common/_header.php');
 								<span>7<sup>00</sup> — 10<sup>00</sup></span>
 							</div>
 							<div class="col-10 event-info">
+								<img src="/images/src/event.jpg" width="90" height="90" alt="Фабрика лидеров"/>
 								<a href="#">Фабрика лидеров</a>
 								<p>Современному поколению лидеров придется нести ответственность не только за себя, за свою компанию или предприятие, но и за мир в целом, включая и решение глобальных проблем, охраны окружающей среды, сохранения современной цивилизации.</p>
 								<div class="">
@@ -92,7 +93,8 @@ include('../common/_header.php');
 								<span>7<sup>00</sup> — 10<sup>00</sup></span>
 							</div>
 							<div class="col-10 event-info">
-								<a href="#">Фабрика лидеров</a>
+								<img src="/images/src/event.jpg" width="90" height="90" alt="Фабрика лидеров"/>
+								<strong>Фабрика лидеров</strong>
 								<p>Современному поколению лидеров придется нести ответственность не только за себя, за свою компанию или предприятие, но и за мир в целом, включая и решение глобальных проблем, охраны окружающей среды, сохранения современной цивилизации.</p>
 								<div class="">
 									<a class="link-0761a7" href="#">Психология личной эфективности</a> /

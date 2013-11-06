@@ -7,11 +7,11 @@
 	<link rel="stylesheet" href="/css/generated/color.css">
 	<?php
 		foreach($styles as $style) {
-			echo '<link rel="stylesheet/less" href="/less/'.$style.'.less">';
+			echo '<link rel="stylesheet/less" href="'.$style.'.less">';
 		}
 	?>
 
-	<script src="/js/lib/Less.js"></script>
+	<script src="/lib/js/vendor/less.js"></script>
 
 </head>
 <body class="<?php foreach($bodyclass as $class) { echo $class.' ';} ?>">
