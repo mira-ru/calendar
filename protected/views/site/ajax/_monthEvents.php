@@ -6,11 +6,13 @@
  * @var $allServices array
  *
  * @var $currentTime integer
+ * @var $image ImageComponent
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 	return;
 }
+$image = Yii::app()->image;
 
 $center = Center::model()->findByPk($centerId);
 if ($center === null) { $center = new Center(); }
@@ -34,6 +36,8 @@ foreach ($events as $event) {
 	echo CHtml::tag('div', array('class'=>'col-2 event-time'), $tmp);
 
 	echo CHtml::openTag('div', array('class'=>'col-10 event-info'));
+
+	echo CHtml::image($image->getPreview($event->direction->image_id, 'crop_150', User::DEFAULT_IMG), $event->direction->name, array('width'=>90, 'height'=>90));
 
 	// direction link
 	echo $event->direction->checkShowLink()
