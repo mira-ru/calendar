@@ -37,7 +37,7 @@ foreach ($events as $event) {
 
 	echo CHtml::openTag('div', array('class'=>'col-10 event-info'));
 
-	echo CHtml::image($image->getPreview($event->direction->image_id, 'crop_150', User::DEFAULT_IMG), $event->direction->name, array('width'=>90, 'height'=>90));
+	echo CHtml::image($image->getPreview($event->direction->image_id, 'crop_150'), $event->direction->name, array('width'=>90, 'height'=>90));
 
 	// direction link
 	echo $event->direction->checkShowLink()
