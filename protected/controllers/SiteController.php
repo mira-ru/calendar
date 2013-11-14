@@ -63,7 +63,9 @@ class SiteController extends FrontController
 
 		// Список активных услуг на месяц
 		$services = Service::getActiveByTime($currentMonth, $nextMonth, $centerId, $showDraft);
-		if ( !empty($serviceId) && empty($services[$serviceId]) ) { throw new CHttpException(404); }
+		$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
+		
+		if ( !empty($serviceId) && empty($allServices[$serviceId]) ) { throw new CHttpException(404); }
 
 
 		$viewType = Config::getViewType($model);
@@ -92,7 +94,6 @@ class SiteController extends FrontController
 			}
 
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
-			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
 
 			$this->render('index/monthView', array(
 				'model' => $model,
@@ -117,8 +118,6 @@ class SiteController extends FrontController
 			$activeDays = Event::getActiveDays($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
 
 			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
-			$allServices = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE), array('index'=>'id'));
-
 			$this->render('index/weekView', array(
 
 				'model' => $model,
