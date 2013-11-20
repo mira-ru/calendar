@@ -314,7 +314,9 @@ class EventTemplate extends CActiveRecord
 
 		$innerEvents = Event::model()->findAllByAttributes(array('template_id'=>$this->id));
 		foreach($innerEvents as $ev) {
-			unset($this->similarEvents[$ev->id]);
+			if(($key = array_search($ev->id, $this->similarEvents)) !== false) {
+				unset($this->similarEvents[$key]);
+			}
 		}
 
 		if ( count($this->similarEvents) > 0 ) {

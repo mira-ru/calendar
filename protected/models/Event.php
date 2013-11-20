@@ -378,7 +378,9 @@ class Event extends CActiveRecord
 
 		$result = self::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, 0, $this->similarEvents);
 
-		unset($this->similarEvents[$this->id]);
+		if(($key = array_search($this->id, $this->similarEvents)) !== false) {
+			unset($this->similarEvents[$key]);
+		}
 
 		if ( count($this->similarEvents) > 0 )
 			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
