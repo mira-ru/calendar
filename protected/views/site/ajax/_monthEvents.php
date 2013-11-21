@@ -43,7 +43,7 @@ foreach ($events as $event) {
 	echo $event->direction->checkShowLink()
 	    ? CHtml::link(
 		    $event->direction->name,
-		    $this->createUrl('/site/index', array('class_id'=>Direction::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'a='.$event->direction_id)),
+		    $this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'a='.$event->direction_id)),
 		    array('data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->direction_id, 'type'=>'a')),
 			    'data-action-id'=>$event->direction_id,
 			    'data-toggle'=>'modal',

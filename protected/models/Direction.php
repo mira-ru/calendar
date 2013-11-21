@@ -127,7 +127,7 @@ class Direction extends CActiveRecord
 			),
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
-				'attributes' => array('desc', 'price', 'short_desc'),
+				'attributes' => array('desc', 'price', 'short_desc', 'name'),
 			),
 		);
 	}
