@@ -221,7 +221,7 @@ class Event extends CActiveRecord
 		if (!empty($this->event_type)) {
 			$criteria->compare('et.type', $this->event_type);
 		}
-		$criteria->order = 'et.update_time DESC';
+		$criteria->order = 'et.update_time DESC, t.id ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
