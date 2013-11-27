@@ -79,6 +79,8 @@ class EventController extends AdminController
 
 					$template->save(false);
 					$event->template_id = $template->id;
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
 					$event->save(false);
 
 					$template->makeLinks();
@@ -175,6 +177,8 @@ class EventController extends AdminController
 
 				if ($event->validate() && !$hasErrors) {
 					$template->save(false); // Применение свойтв к шаблону (не привязаннных к событиям)
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {

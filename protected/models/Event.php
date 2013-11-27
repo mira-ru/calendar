@@ -16,6 +16,8 @@
  * @property string $desc
  * @property integer $start_time
  * @property integer $end_time
+ * @property integer $create_time
+ * @property integer $update_time
  */
 class Event extends CActiveRecord
 {
@@ -195,7 +197,6 @@ class Event extends CActiveRecord
 			$criteria->join = 'INNER JOIN event_user as eu ON eu.template_id=t.template_id';
 			$criteria->compare('eu.user_id', $this->user_id);
 		}
-		$criteria->join .= ' INNER JOIN event_template as et ON et.id=t.template_id';
 
 		$criteria->compare('t.service_id', $this->service_id);
 		$criteria->compare('t.hall_id', $this->hall_id);
@@ -219,9 +220,10 @@ class Event extends CActiveRecord
 		}
 
 		if (!empty($this->event_type)) {
+			$criteria->join .= ' INNER JOIN event_template as et ON et.id=t.template_id';
 			$criteria->compare('et.type', $this->event_type);
 		}
-		$criteria->order = 'et.update_time DESC, t.id ASC';
+		$criteria->order = 't.update_time DESC, t.id ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -339,6 +341,8 @@ class Event extends CActiveRecord
 		$event->start_time = $template->start_time + $initTime;
 		$event->end_time = $template->end_time + $initTime;
 		$event->template_id = $template->id;
+		$event->create_time = $template->create_time;
+		$event->update_time = $template->update_time;
 
 		$event->save(false);
 	}
@@ -439,6 +443,8 @@ class Event extends CActiveRecord
 				$event->direction_id = $template->direction_id;
 				$event->center_id = $template->center_id;
 				$event->service_id = $template->service_id;
+				$event->create_time = $template->create_time;
+				$event->update_time = $template->update_time;
 				$event->save(false);
 			}
 			$transaction->commit();
