@@ -227,9 +227,9 @@ class EventController extends AdminController
 						throw new CHttpException(500, 'Invalid action');
 					}
 
-					$this->redirect(
-						Yii::app()->getUser()->getReturnUrl(array('index'))
-					);
+					$url = $this->createUrl('index', array('Event[template_id]'=>$event->template_id, 'date_from'=>date('d.m.Y', $event->start_time )));
+
+					$this->redirect($url);
 				}
 			}
 		}

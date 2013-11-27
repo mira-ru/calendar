@@ -27,6 +27,13 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 	</div>
 
 	<div class="form-group">
+		<?php echo $form->label($model,'direction_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo CHtml::telField('direction', Yii::app()->request->getParam('direction', ''), array('size'=>60,'maxlength'=>255, 'class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<?php echo $form->label($model,'center_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($model, 'center_id', $centerList, array('class'=>'form-control')); ?>

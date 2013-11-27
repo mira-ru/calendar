@@ -80,7 +80,7 @@ class Event extends CActiveRecord
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id, is_draft', 'safe', 'on'=>'search'),
+			array('id, user_id, direction_id, event_type, service_id, hall_id, center_id, is_draft, template_id', 'safe', 'on'=>'search'),
 			array('forceSave, initTime', 'safe'),
 		);
 	}
@@ -195,12 +195,14 @@ class Event extends CActiveRecord
 			$criteria->join = 'INNER JOIN event_user as eu ON eu.template_id=t.template_id';
 			$criteria->compare('eu.user_id', $this->user_id);
 		}
+		$criteria->join .= ' INNER JOIN event_template as et ON et.id=t.template_id';
 
 		$criteria->compare('t.service_id', $this->service_id);
 		$criteria->compare('t.hall_id', $this->hall_id);
 		$criteria->compare('t.center_id', $this->center_id);
 		$criteria->compare('t.direction_id', $this->direction_id);
 		$criteria->compare('t.is_draft', $this->is_draft);
+		$criteria->compare('t.template_id', $this->template_id);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
@@ -211,21 +213,20 @@ class Event extends CActiveRecord
 		if (($dateTo = $request->getParam('date_to'))) {
 			$criteria->compare('t.start_time', '<' . (strtotime($dateTo)+86400));
 		}
-
-		if (!empty($this->event_type)) {
-			$criteria->join .= ' INNER JOIN event_template as et ON et.id=t.template_id';
-			$criteria->compare('et.type', $this->event_type);
+		if ($direction = $request->getParam('direction')) {
+			$criteria->join .= ' INNER JOIN direction as d ON d.id=t.direction_id';
+			$criteria->compare('d.name',$direction,true);
 		}
 
-		$sort = new CSort();
-		$sort->defaultOrder = array('start_time' => CSort::SORT_ASC);
-
+		if (!empty($this->event_type)) {
+			$criteria->compare('et.type', $this->event_type);
+		}
+		$criteria->order = 'et.update_time DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
-			'sort'=>$sort,
 			'pagination'=>array(
-				'pageSize'=>10,
+				'pageSize'=>50,
 			),
 		));
 	}
