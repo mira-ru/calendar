@@ -66,9 +66,9 @@ class DirectionController extends AdminController
 					$model->image_id = $fileId;
 				}
 				$model->save(false);
-				$this->redirect(
-					Yii::app()->getUser()->getReturnUrl(array('index'))
-				);
+
+				$url = $this->createUrl('index', array('Direction[id]'=>$model->id));
+				$this->redirect($url);
 			}
 		}
 
@@ -107,9 +107,9 @@ class DirectionController extends AdminController
 					$model->image_id = $fileId;
 				}
 				$model->save(false);
-				$this->redirect(
-					Yii::app()->getUser()->getReturnUrl(array('index'))
-				);
+				$url = $this->createUrl('index', array('Direction[id]'=>$model->id));
+
+				$this->redirect($url);
 			}
 		}
 
