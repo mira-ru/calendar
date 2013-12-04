@@ -157,9 +157,11 @@ class EventController extends AdminController
 
 				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
 				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
-				if (isset($_POST['EventTemplate']['forceSave'])) {
-					$template->forceSave = (bool)$_POST['EventTemplate']['forceSave'];
-				}
+				// FIXME: сделать нормальную проверку пересечений. Отваливалось обновление шаблона на валидации.
+				$template->forceSave = true;
+//				if (isset($_POST['EventTemplate']['forceSave'])) {
+//					$template->forceSave = (bool)$_POST['EventTemplate']['forceSave'];
+//				}
 
 				$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
 				$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
