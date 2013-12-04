@@ -157,6 +157,10 @@ class EventController extends AdminController
 
 				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
 				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
+				if (isset($_POST['EventTemplate']['forceSave'])) {
+					$template->forceSave = (bool)$_POST['EventTemplate']['forceSave'];
+				}
+
 				$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
 				$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
 
@@ -226,6 +230,7 @@ class EventController extends AdminController
 
 						// обновляем шаблон
 						$template->status = EventTemplate::STATUS_ACTIVE;
+						FirePHP::getInstance()->fb($dTime);
 						$event->updateYoungEvents($template, $dTime);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
@@ -233,7 +238,7 @@ class EventController extends AdminController
 
 					$url = $this->createUrl('index', array('Event[template_id]'=>$event->template_id, 'date_from'=>date('d.m.Y', $event->start_time )));
 
-					$this->redirect($url);
+//					$this->redirect($url);
 				}
 			}
 		}
