@@ -64,8 +64,4 @@ class EClientScript extends CClientScript
 		return $this->_suffix;
 	}
 
-	public function registerLmdFile()
-	{
-
-	}
 }
