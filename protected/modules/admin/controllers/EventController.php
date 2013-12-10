@@ -79,6 +79,8 @@ class EventController extends AdminController
 
 					$template->save(false);
 					$event->template_id = $template->id;
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
 					$event->save(false);
 
 					$template->makeLinks();
@@ -155,6 +157,12 @@ class EventController extends AdminController
 
 				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
 				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
+				// FIXME: сделать нормальную проверку пересечений. Отваливалось обновление шаблона на валидации.
+				$template->forceSave = true;
+//				if (isset($_POST['EventTemplate']['forceSave'])) {
+//					$template->forceSave = (bool)$_POST['EventTemplate']['forceSave'];
+//				}
+
 				$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
 				$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
 
@@ -175,6 +183,8 @@ class EventController extends AdminController
 
 				if ($event->validate() && !$hasErrors) {
 					$template->save(false); // Применение свойтв к шаблону (не привязаннных к событиям)
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {
