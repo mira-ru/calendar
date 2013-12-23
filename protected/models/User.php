@@ -142,7 +142,9 @@ class User extends CActiveRecord
 			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
-		$criteria->order = 't.name ASC';
+		$sort = new CSort();
+		$sort->defaultOrder = array('t.name' => CSort::SORT_ASC);
+//		$criteria->order = 't.name ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

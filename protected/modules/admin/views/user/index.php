@@ -63,7 +63,7 @@ $('.search-button').click(function(){
 		),
 		array(
 			'name'=> 'update_time',
-			'sortable' => false,
+			'sortable' => true,
 			'value'=>'date("d.m.Y", $data->update_time)',
 		),
 		array(
