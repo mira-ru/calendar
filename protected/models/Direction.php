@@ -202,8 +202,17 @@ class Direction extends CActiveRecord
 			$criteria->compare('t.update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
+		if ( ($dateUpdate = $request->getParam('date_update')) ) {
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+		}
+
+		$sort = new CSort();
+//		$sort->defaultOrder = 't.name ASC';
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'sort'=>$sort,
 		));
 	}
 
