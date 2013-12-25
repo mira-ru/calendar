@@ -207,6 +207,14 @@ class Direction extends CActiveRecord
 			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
 		}
 
+		if ( ($checkDesc = $request->getParam('check_desc')) ) {
+			if ($checkDesc == 1) { // has desc
+				$criteria->addCondition('t.`desc`<>\'\'');
+			} elseif ($checkDesc == 2) { // no desc
+				$criteria->addCondition('t.`desc`=\'\'');
+			}
+		}
+
 		$sort = new CSort();
 //		$sort->defaultOrder = 't.name ASC';
 

@@ -147,6 +147,14 @@ class User extends CActiveRecord
 			$criteria->compare('update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
 		}
 
+		if ( ($checkDesc = $request->getParam('check_desc')) ) {
+			if ($checkDesc == 1) { // has desc
+				$criteria->addCondition('`desc`<>\'\'');
+			} elseif ($checkDesc == 2) { // no desc
+				$criteria->addCondition('`desc`=\'\'');
+			}
+		}
+
 		$sort = new CSort();
 		$sort->defaultOrder = 't.name ASC';
 
