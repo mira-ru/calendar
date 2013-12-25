@@ -23,7 +23,6 @@ class ReportController extends AdminController
 	 */
 	public function actionIndex()
 	{
-		FirePHP::getInstance()->fb(Yii::app()->user->name);
 		$model=new Report('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Report']))
