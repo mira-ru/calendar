@@ -51,6 +51,11 @@ class Event extends CActiveRecord
 	public $error = null;
 
 	/**
+	 * @var bool флаг отключает логирование события
+	 */
+	public $disableLog = false;
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -453,6 +458,7 @@ class Event extends CActiveRecord
 				$event->service_id = $template->service_id;
 				$event->create_time = $template->create_time;
 				$event->update_time = $template->update_time;
+				$event->disableLog = true;
 				$event->save(false);
 			}
 			$transaction->commit();

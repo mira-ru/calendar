@@ -203,6 +203,9 @@ class Report extends CActiveRecord
 	{
 		$model = $event->sender;
 
+		if ( isset($model->disableLog) && $model->disableLog )
+			return;
+
 		$newState = $model->attributes;
 		$oldState = $model->oldState;
 
@@ -291,14 +294,17 @@ class Report extends CActiveRecord
 	public function getModelName()
 	{
 		$class = $this->getModelClass();
-		switch ($this->model) {
-			case self::MODEL_EVENT : return $this->model_id;
-			default : {
-				$model = $class::model()->findByPk($this->model_id);
-				if ( !$model || !isset($model->name) ) return $this->model_id;
-				else return '#' . $model->id . ' ' . $model->name;
-			}
+		$model = $class::model()->findByPk($this->model_id);
 
+		if ( !$model )
+			return $this->model_id;
+
+		switch ($this->model) {
+			case self::MODEL_EVENT : {
+				return '#' . $model->id . ' ' . Direction::model()
+					->findByPk($model->direction_id)->name;
+			}
+			default :  return '#' . $model->id . ' ' . $model->name;
 		}
 	}
 
