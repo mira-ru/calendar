@@ -15,6 +15,11 @@
  */
 class Report extends CActiveRecord
 {
+	static public $users = array(
+		'alexandrovna13'=>1,
+		'admin'=>2,
+	);
+
 	// константы моделей
 	const MODEL_CENTER = 1;
 	const MODEL_DIRECTION = 2;
@@ -75,13 +80,13 @@ class Report extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('model, model_id, operation, create_time', 'required'),
-			array('model, model_id, operation, create_time', 'numerical', 'integerOnly'=>true),
+			array('model, model_id, operation, create_time, user', 'required'),
+			array('model, model_id, operation, create_time, user', 'numerical', 'integerOnly'=>true),
 			array('field', 'length', 'max'=>255),
 			array('old_value, new_value', 'length', 'max'=>3000),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, model, model_id, operation, field, old_value, new_value, create_time', 'safe', 'on'=>'search'),
+			array('id, model, model_id, operation, field, user, old_value, new_value, create_time', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -110,6 +115,7 @@ class Report extends CActiveRecord
 			'old_value' => 'Старое значение',
 			'new_value' => 'Новое значение',
 			'create_time' => 'Время',
+			'user' => 'Пользователь',
 		);
 	}
 
@@ -152,10 +158,15 @@ class Report extends CActiveRecord
 			$criteria->compare('t.create_time', '<' . (strtotime($dateTo)+86400));
 		}
 
+		$criteria->compare('user', $this->user);
+
 		$criteria->order = 'create_time desc';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>100,
+			),
 		));
 	}
 
@@ -219,6 +230,7 @@ class Report extends CActiveRecord
 			$report->model_id = $model->id;
 			$report->operation = self::OPERATION_CREATE;
 			$report->create_time = $logTime;
+			$report->user = self::getCurrentUserId();
 			$report->save();
 
 		// модель отредактирована
@@ -236,6 +248,7 @@ class Report extends CActiveRecord
 				$report->old_value = $oldState[$field];
 				$report->new_value = $newState[$field];
 				$report->create_time = $logTime;
+				$report->user = self::getCurrentUserId();
 				$report->save();
 			}
 		}
@@ -255,7 +268,18 @@ class Report extends CActiveRecord
 		$report->model_id = $model->id;
 		$report->operation = self::OPERATION_DELETE;
 		$report->create_time = time();
+		$report->user = self::getCurrentUserId();
 		$report->save();
+	}
+
+	static public function getCurrentUserId()
+	{
+		return @self::$users[Yii::app()->user->name];
+	}
+
+	public function getUserById()
+	{
+		return array_search($this->user, self::$users);
 	}
 
 
@@ -266,9 +290,6 @@ class Report extends CActiveRecord
 	 */
 	static public function initEvents(&$model)
 	{
-		if ( !Yii::app()->user->checkAccess('alexandrovna13') )
-			return false;
-
 		$model->onBeforeSave = array('Report', 'saveOldModelState');
 		$model->onAfterSave = array('Report', 'saveChangesToReport');
 		$model->onAfterDelete = array('Report', 'saveDeleteStateToReport');

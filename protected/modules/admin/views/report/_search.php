@@ -15,6 +15,13 @@
 )); ?>
 
 	<div class="form-group">
+		<?php echo $form->label($model,'user', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'user', array(''=>'не выбрано') + array_flip(Report::$users), array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<?php echo $form->label($model,'model', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($model, 'model', array(''=>'не выбрано') + Report::$models, array('class'=>'form-control')); ?>

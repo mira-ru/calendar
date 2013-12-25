@@ -64,5 +64,9 @@ $('.search-button').click(function(){
 			'name'=> 'Время',
 			'value'=>'date("d.m.Y H:i:s", $data->create_time)',
 		),
+		array(
+			'name'=> 'Пользователь',
+			'value'=>'$data->getUserById()',
+		),
 	),
 )); ?>
