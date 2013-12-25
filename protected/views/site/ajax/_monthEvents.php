@@ -6,18 +6,24 @@
  * @var $allServices array
  *
  * @var $currentTime integer
+ * @var $image ImageComponent
  */
 if (empty($events)) {
 	echo CHtml::tag('p', array('class'=>'warning-empty'), 'К сожалению, в этот день нет занятий. Попробуйте выбрать другой день!');
 	return;
 }
+$image = Yii::app()->image;
 
 $center = Center::model()->findByPk($centerId);
 if ($center === null) { $center = new Center(); }
 
 /** @var $event Event */
 foreach ($events as $event) {
-	echo CHtml::openTag('div', array('class'=>'grid'));
+	$class = 'grid';
+	if ($event->is_draft == EventTemplate::DRAFT_YES) {
+		$class .= ' -disabled';
+	}
+	echo CHtml::openTag('div', array('class'=>$class));
 
 	$monthNumber = date('n', $event->start_time);
 	$dom = date('j', $event->start_time);
@@ -31,11 +37,13 @@ foreach ($events as $event) {
 
 	echo CHtml::openTag('div', array('class'=>'col-10 event-info'));
 
+	echo CHtml::image($image->getPreview($event->direction->image_id, 'crop_150'), $event->direction->name, array('width'=>90, 'height'=>90));
+
 	// direction link
 	echo $event->direction->checkShowLink()
 	    ? CHtml::link(
 		    $event->direction->name,
-		    $this->createUrl('/site/index', array('class_id'=>Direction::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'a='.$event->direction_id)),
+		    $this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$currentTime, 'popup'=>'a='.$event->direction_id)),
 		    array('data-remote'=>$this->createUrl('/site/axPopup', array('item'=>$event->direction_id, 'type'=>'a')),
 			    'data-action-id'=>$event->direction_id,
 			    'data-toggle'=>'modal',
@@ -51,8 +59,8 @@ foreach ($events as $event) {
 			, array('class'=>'pencil', 'target'=>'_blank'));
 	}
 
-	if (!empty($event->direction->desc)) {
-		echo CHtml::tag('p', array(), $event->direction->desc);
+	if (!empty($event->direction->short_desc)) {
+		echo CHtml::tag('p', array(), $event->direction->short_desc);
 	}
 	/** @var $service Service */
 	$service = isset($allServices[$event->service_id]) ? $allServices[$event->service_id] : new Service();
@@ -69,9 +77,9 @@ foreach ($events as $event) {
 		).' / '."\n";
 
 		echo CHtml::openTag('span');
-			echo $center->name;
+//			echo $center->name;
 			if (!empty($users)) {
-				echo ': ';
+//				echo ': ';
 				$cnt = 0;
 				foreach ($users as $user) {
 					if ($cnt==0) {

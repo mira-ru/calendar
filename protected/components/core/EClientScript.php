@@ -13,7 +13,6 @@ class EClientScript extends CClientScript
 	{
 
 		parent::init();
-
 		if (empty($this->timeFile)) {
 			return;
 		}
@@ -64,4 +63,5 @@ class EClientScript extends CClientScript
 	{
 		return $this->_suffix;
 	}
+
 }

@@ -97,8 +97,10 @@ class Config {
 				return $center->overview;
 			}
 		} else {
-			if (( $model instanceof Direction || $model instanceof User || $model instanceof Hall )) {
+			if (( $model instanceof Direction || $model instanceof Hall )) {
 				return self::VIEW_WEEK;
+			} elseif ( $model instanceof User ) {
+				return self::VIEW_MONTH;
 			} else {
 				return self::VIEW_DAY;
 			}

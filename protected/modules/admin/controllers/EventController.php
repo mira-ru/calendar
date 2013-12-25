@@ -17,12 +17,24 @@ class EventController extends AdminController
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate()
+	public function actionCreate($id=null)
 	{
-		$template = new EventTemplate();
-
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
+
+		$id = intval($id);
+		// Срабатывает при открытии страницы
+		if (!empty($id) && !$request->getIsPostRequest()) {
+			/** @var $event Event */
+			$event = Event::model()->findByPk($id);
+			if ($event===null) {
+				throw new CHttpException(404);
+			}
+			$template = $event->getTemplate();
+		} else {
+			$template = new EventTemplate();
+			$event = new Event();
+		}
 
 		$date = $request->getParam('date');
 		$startTime = $request->getParam('start_time');
@@ -30,54 +42,81 @@ class EventController extends AdminController
 
 		if($request->getIsPostRequest())
 		{
-			if (isset($_POST['EventTemplate'])) {
+			if ( isset($_POST['EventTemplate']) && isset($_POST['Event'])) {
+				$event->attributes = $_POST['Event'];
 				$template->attributes = $_POST['EventTemplate'];
+
 				// установка времени события в течении дня
 				$template->start_time = strtotime($startTime) - strtotime('TODAY');
 				$template->end_time = strtotime($endTime) - strtotime('TODAY');
-
-				$time = strtotime($date);
-				$template->init_time = $time;
-				if ($time)
-					$template->day_of_week = date('w', $time);
-				else
-					$template->day_of_week = -1;
-
 				$template->status = EventTemplate::STATUS_ACTIVE;
-			}
-			$template->file = CUploadedFile::getInstance($template, 'file');
 
-			if ($template->validate()) { // Создание событий
-				// сохраняем картинку
-				if ($template->file instanceof CUploadedFile) {
-					$file = $template->file->getTempName();
-					$fileId = Yii::app()->image->putImage($file, $template->file->getName());
-					if (empty($fileId)) {
-						throw new CHttpException(500);
+				$initTime = DateMap::currentDay(strtotime($date));
+
+				$event->start_time = $template->start_time + $initTime;
+				$event->end_time = $template->end_time + $initTime;
+
+				if ($initTime)
+					$event->day_of_week = date('w', $initTime);
+				else
+					$event->day_of_week = -1;
+
+				$event->file = CUploadedFile::getInstance($template, 'file');
+
+				if ( $template->validate(array('type', 'status', 'comment')) && $event->validate() ) { // Создание событий
+					// сохраняем картинку
+					if ($event->file instanceof CUploadedFile) {
+						$file = $template->file->getTempName();
+						$fileId = Yii::app()->image->putImage($file, $template->file->getName());
+						if (empty($fileId)) {
+							throw new CHttpException(500);
+						}
+
+						$event->image_id = $fileId;
 					}
 
-					$template->image_id = $fileId;
-				}
+					$template->updateFromEvent($event, $template->type, $initTime);
 
-				$template->save(false);
-				$this->redirect(
-					Yii::app()->getUser()->getReturnUrl(array('index'))
-				);
+					$template->save(false);
+					$event->template_id = $template->id;
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
+					$event->save(false);
+
+					$template->makeLinks();
+
+					$url = $this->createUrl('/site/index', array(
+						'class_id'=>Direction::MODEL_TYPE,
+						'id'=>$event->direction_id,
+						'time'=>DateMap::currentDay($event->start_time)
+					));
+
+					$this->redirect($url);
+				}
 			}
 		}
 
 		if (!$request->getIsPostRequest()) {
-			$date = date('d.m.Y');
-			$startTime = '7.00';
-			$endTime = '8.00';
+			if (!empty($id)) {
+				$date = date('d.m.Y', $event->start_time);
+				$startTime = date('H:i', $event->start_time);
+				$endTime = date('H:i', $event->end_time);
+			} else {
+				$date = date('d.m.Y');
+				$startTime = '7.00';
+				$endTime = '8.00';
+			}
 		}
 
 		$centers = Center::model()->findAllByAttributes(array('status'=>Center::STATUS_ACTIVE));
-		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$template->center_id));
-		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$template->service_id));
+		$services = Service::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'center_id'=>$event->center_id));
+		$directions = Direction::model()->findAllByAttributes(array('status'=>Service::STATUS_ACTIVE, 'service_id'=>$event->service_id));
 		$halls = Hall::model()->findAllByAttributes(array('status'=>Hall::STATUS_ACTIVE));
+
 		$this->render('create',array(
 			'template' => $template,
+			'event' => $event,
+
 			'centers' => $centers,
 			'services' => $services,
 			'directions' => $directions,
@@ -101,7 +140,7 @@ class EventController extends AdminController
 		if ($event===null)
 			throw new CHttpException(404);
 
-		$template = new EventTemplate();
+		$template = $event->getTemplate(); //new EventTemplate();
 
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -112,20 +151,30 @@ class EventController extends AdminController
 		$date = $request->getParam('date');
 
 		if ($request->getIsPostRequest()) {
-
-			$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
-			$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
-			$event->file = CUploadedFile::getInstance($event, 'file');
-
-			if (isset($_POST['Event'])) {
+			if ( isset($_POST['Event']) ) {
 				$event->attributes = $_POST['Event'];
-				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
+				$event->file = CUploadedFile::getInstance($event, 'file');
 
-				$initTime = strtotime($date);
+				$template->users = !empty($_POST['EventTemplate']['users']) ? $_POST['EventTemplate']['users'] : array();
+				$template->comment = !empty($_POST['EventTemplate']['comment']) ? $_POST['EventTemplate']['comment'] : '';
+				// FIXME: сделать нормальную проверку пересечений. Отваливалось обновление шаблона на валидации.
+				$template->forceSave = true;
+//				if (isset($_POST['EventTemplate']['forceSave'])) {
+//					$template->forceSave = (bool)$_POST['EventTemplate']['forceSave'];
+//				}
+
+				$newType = !isset($_POST['EventTemplate']['type']) ? EventTemplate::TYPE_SINGLE : intval($_POST['EventTemplate']['type']);
+				$hasErrors = empty( EventTemplate::$typeNames[$newType] ); // валидация типа
+
+				$initTime = DateMap::currentDay(strtotime($date));
 
 				// установка времени события в течении дня
-				$event->start_time = strtotime($startTime) - strtotime('TODAY');
-				$event->end_time = strtotime($endTime) - strtotime('TODAY');
+				// Разница в днях при изменении даты (для корректного обновления событий)
+				$dTime = $initTime - DateMap::currentDay($event->start_time);
+
+
+				$event->start_time = strtotime($startTime) - strtotime('TODAY') + $initTime;
+				$event->end_time = strtotime($endTime) - strtotime('TODAY') + $initTime;
 
 				if ($initTime)
 					$event->day_of_week = date('w', $initTime);
@@ -133,8 +182,9 @@ class EventController extends AdminController
 					$event->day_of_week = -1;
 
 				if ($event->validate() && !$hasErrors) {
-					$currentTemplate = $event->getTemplate();
-					$currentTemplate->users = $template->users;
+					$template->save(false); // Применение свойтв к шаблону (не привязаннных к событиям)
+					$event->create_time = $template->create_time;
+					$event->update_time = $template->update_time;
 
 					// сохраняем картинку
 					if ($event->file instanceof CUploadedFile) {
@@ -147,68 +197,54 @@ class EventController extends AdminController
 						$event->image_id = $fileId;
 					}
 
+					$event->save(false);
+
 					// осталось одиночное событие или регулярное и изменяем только текущее
-					if (($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
+					if (($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_SINGLE)) {
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						$currentTemplate->save(false);
-
-					} elseif (($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
-						$currentTemplate->makeLinks = false;
-						$currentTemplate->save(false);
+						$template->status = EventTemplate::STATUS_ACTIVE; // ?
+						$event->updateYoungEvents($template, $dTime);
+					} elseif (($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && !$changeAll)) {
 						// ok
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
+					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_SINGLE) {
 						// Сменили тип на одиночное событие, прибиваем младшие копии события
 
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_SINGLE, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$template->type = EventTemplate::TYPE_SINGLE;
+						$template->init_time = $initTime;
+						$template->save(false);
 						$event->removeYoungEvents();
-						$currentTemplate->save(false);
 
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
+					} elseif ($template->type==EventTemplate::TYPE_SINGLE && $newType==EventTemplate::TYPE_REGULAR) {
 						// Событие стало регулярным
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$template->type = EventTemplate::TYPE_REGULAR;
+						$template->init_time = $initTime;
+						// Сохраняем и создаем линки шаблона
+						if ( $template->validateEventsPeriod() ) {
+							$template->save(false);
+							$template->makeLinks();
+						}
 
-						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						// Сохраняем и создаем линки на событие
-						$currentTemplate->save(false);
-					} elseif ($currentTemplate->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
+					} elseif ($template->type==EventTemplate::TYPE_REGULAR && $newType==EventTemplate::TYPE_REGULAR && $changeAll) {
 						// Обновляем все события
-						$event->removeYoungEvents();
 
 						// обновляем шаблон
-						$currentTemplate->updateFromEvent($event, EventTemplate::TYPE_REGULAR, $initTime);
-						$currentTemplate->status = EventTemplate::STATUS_ACTIVE;
-
-						// Сохраняем и создаем линки на событие
-						$currentTemplate->save(false);
-
+						$template->status = EventTemplate::STATUS_ACTIVE;
+						$event->updateYoungEvents($template, $dTime);
 					} else {
 						throw new CHttpException(500, 'Invalid action');
 					}
 
-					// Установка времени самого события
-					$event->start_time += $initTime;
-					$event->end_time += $initTime;
-					$event->save(false);
+					$url = $this->createUrl('index', array('Event[template_id]'=>$event->template_id, 'date_from'=>date('d.m.Y', $event->start_time )));
 
-					$template->type = $currentTemplate->type;
-					$template->image_id = $currentTemplate->image_id;
-					$this->redirect(
-						Yii::app()->getUser()->getReturnUrl(array('index'))
-					);
+					$this->redirect($url);
 				}
 			}
 		}
 
 		if (!$request->getIsPostRequest()) {
-			$template = $event->getTemplate();
 			$date = date('d.m.Y', $event->start_time);
 			$startTime = date('H.i', $event->start_time);
 			$endTime = date('H.i', $event->end_time);
@@ -288,7 +324,8 @@ class EventController extends AdminController
 		$template = $event->getTemplate();
 		if ($template->type == EventTemplate::TYPE_SINGLE) {
 			$event->delete();
-			$template->delete();
+			$template->status = EventTemplate::STATUS_DISABLED;
+			$template->save(false);
 		} elseif ($template->type == EventTemplate::TYPE_REGULAR) {
 			$event->removeYoungEvents();
 			$event->delete();

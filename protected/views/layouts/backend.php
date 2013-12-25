@@ -6,18 +6,18 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="">
 		<meta name="author" content="">
-		<script type="text/javascript" src="/js/lib/Jquery.js"></script>
+		<script type="text/javascript" src="/lib/js/vendor/jquery.js"></script>
 		<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 
 		<?php
 		/** @var $cs CClientScript */
 		$cs = Yii::app()->getClientScript();
-		$cs->registerScriptFile('/jslib/modules/vendor/jquery.cookie.js', CClientScript::POS_HEAD);
-		$cs->registerScriptFile('/js/lib/Bootstrap.js');
+		$cs->registerScriptFile('/lib/js/vendor/jquery.cookie.js', CClientScript::POS_HEAD);
+		$cs->registerScriptFile('/lib/js/vendor/bootstrap/Bootstrap.js');
 
-		$cs->registerScriptFile('/js/lib/mod/backend/offcanvas.js', CClientScript::POS_END);
-		$cs->registerCssFile('/css/bootstrap.css');
-		$cs->registerCssFile('/css/custom/backend/offcanvas.css');
+		$cs->registerScriptFile('/lib/js/backend/offcanvas.js', CClientScript::POS_END);
+		$cs->registerCssFile('/lib/css/bootstrap.css');
+		$cs->registerCssFile('/lib/css/offcanvas.css');
 		?>
 	</head>
 	<body>
@@ -101,12 +101,5 @@
 			<hr>
 			<footer>Copyright &copy; <?php echo date('Y'); ?> by Miracenter. All Rights Reserved.</footer>
 		</div><!--/.container-->
-
-		<!-- Bootstrap core JavaScript
-		================================================== -->
-		<!-- Placed at the end of the document so the pages load faster -->
-<!--		<script src="/js/lib/Jquery.js"></script>-->
-<!--		<script src="/js/lib/Bootstrap.js"></script>-->
-<!--		<script src="/js/lib/mod/backend/offcanvas.js"></script>-->
 	</body>
 </html>

@@ -33,6 +33,7 @@ $('.search-button').click(function(){
 	'model'=>$model,
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
 	'dateTo'=>Yii::app()->request->getParam('date_to'),
+	'dateUpdate'=>Yii::app()->request->getParam('date_update'),
 	'centers' => $centers,
 	'services' => $services,
 	'halls' => $halls,
@@ -87,12 +88,12 @@ $this->widget('widgets.CustomGridView', array(
 		array(
 			'name'=> 'start_time',
 			'sortable' => false,
-			'value'=>'date("d.m.Y H:i:s", $data->start_time)',
+			'value'=>'date("d.m.Y", $data->start_time)." ".date("H:i", $data->start_time)."-".date("H:i", $data->end_time)',
 		),
 		array(
-			'name'=> 'end_time',
+			'name'=> 'update_time',
 			'sortable' => false,
-			'value'=>'date("d.m.Y H:i:s", $data->end_time)',
+			'value'=>'date("d.m.Y H:i:s", $data->update_time)',
 		),
 		array(
 			'class'=>'CButtonColumn',

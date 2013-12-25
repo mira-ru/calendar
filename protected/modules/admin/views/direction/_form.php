@@ -115,6 +115,21 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group <?php if ($model->hasErrors('short_desc')) echo 'has-error'; ?>">
+		<?php echo $form->label($model, 'short_desc', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-8">
+			<?php
+			echo CHtml::activeTextArea($model, 'short_desc', array(
+				'value'=>Kavychker::deformat($model->short_desc),
+				'maxlength'=>512,
+				'class'=>'col-lg-12',
+				'rows'=>10,
+			));
+			echo $form->error($model,'short_desc', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($model->hasErrors('price')) echo 'has-error'; ?>">
 		<?php echo $form->label($model, 'price', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-8">

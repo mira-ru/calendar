@@ -37,12 +37,12 @@ $image = Yii::app()->image;
 					<?php echo $item->desc; ?>
 					<?php
 					if (!empty($item->url)) {
-						echo CHtml::openTag('div');
+						echo CHtml::openTag('div', array('class'=>'additional-services'));
 						echo StrUtil::videoUrlConvert($item->url);
 						echo CHtml::closeTag('div');
 					}
 					if (!empty($item->photo_url)) {
-						echo CHtml::openTag('div');
+						echo CHtml::openTag('div', array('class'=>'additional-services'));
 						echo StrUtil::videoUrlConvert($item->photo_url);
 						echo CHtml::closeTag('div');
 					}

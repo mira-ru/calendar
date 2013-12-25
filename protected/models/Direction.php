@@ -6,10 +6,13 @@
  * The followings are the available columns in table 'direction':
  * @property integer $id
  * @property integer $status
+ * @property integer $center_id
  * @property integer $service_id
  * @property string $name
  * @property string $url
  * @property string $photo_url
+ * @property string $desc
+ * @property string $short_desc
  * @property string price
  * @property integer image_id
  * @property integer $create_time
@@ -17,7 +20,6 @@
  */
 class Direction extends CActiveRecord
 {
-	public $center_id;
 	// Загруженный файл
 	public $file;
 
@@ -58,6 +60,7 @@ class Direction extends CActiveRecord
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			array('desc', 'length', 'max'=>5000),
 			array('price', 'length', 'max'=>2048),
+			array('short_desc', 'length', 'max'=>512),
 
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -83,16 +86,37 @@ class Direction extends CActiveRecord
 	public function init()
 	{
 		parent::init();
-		$this->onAfterFind = array($this, 'setCenter');
-		$this->onAfterSave = array($this, 'setCenter');
+		$this->onAfterSave = array($this, 'resetParams');
 	}
 
-	public function setCenter()
+	/**
+	 * Поддержание параметров в связанных событиях
+	 * @return bool
+	 */
+	public function resetParams()
 	{
-		$service = $this->service;
-		if ($service!==null) {
-			$this->center_id = $service->center_id;
+		if ($this->getIsNewRecord()) {
+			return true;
 		}
+
+		$sql = 'SELECT t.id, t.service_id, s.center_id FROM direction as t '
+		    .'INNER JOIN service as s ON t.service_id=s.id WHERE t.id='.intval($this->id);
+
+		$data = Yii::app()->db->createCommand($sql)->queryRow();
+		if (empty($data)) {
+			return true;
+		}
+		Event::model()->updateAll(array(
+			'center_id'=>$data['center_id'],
+			'service_id'=>$data['service_id']
+		), 'direction_id=:did', array(':did'=>$data['id']));
+
+		EventTemplate::model()->updateAll(array(
+			'center_id'=>$data['center_id'],
+			'service_id'=>$data['service_id']
+		), 'direction_id=:did', array(':did'=>$data['id']));
+
+
 	}
 
 	public function behaviors()
@@ -103,7 +127,7 @@ class Direction extends CActiveRecord
 			),
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
-				'attributes' => array('desc', 'price'),
+				'attributes' => array('desc', 'price', 'short_desc'),
 			),
 		);
 	}
@@ -135,6 +159,7 @@ class Direction extends CActiveRecord
 			'photo_url' => 'URL фотоальбома',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
+			'short_desc' => 'Краткое описание',
 			'price' => 'Цена',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
@@ -167,10 +192,7 @@ class Direction extends CActiveRecord
 		}
 
 		$criteria->compare('t.service_id', $this->service_id);
-		if (!empty($this->center_id)) {
-			$criteria->join = 'INNER JOIN service as s ON s.id=t.service_id';
-			$criteria->compare('s.center_id', $this->center_id);
-		}
+		$criteria->compare('t.center_id', $this->center_id);
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
@@ -180,8 +202,25 @@ class Direction extends CActiveRecord
 			$criteria->compare('t.update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
+		if ( ($dateUpdate = $request->getParam('date_update')) ) {
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+		}
+
+		if ( ($checkDesc = $request->getParam('check_desc')) ) {
+			if ($checkDesc == 1) { // has desc
+				$criteria->addCondition('t.`desc`<>\'\'');
+			} elseif ($checkDesc == 2) { // no desc
+				$criteria->addCondition('t.`desc`=\'\'');
+			}
+		}
+
+		$sort = new CSort();
+//		$sort->defaultOrder = 't.name ASC';
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'sort'=>$sort,
 		));
 	}
 
@@ -203,7 +242,7 @@ class Direction extends CActiveRecord
 	 * @param $endTime
 	 * @param $serviceId
 	 */
-	public static function getActiveByTime($startTime, $endTime, $serviceId)
+	public static function getActiveByTime($startTime, $endTime, $serviceId, $showDraft=false)
 	{
 		$criteria = new CDbCriteria();
 		$criteria->select = 'DISTINCT t.*';
@@ -212,6 +251,10 @@ class Direction extends CActiveRecord
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':sid'=>$serviceId, ':st'=>self::STATUS_ACTIVE);
 		$criteria->index = 'id';
 		$criteria->order = 't.name ASC';
+
+		if (!$showDraft) {
+			$criteria->condition .= ' AND e.is_draft='.EventTemplate::DRAFT_NO;
+		}
 
 		return self::model()->findAll($criteria);
 	}

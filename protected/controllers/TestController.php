@@ -4,6 +4,10 @@ class TestController extends AdminController
 {
 	public function actionTest()
 	{
+		$tmp = strtotime(date("j M Y H:i:s", time()));
+		FirePHP::getInstance()->fb(DateMap::currentDay($tmp));
+
+
 		$tmp = DateMap::currentWeek(time());
 
 		FirePHP::getInstance()->fb(date("j M Y H:i:s", $tmp));

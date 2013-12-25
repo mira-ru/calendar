@@ -11,6 +11,7 @@
  * @var $events array
  *
  * @var $allServices array
+ * @var $showDraft bool
  */
 
 // layout settings
@@ -68,7 +69,7 @@ $this->bodyClass = array('calendar');
 					echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
 
 					/** @var $direction Direction */
-					foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
+					foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id, $showDraft) as $direction) {
 						echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 					}
 
@@ -94,10 +95,12 @@ $this->bodyClass = array('calendar');
 					$monthNumber = date('n', $currentTime);
 					$yearNumber = date('Y', $currentTime);
 					$prevMonthTime = DateMap::prevMonth($currentTime);
-					echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
-						$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
-						array('class'=>'prev', 'data-time'=>$prevMonthTime)
-					);
+					if ($prevMonthTime >= DateMap::currentMonth(time())) {
+						echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
+							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
+							array('class'=>'prev', 'data-time'=>$prevMonthTime)
+						);
+					}
 					echo CHtml::tag('strong',
 						array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
 					    DateMap::$monthMap[$monthNumber].', '.$yearNumber

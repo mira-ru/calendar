@@ -11,9 +11,11 @@
  * @property integer $direction_id
  * @property integer $center_id
  * @property integer $service_id
+ * @property integer $is_draft
  * @property integer $image_id
  * @property integer $day_of_week
  * @property string $desc
+ * @property string $comment
  * @property integer $init_time - день первого события(timestamp)
  * @property integer $start_time
  * @property integer $end_time
@@ -22,11 +24,6 @@
  */
 class EventTemplate extends CActiveRecord
 {
-	// Загруженный файл
-	public $file;
-	// Флаг создания линков после сохранения
-	public $makeLinks = true;
-
 	private $_users = null;
 
 	const STATUS_ACTIVE = 1;
@@ -43,6 +40,28 @@ class EventTemplate extends CActiveRecord
 		self::TYPE_SINGLE => 'Одиночное событие',
 		self::TYPE_REGULAR => 'Регулярное событие',
 	);
+
+	const DRAFT_YES = 1;
+	const DRAFT_NO = 0;
+	public static $draftNames = array(
+		self::DRAFT_YES => 'Черновик',
+		self::DRAFT_NO => 'Опубликован',
+	);
+
+	/**
+	 * @var bool флаг принудительного сохранения без валидации периодов событий
+	 */
+	public $forceSave = false;
+
+	/**
+	 * @var array массив id событий, которые пересекаются с событиями текущего шаблона
+	 */
+	public $similarEvents = array();
+
+	/**
+	 * @var атрибут используется для генерации ошибки валидации
+	 */
+	public $error = null;
 
 	/**
 	 * @return string the associated database table name
@@ -63,11 +82,12 @@ class EventTemplate extends CActiveRecord
 			array('center_id, service_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
+			array('is_draft', 'in', 'range'=>array(self::DRAFT_YES, self::DRAFT_NO)),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 
-			array('desc', 'length', 'max'=>5000),
+			array('desc, comment', 'length', 'max'=>5000),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
@@ -79,9 +99,10 @@ class EventTemplate extends CActiveRecord
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),
 
 			array('start_time, end_time', 'timeCheck'),
-			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 
-			array('users', 'safe'),
+			array('error', 'validateEventsPeriod'),
+
+			array('users, forceSave', 'safe'),
 
 			// The following rule is used by search().
 //			array('id, status, type, name', 'safe', 'on'=>'search'),
@@ -126,26 +147,17 @@ class EventTemplate extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, '_saveUsers');
-		$this->onAfterSave = array($this, 'makeLinks');
+		$this->onAfterValidate = array($this, 'validateEventsPeriod');
 	}
 
 	/**
-	 * Создание линков при сохранении шаблонов.
-	 * Attention! Сохраняется только при создании шаблона
-	 * и смене типа на регулярное событие
+	 * Создание событий по шаблону.
+	 *
 	 */
 	public function makeLinks()
 	{
-		if ($this->status != self::STATUS_ACTIVE || !$this->makeLinks)
-			return false;
-
-		if ($this->getIsNewRecord()) {
-			$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
-			$initTime = $this->init_time; // время начала события
-		} else {
-			$count = $this->type == self::TYPE_SINGLE ? 0 : 3;
-			$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
-		}
+		$count = $this->type == self::TYPE_SINGLE ? 0 : 11;
+		$initTime = $this->init_time + DateMap::TIME_WEEK; // время начала события
 
 		for ($i=0; $i<$count; $i++) {
 
@@ -173,6 +185,8 @@ class EventTemplate extends CActiveRecord
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 			'users' => 'Мастера',
+			'comment' => 'Внутренние комментарии',
+			'is_draft' => 'Состояние',
 		);
 	}
 
@@ -192,7 +206,7 @@ class EventTemplate extends CActiveRecord
 		if ( !$event instanceof Event || !isset(self::$typeNames[$type]) )
 			throw new CHttpException(500);
 
-//		$this->name = $event->name;
+		$this->is_draft = $event->is_draft;
 		$this->image_id = $event->image_id;
 		$this->desc = $event->desc;
 		$this->direction_id = $event->direction_id;
@@ -200,8 +214,8 @@ class EventTemplate extends CActiveRecord
 		$this->center_id = $event->center_id;
 		$this->service_id = $event->service_id;
 		$this->day_of_week = $event->day_of_week;
-		$this->start_time = $event->start_time;
-		$this->end_time = $event->end_time;
+		$this->start_time = $event->start_time - DateMap::currentDay($event->start_time);
+		$this->end_time = $event->end_time - DateMap::currentDay($event->end_time);
 		$this->type = $type;
 		$this->init_time = $initTime;
 	}
@@ -270,6 +284,47 @@ class EventTemplate extends CActiveRecord
 		} catch (Exception $e) {
 			$transaction->rollback();
 		}
+	}
+
+
+	/**
+	 * Валидация интервалов всех событий текущего шаблона на предмет
+	 * пересечения со временем других событий
+	 * @return bool
+	 */
+	public function validateEventsPeriod()
+	{
+		if ( $this->forceSave )
+			return true;
+
+		$count = $this->type == self::TYPE_SINGLE ? 1 : 4;
+		$initTime = $this->init_time; // время начала события
+
+		for ($i=0; $i<$count; $i++) {
+
+			$similar = array();
+			if ( !Event::eventPeriodChecker($this->start_time, $this->end_time, $this->hall_id, $initTime, $similar) )
+				$this->similarEvents+=$similar;
+
+			$initTime += DateMap::TIME_WEEK; // интервал событий - неделя
+		}
+
+		// "уборка" дублирующихся id событий
+		$this->similarEvents = array_unique($this->similarEvents);
+
+		$innerEvents = Event::model()->findAllByAttributes(array('template_id'=>$this->id));
+		foreach($innerEvents as $ev) {
+			if(($key = array_search($ev->id, $this->similarEvents)) !== false) {
+				unset($this->similarEvents[$key]);
+			}
+		}
+
+		if ( count($this->similarEvents) > 0 ) {
+			$this->addError('error', 'Временной интервал события пересекается с другими событиями');
+			return false;
+		}
+
+		return true;
 	}
 
 }

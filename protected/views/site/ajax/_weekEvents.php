@@ -39,6 +39,9 @@ $renderItem = function($event, $services) {
 	$colorClass = isset($services[$event->service_id]) ?
 	    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
 	$htmlOptions['class'] = 'col-150 '.$colorClass;
+	if ($event->is_draft == EventTemplate::DRAFT_YES) {
+		$htmlOptions['class'] .= ' -disabled';
+	}
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
 

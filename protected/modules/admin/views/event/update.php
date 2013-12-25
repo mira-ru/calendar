@@ -29,6 +29,10 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		),
 	)); ?>
 
+	<?php if ( $template->hasErrors('error') || $event->hasErrors('error') ) : ?>
+		<?php $this->renderPartial('_similarEventsAlert', array('template'=>$template, 'event'=>$event)); ?>
+	<?php endif; ?>
+
 	<div class="form-group <?php if ($event->hasErrors('center_id')) echo 'has-error'; ?>"">
 		<?php
 		if (empty($event->center_id)) {
@@ -232,6 +236,28 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group <?php if ($template->hasErrors('comment')) echo 'has-error'; ?>">
+		<?php echo $form->label($template, 'comment', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-8">
+			<?php
+			echo CHtml::activeTextArea($template, 'comment', array(
+				'maxlength'=>5000,
+				'class'=>'col-lg-12',
+				'rows'=>10,
+			));
+			echo $form->error($template,'comment', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
+	<div class="form-group <?php if ($event->hasErrors('is_draft')) echo 'has-error'; ?>">
+		<?php echo $form->label($event,'is_draft', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($event, 'is_draft', EventTemplate::$draftNames, array('class'=>'form-control')); ?>
+			<?php echo $form->error($event,'is_draft', array('class'=>'text-danger')); ?>
+		</div>
+	</div>
+
 	<div class="form-group <?php if ($template->hasErrors('type')) echo 'has-error'; ?>">
 		<?php echo $form->label($template,'type', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
@@ -284,6 +310,13 @@ $directionList = CHtml::listData($directions, 'id', 'name');
 					.$this->createUrl($this->id.'/deleteall', array('id'=>$event->id))
 					.'\';}'
 				)); ?>
+		</div>
+
+		<div class="'col-lg-2">
+			<?php echo CHtml::link('Клонировать',
+				$this->createUrl('/admin/event/create', array('id'=>$event->id)),
+				array('class'=>'btn btn-success')
+			); ?>
 		</div>
 	</div>
 

@@ -27,6 +27,32 @@ class Service extends CActiveRecord
 	public function init()
 	{
 		$this->onAfterSave = array('Config', 'generateCss');
+		$this->onAfterSave = array($this, 'resetParams');
+	}
+
+	/**
+	 * Поддержание параметров в связанных событиях и направлениях
+	 * @return bool
+	 */
+	public function resetParams()
+	{
+		if ($this->getIsNewRecord()) {
+			return true;
+		}
+
+		Direction::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+		), 'service_id=:sid', array(':sid'=>$this->id));
+
+		Event::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+			'service_id'=>$this->id
+		), 'service_id=:sid', array(':sid'=>$this->id));
+
+		EventTemplate::model()->updateAll(array(
+			'center_id'=>$this->center_id,
+			'service_id'=>$this->id
+		), 'service_id=:sid', array(':sid'=>$this->id));
 	}
 
 
@@ -150,7 +176,7 @@ class Service extends CActiveRecord
 	 * @param $endTime
 	 * @param $centerId
 	 */
-	public static function getActiveByTime($startTime, $endTime, $centerId)
+	public static function getActiveByTime($startTime, $endTime, $centerId, $showDraft=false)
 	{
 		$criteria = new CDbCriteria();
 		$criteria->select = 'DISTINCT t.*';
@@ -158,6 +184,12 @@ class Service extends CActiveRecord
 		$criteria->condition = 't.center_id=:cid AND t.status=:st';
 		$criteria->params = array(':start'=>$startTime, ':end'=>$endTime, ':cid'=>$centerId, ':st'=>self::STATUS_ACTIVE);
 		$criteria->index = 'id';
+		$criteria->order = 't.name ASC';
+
+		if (!$showDraft) {
+			$criteria->condition .= ' AND e.is_draft='.EventTemplate::DRAFT_NO;
+		}
+
 
 		return self::model()->findAll($criteria);
 	}

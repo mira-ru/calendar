@@ -138,14 +138,29 @@ class User extends CActiveRecord
 		if (($dateFrom = $request->getParam('date_from'))) {
 			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
 		}
-		if (($dateTo = $request->getParam('update_to'))) {
-			$criteria->compare('update_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+		if (($dateTo = $request->getParam('date_to'))) {
+			$criteria->compare('create_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
-		$criteria->order = 't.name ASC';
+		if ( ($dateUpdate = $request->getParam('date_update')) ) {
+			$criteria->compare('update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+		}
+
+		if ( ($checkDesc = $request->getParam('check_desc')) ) {
+			if ($checkDesc == 1) { // has desc
+				$criteria->addCondition('`desc`<>\'\'');
+			} elseif ($checkDesc == 2) { // no desc
+				$criteria->addCondition('`desc`=\'\'');
+			}
+		}
+
+		$sort = new CSort();
+		$sort->defaultOrder = 't.name ASC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'sort'=>$sort,
 		));
 	}
 

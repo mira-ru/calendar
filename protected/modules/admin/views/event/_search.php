@@ -27,6 +27,13 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 	</div>
 
 	<div class="form-group">
+		<?php echo $form->label($model,'direction_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo CHtml::telField('direction', Yii::app()->request->getParam('direction', ''), array('size'=>60,'maxlength'=>255, 'class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<?php echo $form->label($model,'center_id', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($model, 'center_id', $centerList, array('class'=>'form-control')); ?>
@@ -51,6 +58,13 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 		<?php echo $form->label($model,'event_type', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
 			<?php echo $form->dropDownList($model, 'event_type', array(''=>'Все')+EventTemplate::$typeNames, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'is_draft', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'is_draft', array(''=>'Все')+EventTemplate::$draftNames, array('class'=>'form-control')); ?>
 		</div>
 	</div>
 
@@ -104,6 +118,26 @@ $hallList = array(''=>'Все')+CHtml::listData($halls, 'id', 'name');
 				'htmlOptions' => array('class'=>'form-control'),
 				'name'=>'date_to',
 				'value'=> $dateTo,
+				'options' => array(
+					'autoLanguage' => false,
+					'dateFormat' => 'dd.mm.yy',
+					'timeFormat' => 'hh:mm',
+					'changeMonth' => true,
+					'changeYear' => true,
+				),
+			));
+			?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo CHtml::label('Дата обновления', '', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+				'htmlOptions' => array('class'=>'span5'),
+				'name'=>'date_update',
+				'value'=> $dateUpdate,
 				'options' => array(
 					'autoLanguage' => false,
 					'dateFormat' => 'dd.mm.yy',

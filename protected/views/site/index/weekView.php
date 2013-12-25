@@ -13,6 +13,8 @@
  *
  * @var $currentMonth integer
  * @var $nextMonth integer
+ *
+ * @var $showDraft bool
  */
 
 // layout settings
@@ -69,7 +71,7 @@ $this->bodyClass = array('calendar');
 								echo CHtml::tag('li', array('data-service'=>$service->id), 'Все направления')."\n";
 
 								/** @var $direction Direction */
-								foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id) as $direction) {
+								foreach (Direction::getActiveByTime($currentMonth, $nextMonth, $service->id, $showDraft) as $direction) {
 									echo CHtml::tag('li', array('data-id'=>$direction->id), $direction->name)."\n";
 								}
 
@@ -92,21 +94,23 @@ $this->bodyClass = array('calendar');
 			<div id="period" class="flow">
 				<div class="col-6">
 					<?php
-						$monthNumber = date('n', $currentTime);
-						$yearNumber = date('Y', $currentTime);
-						$prevMonthTime = DateMap::prevMonth($currentTime);
+					$monthNumber = date('n', $currentTime);
+					$yearNumber = date('Y', $currentTime);
+					$prevMonthTime = DateMap::prevMonth($currentTime);
+					if ($prevMonthTime >= DateMap::currentMonth(time())) {
 						echo CHtml::link(DateMap::$monthMap[ date('n', $prevMonthTime) ],
 							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$prevMonthTime)),
 							array('class'=>'prev', 'data-time'=>$prevMonthTime)
 						);
-						echo CHtml::tag('strong',
-							array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
-							DateMap::$monthMap[$monthNumber].', '.$yearNumber
-						);
-						echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
-							$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextMonth)),
-							array('class'=>'next', 'data-time'=>$nextMonth)
-						);
+					}
+					echo CHtml::tag('strong',
+						array('class'=>'current', 'data-month'=>$monthNumber, 'data-year'=>$yearNumber),
+						DateMap::$monthMap[$monthNumber].', '.$yearNumber
+					);
+					echo CHtml::link(DateMap::$monthMap[ date('n', $nextMonth) ],
+						$this->createUrl('/site/index', array('class_id'=>$model::MODEL_TYPE, 'id'=>$model->id, 'time'=>$nextMonth)),
+						array('class'=>'next', 'data-time'=>$nextMonth)
+					);
 					?>
 				</div>
 				<div class="col-6 text-right">
