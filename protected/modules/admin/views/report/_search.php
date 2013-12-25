@@ -17,16 +17,30 @@
 	<div class="form-group">
 		<?php echo $form->label($model,'model', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($model, 'model', Report::$models, array('class'=>'form-control')); ?>
+			<?php echo $form->dropDownList($model, 'model', array(''=>'не выбрано') + Report::$models, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'operation', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php echo $form->dropDownList($model, 'operation', array(''=>'не выбрано') + Report::$operations, array('class'=>'form-control')); ?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'model_id', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-2">
+			<?php echo $form->textField($model, 'model_id', array('class'=>'form-control')); ?>
 		</div>
 	</div>
 
 	<div class="form-group">
 		<?php echo CHtml::label('От', '', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
+		<div class="col-lg-3">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'htmlOptions' => array('class'=>'span5'),
+				'htmlOptions' => array('class'=>'form-control'),
 				'name'=>'date_from',
 				'value'=> $dateFrom,
 				'options' => array(
@@ -43,10 +57,10 @@
 
 	<div class="form-group">
 		<?php echo CHtml::label('До', '', array('class'=>'col-lg-2 control-label')); ?>
-		<div class="col-lg-5">
+		<div class="col-lg-3">
 			<?php
 			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'htmlOptions' => array('class'=>'span5'),
+				'htmlOptions' => array('class'=>'form-control'),
 				'name'=>'date_to',
 				'value'=> $dateTo,
 				'options' => array(

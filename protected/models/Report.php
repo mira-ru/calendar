@@ -131,14 +131,28 @@ class Report extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
 		$criteria->compare('model',$this->model);
 		$criteria->compare('model_id',$this->model_id);
 		$criteria->compare('operation',$this->operation);
-		$criteria->compare('field',$this->field,true);
-		$criteria->compare('old_value',$this->old_value,true);
-		$criteria->compare('new_value',$this->new_value,true);
-		$criteria->compare('create_time',$this->create_time);
+
+		if ( $this->operation == self::OPERATION_DELETE ) {
+			$criteria->addCondition('t.field=:st and new_value=:del', 'OR');
+			$criteria->params = $criteria->params + array(
+					':st'=>'status',
+					':del'=>Direction::STATUS_DELETED,
+				);
+		}
+
+		$request = Yii::app()->getRequest();
+		if (($dateFrom = $request->getParam('date_from'))) {
+			$criteria->compare('t.create_time', '>=' . strtotime($dateFrom));
+		}
+
+		if (($dateTo = $request->getParam('date_to'))) {
+			$criteria->compare('t.create_time', '<' . (strtotime($dateTo)+86400));
+		}
+
+		$criteria->order = 'create_time desc';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -259,27 +273,52 @@ class Report extends CActiveRecord
 		return true;
 	}
 
+
+	/**
+	 * Возвращает имя класса модели
+	 * @return mixed
+	 */
 	public function getModelClass()
 	{
 		return array_search($this->model, self::$modelClasses);
 	}
 
+	/**
+	 * Возвращает название модели
+	 * В некоторых случаях возвращает ID модели, если в ней нет поля name
+	 * @return int
+	 */
+	public function getModelName()
+	{
+		$class = $this->getModelClass();
+		switch ($this->model) {
+			case self::MODEL_EVENT : return $this->model_id;
+			default : {
+				$model = $class::model()->findByPk($this->model_id);
+				if ( !$model || !isset($model->name) ) return $this->model_id;
+				else return '#' . $model->id . ' ' . $model->name;
+			}
+
+		}
+	}
+
+
+	/**
+	 * Возвращает лейбл для field
+	 * @return mixed
+	 */
 	public function getFieldLabel()
 	{
 		$class = $this->getModelClass();
 		return $class::model()->getAttributeLabel($this->field);
 	}
 
-	public function getOldValue()
-	{
-		return $this->getHumanVal($this->old_value);
-	}
 
-	public function getNewValue()
-	{
-		return $this->getHumanVal($this->new_value);
-	}
-
+	/**
+	 * Возвращает человекопонятное значение (вместо hall_id, center_id и т.п.)
+	 * @param $val
+	 * @return bool|mixed|string
+	 */
 	public function getHumanVal($val)
 	{
 		if ( $this->model == self::MODEL_CENTER ) {
@@ -336,4 +375,5 @@ class Report extends CActiveRecord
 		}
 
 	}
+
 }

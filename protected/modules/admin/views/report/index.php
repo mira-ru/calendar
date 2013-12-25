@@ -37,31 +37,31 @@ $('.search-button').click(function(){
 	'dataProvider'=>$model->search(),
 	'columns'=>array(
 		array(
-			'name'=> 'model',
+			'name'=> 'Тип',
 			'value'=>'Report::$models[$data->model]',
 		),
 		array(
-			'name'=> 'model_id',
-			'value'=>'$data->model_id',
+			'name'=> 'Название/ID',
+			'value'=>'$data->getModelName()',
 		),
 		array(
-			'name'=> 'operation',
+			'name'=> 'Действие',
 			'value'=>'Report::$operations[$data->operation]',
 		),
 		array(
-			'name'=> 'field',
+			'name'=> 'Поле',
 			'value'=>'$data->getFieldLabel()',
 		),
 		array(
-			'name'=> 'old_value',
-			'value'=>'StrUtil::getLimb($data->getOldValue(), 200)',
+			'name'=> 'Было',
+			'value'=>'StrUtil::getLimb($data->getHumanVal($data->old_value), 200)',
 		),
 		array(
-			'name'=> 'new_value',
-			'value'=>'StrUtil::getLimb($data->getNewValue(), 200)',
+			'name'=> 'Стало',
+			'value'=>'StrUtil::getLimb($data->getHumanVal($data->new_value), 200)',
 		),
 		array(
-			'name'=> 'create_time',
+			'name'=> 'Время',
 			'value'=>'date("d.m.Y H:i:s", $data->create_time)',
 		),
 	),
