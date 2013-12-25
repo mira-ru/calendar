@@ -33,6 +33,7 @@ $('.search-button').click(function(){
 	'model'=>$model,
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
 	'dateTo'=>Yii::app()->request->getParam('date_to'),
+	'dateUpdate'=>Yii::app()->request->getParam('date_update'),
 	'centers' => $centers,
 	'services' => $services,
 	'halls' => $halls,

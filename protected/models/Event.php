@@ -217,6 +217,11 @@ class Event extends CActiveRecord
 		if (($dateTo = $request->getParam('date_to'))) {
 			$criteria->compare('t.start_time', '<' . (strtotime($dateTo)+86400));
 		}
+		if ( ($dateUpdate = $request->getParam('date_update')) ) {
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+		}
+
 		if ($direction = $request->getParam('direction')) {
 			$criteria->join .= ' INNER JOIN direction as d ON d.id=t.direction_id';
 			$criteria->compare('d.name',$direction,true);

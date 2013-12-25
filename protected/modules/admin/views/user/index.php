@@ -34,6 +34,7 @@ $('.search-button').click(function(){
 	'model'=>$model,
 	'dateTo'=>Yii::app()->request->getParam('date_to'),
 	'dateFrom'=>Yii::app()->request->getParam('date_from'),
+	'dateUpdate'=>Yii::app()->request->getParam('date_update')
 )); ?>
 </div><!-- search-form -->
 
@@ -53,7 +54,7 @@ $('.search-button').click(function(){
 		),
 		array(
 			'name'=>'name',
-			'sortable' => false,
+			'sortable' => true,
 			'value' => '$data->name',
 		),
 		array(
@@ -65,6 +66,11 @@ $('.search-button').click(function(){
 			'name'=> 'update_time',
 			'sortable' => true,
 			'value'=>'date("d.m.Y", $data->update_time)',
+		),
+		array(
+			'name'=>'desc',
+			'sortable'=>false,
+			'value'=>'empty($data->desc) ? "Нет" : "Есть"',
 		),
 		array(
 			'class'=>'CButtonColumn',
