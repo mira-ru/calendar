@@ -68,6 +68,11 @@ $('.search-button').click(function(){
 			'value'=>'date("d.m.Y", $data->update_time)',
 		),
 		array(
+			'name'=>'desc',
+			'sortable'=>false,
+			'value'=>'empty($data->desc) ? "Нет" : "Есть"',
+		),
+		array(
 			'class'=>'CButtonColumn',
 			'htmlOptions' => array('style' => 'width: 100px;')
 		),
