@@ -173,7 +173,10 @@ class Event extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterValidate = array($this, 'validatePeriod');
+		Report::initEvents($this);
 	}
+
+	public $oldState;
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.

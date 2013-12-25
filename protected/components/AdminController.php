@@ -23,7 +23,7 @@ class AdminController extends Controller
 		return array(
 			array('allow',
 				'roles'=>array(
-					'admin'
+					'admin', 'alexandrovna13'
 				),
 			),
 			array('deny',

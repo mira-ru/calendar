@@ -41,6 +41,13 @@ class User extends CActiveRecord
 		return 'user';
 	}
 
+	public $oldState;
+
+	public function init()
+	{
+		Report::initEvents($this);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

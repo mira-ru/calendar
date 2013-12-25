@@ -87,7 +87,11 @@ class Direction extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, 'resetParams');
+
+		Report::initEvents($this);
 	}
+
+	public $oldState;
 
 	/**
 	 * Поддержание параметров в связанных событиях

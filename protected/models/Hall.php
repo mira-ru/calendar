@@ -30,6 +30,12 @@ class Hall extends CActiveRecord
 		return 'hall';
 	}
 
+	public $oldState;
+	public function init()
+	{
+		Report::initEvents($this);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

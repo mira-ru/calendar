@@ -28,8 +28,12 @@ class Center extends CActiveRecord
 
 	public function init()
 	{
+		Report::initEvents($this);
+
 		$this->onAfterSave = array('Config', 'generateCss');
 	}
+
+	public $oldState;
 
 	/**
 	 * @return string the associated database table name
@@ -83,6 +87,7 @@ class Center extends CActiveRecord
 			'overview' => 'Общий вид',
 			'detailed_view' => 'Подробный вид',
 			'color' => 'Цвет',
+			'position' => 'Позиция',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);
