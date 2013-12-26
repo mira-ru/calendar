@@ -22,7 +22,7 @@ $this->bodyClass = array('calendar');
 
 ?>
 <!-- PAGE CONTENT -->
-<div id="wrap" class="grid list-view">
+<div id="wrap" class="grid list-view <?php if (!empty($_GET['search'])) { echo 'search'; } ?>">
 	<div id="header" class="grid">
 		<div class="flow align-middle">
 			<div class="col-2" id="logo"><a href="http://miracentr.ru"><img src="/images/logo.png" class="_img-responsible"></a></div>
