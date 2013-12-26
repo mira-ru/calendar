@@ -24,8 +24,11 @@ class Service extends CActiveRecord
 
 	const MODEL_TYPE = 2;
 
+	public $oldState;
+
 	public function init()
 	{
+		Report::initEvents($this);
 		$this->onAfterSave = array('Config', 'generateCss');
 		$this->onAfterSave = array($this, 'resetParams');
 	}

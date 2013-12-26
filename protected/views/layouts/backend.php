@@ -81,9 +81,17 @@
 								'url' => $this->createUrl('/admin/event/index'),
 								'active' => $this->id == 'event'
 							),
+							array(
+								'label' => 'Отчеты',
+								'url' => $this->createUrl('/admin/report/index'),
+								'active' => $this->id == 'report',
+								'visible'=> Yii::app()->user->checkAccess('alexandrovna13'),
+							),
 						);
 
 						foreach ($links as $link) {
+							if ( isset($link['visible']) && !$link['visible'] ) continue;
+
 							$class = $link['active'] ? 'list-group-item active' : 'list-group-item';
 							echo CHtml::link($link['label'], $link['url'], array('class'=>$class));
 						}

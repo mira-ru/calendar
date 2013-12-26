@@ -28,7 +28,7 @@ class WebUser extends CWebUser
 			if ($allowCaching && $params===array() && isset($this->_access[$operation]))
 				$valid = $valid || $this->_access[$operation];
 			else
-				$valid = $valid || ($this->_access[$operation] = ('admin' == $operation && !empty($this->id)));
+				$valid = $valid || ($this->_access[$operation] = ($this->name == $operation));
 		}
 
 		return $valid;

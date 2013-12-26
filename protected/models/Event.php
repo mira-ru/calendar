@@ -51,6 +51,11 @@ class Event extends CActiveRecord
 	public $error = null;
 
 	/**
+	 * @var bool флаг отключает логирование события
+	 */
+	public $disableLog = false;
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -173,7 +178,10 @@ class Event extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterValidate = array($this, 'validatePeriod');
+		Report::initEvents($this);
 	}
+
+	public $oldState;
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
@@ -214,6 +222,11 @@ class Event extends CActiveRecord
 		if (($dateTo = $request->getParam('date_to'))) {
 			$criteria->compare('t.start_time', '<' . (strtotime($dateTo)+86400));
 		}
+		if ( ($dateUpdate = $request->getParam('date_update')) ) {
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+		}
+
 		if ($direction = $request->getParam('direction')) {
 			$criteria->join .= ' INNER JOIN direction as d ON d.id=t.direction_id';
 			$criteria->compare('d.name',$direction,true);
@@ -445,6 +458,7 @@ class Event extends CActiveRecord
 				$event->service_id = $template->service_id;
 				$event->create_time = $template->create_time;
 				$event->update_time = $template->update_time;
+				$event->disableLog = true;
 				$event->save(false);
 			}
 			$transaction->commit();
