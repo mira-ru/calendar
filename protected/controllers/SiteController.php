@@ -17,6 +17,8 @@ class SiteController extends FrontController
 		$currentTime = empty($time) ? time() : $time;
 		$currentTime = DateMap::currentDay($currentTime);
 
+		$isSearch = isset($_GET['search']);
+
 		// Приведение параметров
 		if ($class_id === null) { $class_id = Center::MODEL_TYPE; }
 		if (!isset(Config::$modelMap[$class_id])) { throw new CHttpException(400); }
@@ -92,8 +94,13 @@ class SiteController extends FrontController
 			} else {
 				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
+			$limit = null;
+			if ($isSearch) {
+				$limit = 100;
+				$timeEnd = $timeStart + DateMap::TIME_WEEK * 4 * 12; // ищем на год вперед
+			}
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft, $limit);
 
 			$this->render('index/monthView', array(
 				'model' => $model,
@@ -183,6 +190,8 @@ class SiteController extends FrontController
 		$type = $request->getParam('type');
 		$modelId = intval($request->getParam('item'));
 
+		$isSearch = (bool)$request->getParam('search', false);
+
 		$classId = array_search($type, Config::$routeMap);
 		if ($classId === false) { throw new CHttpException(400); }
 		if ( empty($modelId) ) { throw new CHttpException(400); }
@@ -228,7 +237,13 @@ class SiteController extends FrontController
 				$timeEnd = $timeStart + 2 * DateMap::TIME_WEEK;
 			}
 
-			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft);
+			$limit = null;
+			if ($isSearch) {
+				$limit = 100;
+				$timeEnd = $timeStart + DateMap::TIME_WEEK * 4 * 12; // ищем на год вперед
+			}
+
+			$events = Event::getByTime($timeStart, $timeEnd, $centerId, $directionId, $serviceId, $userId, $hallId, $showDraft, $limit);
 
 			$html = $this->renderPartial('ajax/_monthEvents', array(
 				'model'=>$model,

@@ -287,7 +287,7 @@ class Event extends CActiveRecord
 	 * @param $endTime
 	 * @return array|CActiveRecord
 	 */
-	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null, $showDraft=false)
+	public static function getByTime($startTime, $endTime, $centerId=null, $directionId=null, $serviceId=null, $userId=null, $hallId=null, $showDraft=false, $limit=null)
 	{
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'start_time >= :start AND end_time < :end';
@@ -312,6 +312,9 @@ class Event extends CActiveRecord
 		}
 		if ( !$showDraft ) {
 			$criteria->compare('is_draft', EventTemplate::DRAFT_NO);
+		}
+		if ($limit) {
+			$criteria->limit = $limit;
 		}
 
 		return self::model()->findAll($criteria);
