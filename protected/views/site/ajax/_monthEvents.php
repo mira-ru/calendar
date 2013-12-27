@@ -62,6 +62,10 @@ foreach ($events as $event) {
 	if (!empty($event->direction->short_desc)) {
 		echo CHtml::tag('p', array(), $event->direction->short_desc);
 	}
+
+	if (!empty($event->desc)) {
+		echo CHtml::tag('p', array(), $event->desc);
+	}
 	/** @var $service Service */
 	$service = isset($allServices[$event->service_id]) ? $allServices[$event->service_id] : new Service();
 	$colorClass = 'link-'.ltrim($service->color,'#');
