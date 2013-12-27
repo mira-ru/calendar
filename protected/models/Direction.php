@@ -187,6 +187,8 @@ class Direction extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.id',$this->id);
+
+		$this->name = trim($this->name);
 		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {

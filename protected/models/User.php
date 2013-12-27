@@ -133,6 +133,7 @@ class User extends CActiveRecord
 
 		$criteria->compare('id',$this->id);
 
+		$this->name = trim($this->name);
 		$criteria->compare('name',$this->name,true);
 
 		if (empty($this->status)) {

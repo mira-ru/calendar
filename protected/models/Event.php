@@ -229,6 +229,8 @@ class Event extends CActiveRecord
 
 		if ($direction = $request->getParam('direction')) {
 			$criteria->join .= ' INNER JOIN direction as d ON d.id=t.direction_id';
+
+			$direction = trim($direction);
 			$criteria->compare('d.name',$direction,true);
 		}
 
