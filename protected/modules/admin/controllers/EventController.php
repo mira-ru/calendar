@@ -85,11 +85,13 @@ class EventController extends AdminController
 
 					$template->makeLinks();
 
-					$url = $this->createUrl('/site/index', array(
-						'class_id'=>Direction::MODEL_TYPE,
-						'id'=>$event->direction_id,
-						'time'=>DateMap::currentDay($event->start_time)
-					));
+//					$url = $this->createUrl('/site/index', array(
+//						'class_id'=>Direction::MODEL_TYPE,
+//						'id'=>$event->direction_id,
+//						'time'=>DateMap::currentDay($event->start_time)
+//					));
+
+					$url = $this->createUrl('index', array('Event[template_id]'=>$event->template_id, 'date_from'=>date('d.m.Y', $event->start_time )));
 
 					$this->redirect($url);
 				}
