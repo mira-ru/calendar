@@ -11,6 +11,7 @@ $serviceList = array(''=>'Все')+CHtml::listData($services, 'id', 'name');
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'action'=>Yii::app()->createUrl($this->route),
 	'method'=>'get',
+	'id'=>'searchForm',
 	'enableAjaxValidation'=>false,
 	'htmlOptions' => array(
 		'class'=>'form-horizontal',
@@ -150,9 +151,19 @@ $serviceList = array(''=>'Все')+CHtml::listData($services, 'id', 'name');
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">
 			<button type="submit" class="btn btn-default">Найти</button>
+			<button id="fileCreate" type="button" class="btn btn-success">Скачать файлом</button>
 		</div>
 	</div>
 <?php $this->endWidget(); ?>
 
 </div><!-- search-form -->
 <hr>
+<script type="text/javascript">
+	$('#fileCreate').click(function(){
+		var url = $('#searchForm').attr('action');
+		$('#searchForm').attr('action', '/admin/direction/csv');
+		$('#searchForm').submit();
+		$('#searchForm').attr('action', url)
+		return false;
+	});
+</script>

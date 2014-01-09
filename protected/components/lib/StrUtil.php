@@ -29,6 +29,33 @@ class StrUtil
 	}
 
 	/**
+	 * Convert array to csv string
+	 * @param $data
+	 * @return string
+	 */
+	public static function arrayToCsv($data)
+	{
+		$result = '';
+		foreach ($data as $row) {
+			$cnt = 0;
+			if (!is_array($row)) {
+				$row = array($row);
+			}
+			foreach($row as $cell) {
+				if ($cnt > 0) {
+					$result .= ';';
+				} else {
+					$cnt++;
+				}
+				$result .= '"'.$cell.'"';
+			}
+			$result .= "\r\n";
+		}
+		$result = iconv('UTF-8', 'windows-1251', $result);
+		return $result;
+	}
+
+	/**
 	 *
 	 */
 	public static function videoUrlConvert($url)

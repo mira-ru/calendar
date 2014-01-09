@@ -131,35 +131,35 @@ class User extends CActiveRecord
 	{
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
+		$criteria->compare('t.id',$this->id);
 
 		$this->name = trim($this->name);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {
-			$criteria->compare('status', self::STATUS_ACTIVE);
+			$criteria->compare('t.status', self::STATUS_ACTIVE);
 		} else {
-			$criteria->compare('status',$this->status);
+			$criteria->compare('t.status',$this->status);
 		}
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
+			$criteria->compare('t.create_time', '>=' . strtotime($dateFrom));
 		}
 		if (($dateTo = $request->getParam('date_to'))) {
-			$criteria->compare('create_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+			$criteria->compare('t.create_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
 		if ( ($dateUpdate = $request->getParam('date_update')) ) {
-			$criteria->compare('update_time', '>='.strtotime($dateUpdate));
-			$criteria->compare('update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
 		}
 
 		if ( ($checkDesc = $request->getParam('check_desc')) ) {
 			if ($checkDesc == 1) { // has desc
-				$criteria->addCondition('`desc`<>\'\'');
+				$criteria->addCondition('t.`desc`<>\'\'');
 			} elseif ($checkDesc == 2) { // no desc
-				$criteria->addCondition('`desc`=\'\'');
+				$criteria->addCondition('t.`desc`=\'\'');
 			}
 		}
 

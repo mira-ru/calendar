@@ -146,6 +146,48 @@ class DirectionController extends AdminController
 		));
 	}
 
+	public function actionCsv()
+	{
+		$model=new Direction('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['Direction']))
+			$model->attributes=$_GET['Direction'];
+
+		$dataProvider = $model->search();
+
+		$criteria = $dataProvider->getCriteria();
+		// Добавим актуальность юзеров
+		$criteria->join .= ' INNER JOIN event as e ON e.direction_id=t.id AND e.start_time>'.time();
+		$criteria->distinct = true;
+		$criteria->limit = -1;
+		$criteria->offset = 0;
+		$criteria->order = 't.id ASC';
+
+		/** @var $data Direction[] */
+		$data = Direction::model()->findAll($criteria);
+
+		$forPrint = array();
+		$forPrint[] = array('ID', 'Название направления', 'Описание', 'Видео', 'Фото');
+		foreach($data as $direction) {
+			$forPrint[] = array(
+				$direction->id,
+				$direction->name,
+				empty($direction->desc) ? "Нет" : "Есть",
+				empty($direction->url) ? "Нет" : "Есть",
+				empty($direction->photo_url) ? "Нет" : "Есть",
+			);
+		}
+
+		$csv = StrUtil::arrayToCsv($forPrint);
+
+		ob_clean();
+		header('Content-type: text/csv');
+		header('Content-disposition: attachment;filename=DirectionInfo.csv');
+		echo $csv;
+		ob_flush();
+		die();
+	}
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.

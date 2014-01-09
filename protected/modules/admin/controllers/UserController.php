@@ -121,6 +121,49 @@ class UserController extends AdminController
 		));
 	}
 
+	public function actionCsv()
+	{
+		$model=new User('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['User']))
+			$model->attributes=$_GET['User'];
+
+		$dataProvider = $model->search();
+
+		$criteria = $dataProvider->getCriteria();
+		// Добавим актуальность юзеров
+		$criteria->join .= ' INNER JOIN event_user as eu ON eu.user_id=t.id';
+		$criteria->join .= ' INNER JOIN event as e ON e.template_id=eu.template_id AND e.start_time>'.time();
+		$criteria->distinct = true;
+		$criteria->limit = -1;
+		$criteria->offset = 0;
+		$criteria->order = 't.id ASC';
+
+		/** @var $data User[] */
+		$data = User::model()->findAll($criteria);
+
+		$forPrint = array();
+		$forPrint[] = array('ID', 'ФИО', 'Описание', 'Видео', 'Фото');
+		foreach($data as $user) {
+			$forPrint[] = array(
+				$user->id,
+				$user->name,
+				empty($user->desc) ? "Нет" : "Есть",
+				empty($user->url) ? "Нет" : "Есть",
+				empty($user->photo_url) ? "Нет" : "Есть",
+			);
+		}
+
+		$csv = StrUtil::arrayToCsv($forPrint);
+
+		ob_clean();
+		header('Content-type: text/csv');
+		header('Content-disposition: attachment;filename=MasterInfo.csv');
+		echo $csv;
+		ob_flush();
+		die();
+	}
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
