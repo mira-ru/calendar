@@ -73,6 +73,16 @@ $('.search-button').click(function(){
 			'value'=>'empty($data->desc) ? "Нет" : "Есть"',
 		),
 		array(
+			'name'=>'url',
+			'sortable'=>false,
+			'value'=>'empty($data->url) ? "Нет" : "Есть"',
+		),
+		array(
+			'name'=>'photo_url',
+			'sortable'=>false,
+			'value'=>'empty($data->photo_url) ? "Нет" : "Есть"',
+		),
+		array(
 			'class'=>'CButtonColumn',
 			'htmlOptions' => array('style' => 'width: 100px;')
 		),

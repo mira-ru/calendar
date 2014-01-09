@@ -221,6 +221,22 @@ class Direction extends CActiveRecord
 			}
 		}
 
+		if ( ($checkVideo = $request->getParam('check_video')) ) {
+			if ($checkVideo == 1) { // has video
+				$criteria->addCondition('t.`url`<>\'\'');
+			} elseif ($checkVideo == 2) { // no video
+				$criteria->addCondition('t.`url`=\'\'');
+			}
+		}
+
+		if ( ($checkPhoto = $request->getParam('check_photo')) ) {
+			if ($checkPhoto == 1) { // has video
+				$criteria->addCondition('t.`photo_url`<>\'\'');
+			} elseif ($checkPhoto == 2) { // no video
+				$criteria->addCondition('t.`photo_url`=\'\'');
+			}
+		}
+
 		$sort = new CSort();
 //		$sort->defaultOrder = 't.name ASC';
 
