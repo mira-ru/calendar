@@ -85,7 +85,12 @@
 								'label' => 'Отчеты',
 								'url' => $this->createUrl('/admin/report/index'),
 								'active' => $this->id == 'report',
-								'visible'=> Yii::app()->user->checkAccess('alexandrovna13'),
+							),
+							array(
+								'label' => 'Пользователи',
+								'url' => $this->createUrl('/admin/admins/index'),
+								'active' => $this->id == 'admins',
+								'visible' => Yii::app()->user->checkAccess(Admin::ROLE_POWERADMIN),
 							),
 						);
 

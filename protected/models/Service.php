@@ -92,7 +92,10 @@ class Service extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 

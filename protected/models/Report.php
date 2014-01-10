@@ -15,10 +15,6 @@
  */
 class Report extends CActiveRecord
 {
-	static public $users = array(
-		'alexandrovna13'=>1,
-		'admin'=>2,
-	);
 
 	// константы моделей
 	const MODEL_CENTER = 1;
@@ -274,12 +270,17 @@ class Report extends CActiveRecord
 
 	static public function getCurrentUserId()
 	{
-		return @self::$users[Yii::app()->user->name];
+		return Yii::app()->user->id;
 	}
 
 	public function getUserById()
 	{
-		return array_search($this->user, self::$users);
+		$admin = Admin::model()->findByPk($this->user);
+
+		if ( $admin )
+			return $admin->username;
+
+		return null;
 	}
 
 

@@ -133,6 +133,9 @@ class Direction extends CActiveRecord
 				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc', 'price', 'short_desc'),
 			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 
