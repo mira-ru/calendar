@@ -134,7 +134,13 @@ class UserController extends AdminController
 		// Добавим актуальность юзеров
 		$criteria->join .= ' INNER JOIN event_user as eu ON eu.user_id=t.id';
 		$criteria->join .= ' INNER JOIN event as e ON e.template_id=eu.template_id AND e.start_time>'.time();
-		$criteria->distinct = true;
+		$criteria->join .= ' INNER JOIN direction as d ON d.id=e.direction_id ';
+		$criteria->join .= ' INNER JOIN center as c ON c.id=e.center_id';
+
+		$criteria->select = 't.*, GROUP_CONCAT(DISTINCT c.name SEPARATOR ", ") as center_name, GROUP_CONCAT(DISTINCT d.name SEPARATOR ", ") as direction_name';
+//		$criteria->distinct = true;
+
+		$criteria->group = 't.id';
 		$criteria->limit = -1;
 		$criteria->offset = 0;
 		$criteria->order = 't.id ASC';
@@ -143,7 +149,7 @@ class UserController extends AdminController
 		$data = User::model()->findAll($criteria);
 
 		$forPrint = array();
-		$forPrint[] = array('ID', 'ФИО', 'Описание', 'Видео', 'Фото');
+		$forPrint[] = array('ID', 'ФИО', 'Описание', 'Видео', 'Фото', 'Центр', 'Направление');
 		foreach($data as $user) {
 			$forPrint[] = array(
 				$user->id,
@@ -151,6 +157,8 @@ class UserController extends AdminController
 				empty($user->desc) ? "Нет" : "Есть",
 				empty($user->url) ? "Нет" : "Есть",
 				empty($user->photo_url) ? "Нет" : "Есть",
+				$user->center_name,
+				$user->direction_name,
 			);
 		}
 

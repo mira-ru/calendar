@@ -21,6 +21,10 @@ class User extends CActiveRecord
 	// Загруженный файл
 	public $file;
 
+	// для отчетов
+	public $center_name='';
+	public $direction_name='';
+
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
 
