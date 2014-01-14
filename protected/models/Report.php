@@ -236,6 +236,10 @@ class Report extends CActiveRecord
 			unset($diffs['update_time']);
 
 			foreach ($diffs as $field=>$diff) {
+
+				if ( in_array($field, array('creator_id', 'updater_id')) )
+					continue;
+
 				$report = new Report();
 				$report->model = self::$modelClasses[get_class($model)];
 				$report->model_id = $model->id;

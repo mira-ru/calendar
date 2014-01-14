@@ -44,7 +44,6 @@ $this->breadcrumbs=array(
 		array(
 			'class'=>'CButtonColumn',
 			'template'=>'{update} {delete}',
-			'htmlOptions' => array('style' => 'width: 100px;')
 		),
 	),
 )); ?>
