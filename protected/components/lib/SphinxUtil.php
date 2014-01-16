@@ -1,7 +1,7 @@
 <?php
 class SphinxUtil
 {
-	public function updateFilter($type, $id)
+	public static function updateFilter($type, $id)
 	{
 		$start = time();
 		if ($type == User::MODEL_TYPE) {
