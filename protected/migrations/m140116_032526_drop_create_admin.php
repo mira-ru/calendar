@@ -1,9 +1,11 @@
 <?php
 
-class m131226_033006_create_admin extends CDbMigration
+class m140116_032526_drop_create_admin extends CDbMigration
 {
 	public function up()
 	{
+		$this->dropTable('admin');
+
 		$this->createTable('admin', array(
 			'id'=>'pk',
 			'status'=>'tinyint(1)',
@@ -31,11 +33,12 @@ class m131226_033006_create_admin extends CDbMigration
 			'create_time'=>time(),
 			'update_time'=>time(),
 		));
+
 	}
 
 	public function down()
 	{
-		$this->dropTable('admin');
+		return true;
 	}
 
 }
