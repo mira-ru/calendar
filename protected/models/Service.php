@@ -31,6 +31,12 @@ class Service extends CActiveRecord
 		Report::initEvents($this);
 		$this->onAfterSave = array('Config', 'generateCss');
 		$this->onAfterSave = array($this, 'resetParams');
+		$this->onAfterSave = array($this, '_sphinx');
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	/**

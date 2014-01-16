@@ -87,8 +87,13 @@ class Direction extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, 'resetParams');
-
+		$this->onAfterSave = array($this, '_sphinx');
 		Report::initEvents($this);
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	public $oldState;

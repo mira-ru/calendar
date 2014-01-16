@@ -50,6 +50,12 @@ class User extends CActiveRecord
 	public function init()
 	{
 		Report::initEvents($this);
+		$this->onAfterSave = array($this, '_sphinx');
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	/**
