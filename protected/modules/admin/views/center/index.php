@@ -80,6 +80,16 @@ Yii::app()->clientScript->registerScriptFile('/lib/js/backend/arrowsUpDown.js');
 			'value'=>'CHtml::tag(\'span\', array(\'style\'=>\'display:block; width:20px; height:20px; background:\'.$data->color.\';\'))',
 		),
 		array(
+			'name'=> 'Создано',
+			'sortable' => false,
+			'value'=>'$data->creator',
+		),
+		array(
+			'name'=> 'Обновлено',
+			'sortable' => false,
+			'value'=>'$data->updater',
+		),
+		array(
 			'name'=> 'create_time',
 			'sortable' => false,
 			'value'=>'date("d.m.Y", $data->create_time)',

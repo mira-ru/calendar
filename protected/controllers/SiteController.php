@@ -2,6 +2,31 @@
 
 class SiteController extends FrontController
 {
+	public function filters() {
+		return array('accessControl');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function accessRules() {
+
+		return array(
+			array('allow',
+				'actions'=>array('login', 'registration'),
+				'users'=>array('?'),
+			),
+			array('allow',
+				'actions'=>array('logout'),
+				'users'=>array('@'),
+			),
+			array('deny',
+				'actions'=>array('login', 'registration', 'logout'),
+				'users'=>array('*'),
+			),
+		);
+	}
+
 	public function beforeAction($action)
 	{
 		return parent::beforeAction($action);
@@ -393,34 +418,56 @@ class SiteController extends FrontController
 	}
 
 	/**
-	 * Displays the login page
+	 * Аутентификация пользователя
 	 */
 	public function actionLogin()
 	{
 		$this->layout = 'empty';
-		$model=new LoginForm;
 
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
+		$model = new LoginForm;
 
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
+		if (isset($_POST['LoginForm'])) {
+			$model->attributes = $_POST['LoginForm'];
+
+			/**
+			 * Авторизация
+			 */
+			if ($model->validate() && $model->login())
 				$this->redirect(Yii::app()->user->returnUrl);
 		}
-		// display the login form
-		$this->render('login',array('model'=>$model));
+
+		$this->render('login', array('model' => $model));
 	}
 
+
 	/**
-	 * Logs out the current user and redirect to homepage.
+	 * Регистрация пользователя
+	 */
+	public function actionRegistration($success=false)
+	{
+		$this->layout = 'empty';
+
+		if ( $success )
+			return $this->render('registrationOk');
+
+		$model = new Admin();
+
+		if ( isset($_POST['Admin']) ) {
+
+			$model->attributes = $_POST['Admin'];
+
+			if ( $model->register(Admin::ROLE_ADMIN, Admin::STATUS_MODERATE) )
+				$this->redirect($this->createUrl('registration', array('success'=>true)));
+			else
+				$model->password = "";
+		}
+
+		$this->render('registration', array('model' => $model));
+	}
+
+
+	/**
+	 * Logout пользователя и редирект на главную
 	 */
 	public function actionLogout()
 	{

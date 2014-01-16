@@ -147,6 +147,9 @@ class Event extends CActiveRecord
 				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc'),
 			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 

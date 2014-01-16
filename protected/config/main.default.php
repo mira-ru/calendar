@@ -56,10 +56,10 @@ return CMap::mergeArray(array(
 			'coreScriptPosition'=>CClientScript::POS_HEAD,
 			'timeFile'=>dirname(__FILE__).'/../runtime/timeFile.dat',
 		),
-		'user' => array(
-			'allowAutoLogin' => true,
+		'user'=>array(
+			'class'=>'application.components.core.WebUser',
 			'loginUrl' => array('site/login'),
-			'class' => 'application.components.core.WebUser',
+			'allowAutoLogin'=>true,
 		),
 		// uncomment the following to enable URLs in path-format
 		'urlManager'=>array(

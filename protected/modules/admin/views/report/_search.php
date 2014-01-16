@@ -17,7 +17,7 @@
 	<div class="form-group">
 		<?php echo $form->label($model,'user', array('class'=>'col-lg-2 control-label')); ?>
 		<div class="col-lg-5">
-			<?php echo $form->dropDownList($model, 'user', array(''=>'не выбрано') + array_flip(Report::$users), array('class'=>'form-control')); ?>
+			<?php echo $form->dropDownList($model, 'user', array(''=>'не выбрано') + CHtml::listData(Admin::model()->findAll(), 'id', 'username'), array('class'=>'form-control')); ?>
 		</div>
 	</div>
 

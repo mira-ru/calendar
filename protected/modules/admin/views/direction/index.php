@@ -61,6 +61,16 @@ $('.search-button').click(function(){
 			'value'=>'empty($data->center_id) ? \'Центр не указан\' : $data->center->name',
 		),
 		array(
+			'name'=> 'Создано',
+			'sortable' => false,
+			'value'=>'$data->creator',
+		),
+		array(
+			'name'=> 'Обновлено',
+			'sortable' => false,
+			'value'=>'$data->updater',
+		),
+		array(
 			'name'=> 'create_time',
 			'sortable' => false,
 			'value'=>'date("d.m.Y", $data->create_time)',
