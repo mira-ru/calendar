@@ -20,8 +20,10 @@ if ($center === null) { $center = new Center(); }
 /** @var $event Event */
 foreach ($events as $event) {
 	$class = 'grid';
-	if ($event->is_draft == EventTemplate::DRAFT_YES) {
-		$class .= ' -disabled';
+	if ($event->is_draft == EventTemplate::DRAFT_BOOKING) {
+		$class .= ' -booking';
+	} elseif ($event->is_draft == EventTemplate::DRAFT_PREBOOKING) {
+		$class .= ' -prebooking';
 	}
 	echo CHtml::openTag('div', array('class'=>$class));
 

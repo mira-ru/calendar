@@ -39,8 +39,10 @@ $renderItem = function($event, $services) {
 	$colorClass = isset($services[$event->service_id]) ?
 	    'c-'.ltrim($services[$event->service_id]->color, '#') : '';
 	$htmlOptions['class'] = 'col-150 '.$colorClass;
-	if ($event->is_draft == EventTemplate::DRAFT_YES) {
-		$htmlOptions['class'] .= ' -disabled';
+	if ($event->is_draft == EventTemplate::DRAFT_BOOKING) {
+		$htmlOptions['class'] .= ' -booking';
+	} elseif ($event->is_draft == EventTemplate::DRAFT_PREBOOKING) {
+		$htmlOptions['class'] .= ' -prebooking';
 	}
 
 	$content = CHtml::tag('span', array(), (date('H:i', $event->start_time).' — '.date('H:i', $event->end_time)) );
