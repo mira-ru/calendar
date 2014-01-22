@@ -36,10 +36,16 @@ class Admin extends CActiveRecord
 	 */
 	const ROLE_POWERADMIN = 1;
 	const ROLE_ADMIN = 2;
+	const ROLE_READER = 3;
+	const ROLE_DRAFTSAVER = 4;
+	const ROLE_PUBLISHER = 5;
 
 	static public $roles = array(
 		self::ROLE_POWERADMIN => 'Главный администратор',
 		self::ROLE_ADMIN => 'Администратор',
+		self::ROLE_READER => 'Просмотр событий',
+		self::ROLE_DRAFTSAVER => 'Создание черновиков',
+		self::ROLE_PUBLISHER => 'Создатель событий',
 	);
 
 	/**

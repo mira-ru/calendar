@@ -2,6 +2,32 @@
 
 class EventController extends AdminController
 {
+	/**
+	 * @return array
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'roles'=>array(
+					Admin::ROLE_POWERADMIN, Admin::ROLE_ADMIN, Admin::ROLE_PUBLISHER
+				),
+			),
+			array(
+				'allow',
+				'actions'=>array('index', 'update', 'create'),
+				'roles'=>array(Admin::ROLE_DRAFTSAVER),
+			),
+			array(
+				'allow',
+				'actions'=>array('index'),
+				'roles'=>array(Admin::ROLE_READER),
+			),
+			array('deny',
+				'users'=>array('*'),
+			),
+		);
+	}
 
 	/**
 	 * Creates a new model.
@@ -52,6 +78,10 @@ class EventController extends AdminController
 					$event->day_of_week = -1;
 
 				$event->file = CUploadedFile::getInstance($template, 'file');
+
+				if ($event->is_draft == EventTemplate::DRAFT_NO && Yii::app()->user->getRole() == Admin::ROLE_DRAFTSAVER) {
+					throw new CHttpException(403, 'Вы не можете публиковать события');
+				}
 
 				if ( $template->validate(array('type', 'status', 'comment')) && $event->validate() ) { // Создание событий
 					// сохраняем картинку
@@ -132,7 +162,7 @@ class EventController extends AdminController
 		if ($event===null)
 			throw new CHttpException(404);
 
-		$template = $event->getTemplate(); //new EventTemplate();
+		$template = $event->getTemplate();
 
 		/** @var $request CHttpRequest */
 		$request = Yii::app()->getRequest();
@@ -141,6 +171,10 @@ class EventController extends AdminController
 		$startTime = $request->getParam('start_time');
 		$endTime = $request->getParam('end_time');
 		$date = $request->getParam('date');
+
+		if ($event->is_draft == EventTemplate::DRAFT_NO && Yii::app()->user->getRole() == Admin::ROLE_DRAFTSAVER) {
+			throw new CHttpException(403, 'Вы не можете редактировать опубликованные события');
+		}
 
 		if ($request->getIsPostRequest()) {
 			if ( isset($_POST['Event']) ) {
@@ -172,6 +206,10 @@ class EventController extends AdminController
 					$event->day_of_week = date('w', $initTime);
 				else
 					$event->day_of_week = -1;
+
+				if ($event->is_draft == EventTemplate::DRAFT_NO && Yii::app()->user->getRole() == Admin::ROLE_DRAFTSAVER) {
+					throw new CHttpException(403, 'Вы не можете публиковать события');
+				}
 
 				if ($event->validate() && !$hasErrors) {
 					$template->save(false); // Применение свойтв к шаблону (не привязаннных к событиям)
