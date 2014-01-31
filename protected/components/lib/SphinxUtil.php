@@ -64,8 +64,6 @@ class SphinxUtil
 
 			if (!empty($item)) {
 
-				FirePHP::getInstance()->fb($item);
-
 				$sphinxQl = 'REPLACE INTO {{filter}} (`id`, `name`, `type_id`, `item_id`) VALUES ';
 				$sphinxQl .= '('.($item['id']*100 + Service::MODEL_TYPE).',\''.addslashes($item['name']).'\','.Service::MODEL_TYPE.','.$item['id'].')';
 				$result = Yii::app()->sphinx->createCommand($sphinxQl)->execute();
