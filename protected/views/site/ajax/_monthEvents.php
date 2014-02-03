@@ -31,7 +31,7 @@ foreach ($events as $event) {
 
 	$tmp = $dom.'/'.$monthNumber.', '.DateMap::$smallDayMap[$dow]."\n";
 	$tmp .= '<span>'.date('G', $event->start_time).'<sup>'.date('i', $event->start_time).'</sup> — '
-	    .date('G', $event->end_time).'<sup>'.date('i', $event->end_time).'</sup></span>';
+	    .date('G', $event->end_time).'<sup>'.date('i', $event->end_time).'</sup></span><a class="-button -button-green" data-target="#modalForm" data-toggle="modal" href="#">Записаться</a>';
 
 	echo CHtml::tag('div', array('class'=>'col-2 event-time'), $tmp);
 
