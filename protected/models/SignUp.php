@@ -46,4 +46,30 @@ class SignUp extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+	public function getNotifierMessage()
+	{
+		$signUpTime = date('d.m.Y H:i:s');
+		$event = Event::model()->findByPk($this->eventId);
+		$direction = Direction::model()->findByPk($event->direction_id);
+		$eventTime = date("d.m.Y", $event->start_time)." ".date("H:i", $event->start_time)."-".date("H:i", $event->end_time);
+		$hallName = empty($event->hall) ? 'Зал не указан' : $event->hall->name;
+		$masterNames = empty($event->users) ? 'Мастера не указаны' : $event->renderAdminUsers();
+		$dayOfWeek = DateMap::$smallDayMap[$event->day_of_week];
+
+
+		$message = "Имя, фамилия: {$this->name}<br>
+Телефон: {$this->phone}<br>
+Email: {$this->email}<br><br>
+
+Запись на событие: {$direction->name}<br>
+Зал: {$hallName}<br><br>
+
+День недели: {$dayOfWeek}<br>
+Время события: {$eventTime}<br>
+Мастера: {$masterNames}<br>
+";
+
+		return $message;
+	}
 }

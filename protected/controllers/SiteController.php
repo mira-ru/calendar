@@ -409,10 +409,19 @@ class SiteController extends FrontController
 		$model->attributes = $_POST['SignUp'];
 		$model->create_time = time();
 
-		if ( $model->save() )
+		if ( $model->save() ) {
+
+			$email = Yii::createComponent('application.components.EmailComponent');
+			$email->to('roman.kuzakov@gmail.com')
+				->from(array('email'=>'info@calendar.miracentr.ru', 'author'=>'Расписание miracentr.ru'))
+				->subject('Новая запись на событие')
+				->message($model->getNotifierMessage())
+				->send();
+
 			die(json_encode(array('success'=>true)));
-		else
+		} else {
 			die(json_encode(array('success'=>false, 'error'=>'Необходимо заполнить Имя и Телефон')));
+		}
 	}
 
 	/**
