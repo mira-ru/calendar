@@ -71,4 +71,5 @@ if (Config::getViewType($model) == Config::VIEW_DAY) {
 	);
 }
 ?>
-<a class="-button -button-green" data-target="#modalForm" data-toggle="modal" href="#">Записаться</a>
+
+<?php $this->widget('application.components.widgets.SignUpButtonWidget', array('event'=>$event)); ?>
