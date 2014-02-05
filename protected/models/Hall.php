@@ -34,6 +34,12 @@ class Hall extends CActiveRecord
 	public function init()
 	{
 		Report::initEvents($this);
+		$this->onAfterSave = array($this, '_sphinx');
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	/**
@@ -58,7 +64,10 @@ class Hall extends CActiveRecord
 		return array(
 			'ModelTimeBehavior' => array(
 				'class'     => 'application.components.behaviors.ModelTimeBehavior',
-			)
+			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 

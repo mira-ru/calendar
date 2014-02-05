@@ -3,21 +3,6 @@
 class ReportController extends AdminController
 {
 
-	public function filters()
-	{
-		return array(
-			'accessControl',
-		);
-	}
-
-	public function accessRules()
-	{
-		return array(
-			array('allow', 'users'=>array('alexandrovna13')),
-			array('deny', 'users'=>array('*')),
-		);
-	}
-
 	/**
 	 * Lists all models.
 	 */

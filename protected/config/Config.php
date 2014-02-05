@@ -82,7 +82,12 @@ class Config {
 	 */
 	public static function getViewType($model)
 	{
-		if (!empty($_REQUEST['search'])) { // правка для поиска
+
+		if (
+		    !empty($_REQUEST['search'])
+		    && (bool)$_REQUEST['search']
+		    && $_REQUEST['search'] !== 'false'
+		) { // правка для поиска
 			return self::VIEW_MONTH;
 		}
 		$center = null;

@@ -87,8 +87,13 @@ class Direction extends CActiveRecord
 	{
 		parent::init();
 		$this->onAfterSave = array($this, 'resetParams');
-
+		$this->onAfterSave = array($this, '_sphinx');
 		Report::initEvents($this);
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	public $oldState;
@@ -132,6 +137,9 @@ class Direction extends CActiveRecord
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc', 'price', 'short_desc'),
+			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
 			),
 		);
 	}
@@ -187,6 +195,8 @@ class Direction extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.id',$this->id);
+
+		$this->name = trim($this->name);
 		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {
@@ -216,6 +226,22 @@ class Direction extends CActiveRecord
 				$criteria->addCondition('t.`desc`<>\'\'');
 			} elseif ($checkDesc == 2) { // no desc
 				$criteria->addCondition('t.`desc`=\'\'');
+			}
+		}
+
+		if ( ($checkVideo = $request->getParam('check_video')) ) {
+			if ($checkVideo == 1) { // has video
+				$criteria->addCondition('t.`url`<>\'\'');
+			} elseif ($checkVideo == 2) { // no video
+				$criteria->addCondition('t.`url`=\'\'');
+			}
+		}
+
+		if ( ($checkPhoto = $request->getParam('check_photo')) ) {
+			if ($checkPhoto == 1) { // has video
+				$criteria->addCondition('t.`photo_url`<>\'\'');
+			} elseif ($checkPhoto == 2) { // no video
+				$criteria->addCondition('t.`photo_url`=\'\'');
 			}
 		}
 

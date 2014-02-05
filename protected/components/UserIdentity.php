@@ -7,6 +7,10 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	const ERROR_NOT_ACTIVE = 3;
+
+	private $_id;
+
 	/**
 	 * Authenticates a user.
 	 * The example implementation makes sure if the username and password
@@ -17,16 +21,29 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-		$users = Yii::app()->params->users;
-		if(!isset($users[$this->username]))
+		/**
+		 * @var $record User
+		 */
+		$record = Admin::model()->findByAttributes(array('email'=>$this->username));
+
+		if($record===null)
 			$this->errorCode=self::ERROR_USERNAME_INVALID;
-		elseif($users[$this->username]!==$this->password)
+		else if($record->password!==crypt($this->password,$record->password))
 			$this->errorCode=self::ERROR_PASSWORD_INVALID;
-		else {
-			$this->setState('name', $this->username);
+		else if($record->status!=User::STATUS_ACTIVE)
+			$this->errorCode=self::ERROR_NOT_ACTIVE;
+		else
+		{
+			$this->_id=$record->id;
+			$this->setState('email', $record->email);
 			$this->errorCode=self::ERROR_NONE;
 		}
 
 		return !$this->errorCode;
+	}
+
+	public function getId()
+	{
+		return $this->_id;
 	}
 }

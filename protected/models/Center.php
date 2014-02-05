@@ -72,6 +72,9 @@ class Center extends CActiveRecord
 				'class'     => 'application.components.behaviors.PositionBehavior',
 				'whereLimitField' => 'status',
 			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 

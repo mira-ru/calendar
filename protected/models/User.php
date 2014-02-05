@@ -21,6 +21,10 @@ class User extends CActiveRecord
 	// Загруженный файл
 	public $file;
 
+	// для отчетов
+	public $center_name='';
+	public $direction_name='';
+
 	const STATUS_ACTIVE = 1;
 	const STATUS_DELETED = 2;
 
@@ -46,6 +50,12 @@ class User extends CActiveRecord
 	public function init()
 	{
 		Report::initEvents($this);
+		$this->onAfterSave = array($this, '_sphinx');
+	}
+
+	public function _sphinx()
+	{
+		SphinxUtil::updateFilter(self::MODEL_TYPE, $this->id);
 	}
 
 	/**
@@ -94,6 +104,9 @@ class User extends CActiveRecord
 				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc'),
 			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
 		);
 	}
 
@@ -131,34 +144,51 @@ class User extends CActiveRecord
 	{
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id);
+		$criteria->compare('t.id',$this->id);
 
-		$criteria->compare('name',$this->name,true);
+		$this->name = trim($this->name);
+		$criteria->compare('t.name',$this->name,true);
 
 		if (empty($this->status)) {
-			$criteria->compare('status', self::STATUS_ACTIVE);
+			$criteria->compare('t.status', self::STATUS_ACTIVE);
 		} else {
-			$criteria->compare('status',$this->status);
+			$criteria->compare('t.status',$this->status);
 		}
 
 		$request = Yii::app()->getRequest();
 		if (($dateFrom = $request->getParam('date_from'))) {
-			$criteria->compare('create_time', '>=' . strtotime($dateFrom));
+			$criteria->compare('t.create_time', '>=' . strtotime($dateFrom));
 		}
 		if (($dateTo = $request->getParam('date_to'))) {
-			$criteria->compare('create_time', '<' . strtotime('+1 day', strtotime($dateTo)));
+			$criteria->compare('t.create_time', '<' . strtotime('+1 day', strtotime($dateTo)));
 		}
 
 		if ( ($dateUpdate = $request->getParam('date_update')) ) {
-			$criteria->compare('update_time', '>='.strtotime($dateUpdate));
-			$criteria->compare('update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
+			$criteria->compare('t.update_time', '>='.strtotime($dateUpdate));
+			$criteria->compare('t.update_time', '<'.strtotime('+1 day', strtotime($dateUpdate)));
 		}
 
 		if ( ($checkDesc = $request->getParam('check_desc')) ) {
 			if ($checkDesc == 1) { // has desc
-				$criteria->addCondition('`desc`<>\'\'');
+				$criteria->addCondition('t.`desc`<>\'\'');
 			} elseif ($checkDesc == 2) { // no desc
-				$criteria->addCondition('`desc`=\'\'');
+				$criteria->addCondition('t.`desc`=\'\'');
+			}
+		}
+
+		if ( ($checkVideo = $request->getParam('check_video')) ) {
+			if ($checkVideo == 1) { // has video
+				$criteria->addCondition('t.`url`<>\'\'');
+			} elseif ($checkVideo == 2) { // no video
+				$criteria->addCondition('t.`url`=\'\'');
+			}
+		}
+
+		if ( ($checkPhoto = $request->getParam('check_photo')) ) {
+			if ($checkPhoto == 1) { // has video
+				$criteria->addCondition('t.`photo_url`<>\'\'');
+			} elseif ($checkPhoto == 2) { // no video
+				$criteria->addCondition('t.`photo_url`=\'\'');
 			}
 		}
 

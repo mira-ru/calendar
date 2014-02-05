@@ -8,6 +8,7 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'action'=>Yii::app()->createUrl($this->route),
 	'method'=>'get',
+	'id'=>'searchForm',
 	'enableAjaxValidation'=>false,
 	'htmlOptions' => array(
 		'class'=>'form-horizontal',
@@ -108,11 +109,45 @@
 	</div>
 
 	<div class="form-group">
+		<?php echo $form->label($model,'url', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			echo CHtml::dropDownList('check_video',
+				Yii::app()->request->getParam('check_video'),
+				array(''=>'', 1 => 'Есть видео', 2 => 'Нет видео'), array('class'=>'form-control')
+			);
+			?>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<?php echo $form->label($model,'photo_url', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-5">
+			<?php
+			echo CHtml::dropDownList('check_photo',
+				Yii::app()->request->getParam('check_photo'),
+				array(''=>'', 1 => 'Есть фото', 2 => 'Нет фото'), array('class'=>'form-control')
+			);
+			?>
+		</div>
+	</div>
+
+	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">
 			<button type="submit" class="btn btn-default">Найти</button>
+			<button id="fileCreate" type="button" class="btn btn-success">Скачать файлом</button>
 		</div>
 	</div>
 
 <?php $this->endWidget(); ?>
 
 </div><!-- search-form -->
+<script type="text/javascript">
+	$('#fileCreate').click(function(){
+		var url = $('#searchForm').attr('action');
+		$('#searchForm').attr('action', '/admin/user/csv');
+		$('#searchForm').submit();
+		$('#searchForm').attr('action', url)
+		return false;
+	});
+</script>

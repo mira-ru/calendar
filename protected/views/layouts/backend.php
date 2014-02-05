@@ -54,27 +54,47 @@
 							array(
 								'label' => 'Мастера',
 								'url' => $this->createUrl('/admin/user/index'),
-								'active' => $this->id == 'user'
+								'active' => $this->id == 'user',
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
 							),
 							array(
 								'label' => 'Залы',
 								'url' => $this->createUrl('/admin/hall/index'),
-								'active' => $this->id == 'hall'
+								'active' => $this->id == 'hall',
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
 							),
 							array(
 								'label' => 'Центры',
 								'url' => $this->createUrl('/admin/center/index'),
-								'active' => $this->id == 'center'
+								'active' => $this->id == 'center',
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
 							),
 							array(
 								'label' => 'Услуги',
 								'url' => $this->createUrl('/admin/service/index'),
-								'active' => $this->id == 'service'
+								'active' => $this->id == 'service',
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
 							),
 							array(
 								'label' => 'Направления',
 								'url' => $this->createUrl('/admin/direction/index'),
-								'active' => $this->id == 'direction'
+								'active' => $this->id == 'direction',
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
 							),
 							array(
 								'label' => 'События',
@@ -85,7 +105,16 @@
 								'label' => 'Отчеты',
 								'url' => $this->createUrl('/admin/report/index'),
 								'active' => $this->id == 'report',
-								'visible'=> Yii::app()->user->checkAccess('alexandrovna13'),
+								'visible' => Yii::app()->user->checkAccess(array(
+									    Admin::ROLE_POWERADMIN,
+									    Admin::ROLE_ADMIN,
+								    )),
+							),
+							array(
+								'label' => 'Пользователи',
+								'url' => $this->createUrl('/admin/admins/index'),
+								'active' => $this->id == 'admins',
+								'visible' => Yii::app()->user->checkAccess(Admin::ROLE_POWERADMIN),
 							),
 						);
 

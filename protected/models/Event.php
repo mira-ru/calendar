@@ -77,7 +77,7 @@ class Event extends CActiveRecord
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
 			array('hall_id', 'required', 'message'=>'Укажите зал'),
-			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_YES, EventTemplate::DRAFT_NO)),
+			array('is_draft', 'in', 'range'=>array(EventTemplate::DRAFT_BOOKING, EventTemplate::DRAFT_PREBOOKING, EventTemplate::DRAFT_NO)),
 
 			array('desc', 'length', 'max'=>5000),
 			array('day_of_week', 'compare', 'operator'=>'>=', 'compareValue'=>0, 'message'=>'Invalid date'),
@@ -146,6 +146,9 @@ class Event extends CActiveRecord
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
 				'attributes' => array('desc'),
+			),
+			'UserLogBehavior' => array(
+				'class'     => 'application.components.behaviors.UserLogBehavior',
 			),
 		);
 	}
@@ -229,6 +232,8 @@ class Event extends CActiveRecord
 
 		if ($direction = $request->getParam('direction')) {
 			$criteria->join .= ' INNER JOIN direction as d ON d.id=t.direction_id';
+
+			$direction = trim($direction);
 			$criteria->compare('d.name',$direction,true);
 		}
 

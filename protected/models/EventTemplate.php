@@ -41,10 +41,13 @@ class EventTemplate extends CActiveRecord
 		self::TYPE_REGULAR => 'Регулярное событие',
 	);
 
-	const DRAFT_YES = 1;
+
 	const DRAFT_NO = 0;
+	const DRAFT_BOOKING = 1;
+	const DRAFT_PREBOOKING = 2;
 	public static $draftNames = array(
-		self::DRAFT_YES => 'Черновик',
+		self::DRAFT_BOOKING => 'Бронирование',
+		self::DRAFT_PREBOOKING => 'Предварительное бронирование',
 		self::DRAFT_NO => 'Опубликован',
 	);
 
@@ -82,7 +85,7 @@ class EventTemplate extends CActiveRecord
 			array('center_id, service_id, hall_id, direction_id, image_id', 'numerical', 'integerOnly'=>true),
 			array('status', 'in', 'range'=>array(self::STATUS_ACTIVE, self::STATUS_DISABLED)),
 			array('type', 'in', 'range'=>array(self::TYPE_SINGLE, self::TYPE_REGULAR)),
-			array('is_draft', 'in', 'range'=>array(self::DRAFT_YES, self::DRAFT_NO)),
+			array('is_draft', 'in', 'range'=>array(self::DRAFT_BOOKING, self::DRAFT_PREBOOKING, self::DRAFT_NO)),
 			array('service_id', 'required', 'message'=>'Укажите группу'),
 			array('center_id', 'required', 'message'=>'Укажите центр'),
 			array('direction_id', 'required', 'message'=>'Укажите направление'),
@@ -90,10 +93,10 @@ class EventTemplate extends CActiveRecord
 			array('desc, comment', 'length', 'max'=>5000),
 
 			array('start_time', 'compare', 'operator'=>'>=', 'compareValue'=>7*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
-			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>21*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
+			array('start_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 7.00 до 21.00)'),
 
 			array('end_time', 'compare', 'operator'=>'>=', 'compareValue'=>8*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
-			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>22*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
+			array('end_time', 'compare', 'operator'=>'<=', 'compareValue'=>23*3600, 'message'=>'некорректно указано время (с 8.00 до 22.00)'),
 
 			array('day_of_week', 'compare', 'operator'=>'>=', 'compareValue'=>0, 'message'=>'Invalid date'),
 			array('day_of_week', 'compare', 'operator'=>'<=', 'compareValue'=>6, 'message'=>'Invalid date'),

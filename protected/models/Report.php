@@ -15,10 +15,6 @@
  */
 class Report extends CActiveRecord
 {
-	static public $users = array(
-		'alexandrovna13'=>1,
-		'admin'=>2,
-	);
 
 	// константы моделей
 	const MODEL_CENTER = 1;
@@ -240,6 +236,10 @@ class Report extends CActiveRecord
 			unset($diffs['update_time']);
 
 			foreach ($diffs as $field=>$diff) {
+
+				if ( in_array($field, array('creator_id', 'updater_id')) )
+					continue;
+
 				$report = new Report();
 				$report->model = self::$modelClasses[get_class($model)];
 				$report->model_id = $model->id;
@@ -274,12 +274,17 @@ class Report extends CActiveRecord
 
 	static public function getCurrentUserId()
 	{
-		return @self::$users[Yii::app()->user->name];
+		return Yii::app()->user->id;
 	}
 
 	public function getUserById()
 	{
-		return array_search($this->user, self::$users);
+		$admin = Admin::model()->findByPk($this->user);
+
+		if ( $admin )
+			return $admin->username;
+
+		return null;
 	}
 
 

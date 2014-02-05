@@ -2,16 +2,6 @@
 
 class UserController extends AdminController
 {
-	/**
-	 * @return array action filters
-	 */
-	public function filters()
-	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-//			'postOnly + delete', // we only allow deletion via POST request
-		);
-	}
 
 	/**
 	 * Displays a particular model.
@@ -119,6 +109,57 @@ class UserController extends AdminController
 		$this->render('index',array(
 			'model'=>$model,
 		));
+	}
+
+	public function actionCsv()
+	{
+		$model=new User('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['User']))
+			$model->attributes=$_GET['User'];
+
+		$dataProvider = $model->search();
+
+		$criteria = $dataProvider->getCriteria();
+		// Добавим актуальность юзеров
+		$criteria->join .= ' INNER JOIN event_user as eu ON eu.user_id=t.id';
+		$criteria->join .= ' INNER JOIN event as e ON e.template_id=eu.template_id AND e.start_time>'.time();
+		$criteria->join .= ' INNER JOIN direction as d ON d.id=e.direction_id ';
+		$criteria->join .= ' INNER JOIN center as c ON c.id=e.center_id';
+
+		$criteria->select = 't.*, GROUP_CONCAT(DISTINCT c.name SEPARATOR ", ") as center_name, GROUP_CONCAT(DISTINCT d.name SEPARATOR ", ") as direction_name';
+//		$criteria->distinct = true;
+
+		$criteria->group = 't.id';
+		$criteria->limit = -1;
+		$criteria->offset = 0;
+		$criteria->order = 't.id ASC';
+
+		/** @var $data User[] */
+		$data = User::model()->findAll($criteria);
+
+		$forPrint = array();
+		$forPrint[] = array('ID', 'ФИО', 'Описание', 'Видео', 'Фото', 'Центр', 'Направление');
+		foreach($data as $user) {
+			$forPrint[] = array(
+				$user->id,
+				$user->name,
+				empty($user->desc) ? "Нет" : "Есть",
+				empty($user->url) ? "Нет" : "Есть",
+				empty($user->photo_url) ? "Нет" : "Есть",
+				$user->center_name,
+				$user->direction_name,
+			);
+		}
+
+		$csv = StrUtil::arrayToCsv($forPrint);
+
+		ob_clean();
+		header('Content-type: text/csv');
+		header('Content-disposition: attachment;filename=MasterInfo.csv');
+		echo $csv;
+		ob_flush();
+		die();
 	}
 
 	/**

@@ -20,8 +20,10 @@ if ($center === null) { $center = new Center(); }
 /** @var $event Event */
 foreach ($events as $event) {
 	$class = 'grid';
-	if ($event->is_draft == EventTemplate::DRAFT_YES) {
-		$class .= ' -disabled';
+	if ($event->is_draft == EventTemplate::DRAFT_BOOKING) {
+		$class .= ' -booking';
+	} elseif ($event->is_draft == EventTemplate::DRAFT_PREBOOKING) {
+		$class .= ' -prebooking';
 	}
 	echo CHtml::openTag('div', array('class'=>$class));
 
@@ -64,6 +66,10 @@ foreach ($events as $event) {
 
 	if (!empty($event->direction->short_desc)) {
 		echo CHtml::tag('p', array(), $event->direction->short_desc);
+	}
+
+	if (!empty($event->desc)) {
+		echo CHtml::tag('p', array(), $event->desc);
 	}
 	/** @var $service Service */
 	$service = isset($allServices[$event->service_id]) ? $allServices[$event->service_id] : new Service();

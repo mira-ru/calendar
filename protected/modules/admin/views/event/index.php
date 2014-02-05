@@ -91,6 +91,16 @@ $this->widget('widgets.CustomGridView', array(
 			'value'=>'date("d.m.Y", $data->start_time)." ".date("H:i", $data->start_time)."-".date("H:i", $data->end_time)',
 		),
 		array(
+			'name'=> 'Создано',
+			'sortable' => false,
+			'value'=>'$data->creator',
+		),
+		array(
+			'name'=> 'Обновлено',
+			'sortable' => false,
+			'value'=>'$data->updater',
+		),
+		array(
 			'name'=> 'update_time',
 			'sortable' => false,
 			'value'=>'date("d.m.Y H:i:s", $data->update_time)',

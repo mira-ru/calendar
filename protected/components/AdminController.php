@@ -18,12 +18,12 @@ class AdminController extends Controller
         /**
          * @return array
          */
-	public function accessRules() {
-
+	public function accessRules()
+	{
 		return array(
 			array('allow',
 				'roles'=>array(
-					'admin', 'alexandrovna13'
+					Admin::ROLE_POWERADMIN, Admin::ROLE_ADMIN
 				),
 			),
 			array('deny',
