@@ -48,50 +48,7 @@
 		<!-- EOF PAGE FOOTER -->
 		<div id="popover"><div></div></div>
 		<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true"></div>
-		<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-lightbox calendar-modal form">
-				<div class="modal-content">
-					<div class="modal-header"><button type="button" class="close btn-lg" data-dismiss="modal" aria-hidden="true">&times;</button></div>
-					<div class="modal-body">
-						<h4 class="col-12">Запись на занятие</h4>
-						<div class="flow">
-							<form class="col-12">
-								<div class="flow">
-									<label class="col-6">
-										<strong>Ваше имя и фамилия <span class="required">*</span></strong>
-										<input type="text" class="col-12" name="name"/>
-										<div class="clearfix"></div>
-									</label>
-									<label class="col-6">
-										<strong>Контактный телефон <span class="required">*</span></strong>
-										<input type="text" class="col-12" name="name"/>
-										<div class="clearfix"></div>
-									</label>
-								</div>
-								<div class="flow">
-									<label class="col-12">
-										<strong>Адрес электронной почты</strong>
-										<input type="text" class="col-12" name="phone"/>
-										<div class="clearfix"></div>
-									</label>
-								</div>
-								<div class="flow">
-									<label class="col-12">
-										<strong>Комментарий</strong>
-										<textarea class="col-12"></textarea>
-										<div class="clearfix"></div>
-									</label>
-								</div>
-								<div class=""><label><input type="checkbox"> Я записываюсь впервые</label></div>
-								<div class=""><label><input type="checkbox"> Мне нужна консультация администратора центра</label></div>
-								<input type="hidden" value="Название занятия" name="service">
-								<input type="submit" value="Записаться" class="-button">
-								<br>
-								<div>Дети до 14 лет посещают центр в сопровождении взрослых</div>
-							</form>
-						</div>
-					</div>
-		</div>
+		<div class="modal fade" id="modalForm" tabindex="-1" role="dialog" aria-labelledby="calendarModalLabel" aria-hidden="true"></div>
 		<?php Yii::app()->lmd->registerLmdFile('calendar', $cs->getVersion()); ?>
 	<?php if (!YII_DEBUG) { ?><!-- Yandex.Metrika counter --><script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter22425796 = new Ya.Metrika({id:22425796, webvisor:true, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/22425796" style="position:absolute; left:-9999px;" alt="" /></div></noscript><!-- /Yandex.Metrika counter --><?php } ?>
 

@@ -31,9 +31,12 @@ foreach ($events as $event) {
 
 	$tmp = $dom.'/'.$monthNumber.', '.DateMap::$smallDayMap[$dow]."\n";
 	$tmp .= '<span>'.date('G', $event->start_time).'<sup>'.date('i', $event->start_time).'</sup> — '
-	    .date('G', $event->end_time).'<sup>'.date('i', $event->end_time).'</sup></span><a class="-button -button-green" data-target="#modalForm" data-toggle="modal" href="#">Записаться</a>';
+	    .date('G', $event->end_time).'<sup>'.date('i', $event->end_time).'</sup></span>';
 
-	echo CHtml::tag('div', array('class'=>'col-2 event-time'), $tmp);
+	echo CHtml::openTag('div', array('class'=>'col-2 event-time'));
+	echo $tmp;
+	$this->widget('application.components.widgets.SignUpButtonWidget', array('event'=>$event));
+	echo CHtml::closeTag('div');
 
 	echo CHtml::openTag('div', array('class'=>'col-10 event-info'));
 

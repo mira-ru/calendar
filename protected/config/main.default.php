@@ -120,10 +120,10 @@ return CMap::mergeArray(array(
 					'class'=>'CFileLogRoute',
 					'levels'=>'error, warning',
 				),
-				array(
-					'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
-					'ipFilters' => array('127.0.0.1', '127.0.1.1'),
-				),
+				//array(
+				//	'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+				//	'ipFilters' => array('127.0.0.1', '127.0.1.1'),
+				//),
 			),
 		),
 	),
