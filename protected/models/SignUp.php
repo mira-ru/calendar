@@ -47,6 +47,12 @@ class SignUp extends CActiveRecord
 		return parent::model($className);
 	}
 
+
+	/**
+	 * Возвращает текст для вставки в тело емаил-уведомления о новой записи
+	 * на событие
+	 * @return string
+	 */
 	public function getNotifierMessage()
 	{
 		$signUpTime = date('d.m.Y H:i:s');
