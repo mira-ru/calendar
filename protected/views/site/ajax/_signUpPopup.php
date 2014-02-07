@@ -9,12 +9,12 @@
 				)); ?>
 					<div class="flow">
 						<label class="col-6">
-							<strong>Ваше имя и фамилия <span class="required"></span></strong>
+							<strong>Ваше имя и фамилия <span class="required">*</span></strong>
 							<?php echo $form->textField($model, 'name', array('class'=>'col-12')); ?>
 							<div class="clearfix"></div>
 						</label>
 						<label class="col-6">
-							<strong>Контактный телефон <span class="required"></span></strong>
+							<strong>Контактный телефон <span class="required">*</span></strong>
 							<?php echo $form->textField($model, 'phone', array('class'=>'col-12')); ?>
 							<div class="clearfix"></div>
 						</label>
