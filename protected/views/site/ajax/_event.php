@@ -71,3 +71,5 @@ if (Config::getViewType($model) == Config::VIEW_DAY) {
 	);
 }
 ?>
+<?php echo CHtml::tag('div'); ?>
+<?php $this->widget('application.components.widgets.SignUpButtonWidget', array('event'=>$event)); ?>

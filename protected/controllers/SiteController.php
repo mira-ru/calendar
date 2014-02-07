@@ -378,6 +378,7 @@ class SiteController extends FrontController
 		switch ($type) {
 			case 'm': $class = 'User'; break;
 			case 'a': $class = 'Direction'; break;
+			case 'e': $class = 'Event'; break;
 			default: throw new CHttpException(400);
 		}
 
@@ -392,10 +393,35 @@ class SiteController extends FrontController
 		} elseif ($item instanceof Direction) {
 			$this->renderPartial('ajax/_directionPopup', array('item'=>$item));
 			Yii::app()->end();
+		} elseif ($item instanceof Event ) {
+			$signUpModel = new SignUp();
+			$signUpModel->eventId = $item->id;
+			$this->renderPartial('ajax/_signUpPopup', array('model'=>$signUpModel));
+			Yii::app()->end();
 		} else {
 			throw new CHttpException(404);
 		}
+	}
 
+	public function actionSignUpEvent()
+	{
+		$model = new SignUp();
+		$model->attributes = $_POST['SignUp'];
+		$model->create_time = time();
+
+		if ( $model->save() ) {
+
+			$email = Yii::createComponent('application.components.EmailComponent');
+			$email->to('info@miracentr.ru')
+				->from(array('email'=>'info@calendar.miracentr.ru', 'author'=>'Расписание miracentr.ru'))
+				->subject('Новая запись на событие')
+				->message($model->getNotifierMessage())
+				->send();
+
+			die(json_encode(array('success'=>true)));
+		} else {
+			die(json_encode(array('success'=>false, 'error'=>'Необходимо заполнить Имя и Телефон')));
+		}
 	}
 
 	/**

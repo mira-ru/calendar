@@ -215,6 +215,47 @@
 .col-960 {
 	width: 100%;
 }
+.gradient (@startColor: #E4E4E4, @endColor: #E4E4E4) {
+	background: @startColor;
+	background: -o-linear-gradient(top, @startColor, @endColor);
+	background: -ms-linear-gradient(top, @startColor, @endColor);
+	background: -moz-linear-gradient(top, @startColor, @endColor);
+	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+	background: -webkit-linear-gradient(top, @startColor, @endColor);
+	background: linear-gradient(@startColor, @endColor);
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	background-origin: padding-box;
+	filter: ~"progid:DXImageTransform.Microsoft.gradient(startColorstr='@{startColor}', endColorstr='@{endColor}', GradientType=0)";
+}
+.-button {
+	font-size: 12px;
+	font-weight: normal;
+	border: 0;
+	border-radius: 0.25em;
+	box-shadow: inset -1px -1px 0 0 rgba(0,0,0,0.25), inset 1px 1px 0 0 rgba(225,225,225,0.3), 1px 1px 2px 0 rgba(0,0,0,0.2);
+	color: #FFF;
+	cursor: pointer;
+	display: inline-block;
+	line-height: 1;
+	margin-bottom: 0;
+	outline: 0;
+	padding: 0.65em 1em 0.75em;
+	text-align: center;
+	text-decoration: none !important;
+	//text-shadow: 1px 1px 0 rgba(255,255,255,0.8);
+	vertical-align: middle;
+	margin-top: 10px;
+	.gradient(#46c032, #31a11d);
+	&:hover {
+		.gradient(#58c646, #45aa33);
+	}
+	&:active {
+		.gradient(#58c646, #45aa33);
+	}
+
+}
+
 .pencil {
 	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAA50lEQVQ4T2NkoBAwkqL/eYSGg+SKGweQ9RBtwLMIzQUMDIzx//8zXOD6+c1RcMODDyCDiDIAphlmM8gQ6ZXXDIkyAF0zzBBGhn+OIO/gdQEuzQwM/xdKrbiegNcFxGjGaQCxmrEaQIpmDAPwBFgiMMCA0YgJ4IH4LFyzgJHx/4f/DIzAwGG0RwptnJpRXPA0QqtBesW1BpAg0CXA1MZoD4wqvJpRDABqesDI8L8B5FRgkgVHES5nYyTl9wEKAt85uN4D4/ch0AsLGP/9vyC16voGYvIJOAxABoBoWPomRiMijEhRjUUtAD+BZhGzGTg3AAAAAElFTkSuQmCC) 50% 50% no-repeat;
 	cursor: pointer;
@@ -689,8 +730,11 @@
 			}
 			p{
 				margin: 0 0 0.4em;
+				padding-left: 110px;
 			}
 			div{
+
+				padding-left: 110px;
 				a{
 					color: @default-color;
 					&:hover{
@@ -855,6 +899,38 @@
 		p {
 			font-size: 15px;
 			margin-bottom: 1.5em;
+		}
+	}
+	&.form{
+		width: 600px;
+		h4{
+			margin: 0 0 20px 0;
+		}
+		.clearfix{
+			clear: both;
+		}
+		label{
+			margin-bottom: 10px;
+			display: inline-block;
+			input, textarea{
+				padding:5px;
+				border-radius: 3px;
+				border:1px solid #ccc;
+			}
+		}
+		.modal-body{
+			//text-align: center;
+			padding: 0 20px 30px;
+		}
+		.-button{
+			font-size: 14px;
+			padding: 10px 20px;
+			display: block;
+			width:120px;
+			margin: 0 auto;
+		}
+		.required{
+			color: red;
 		}
 	}
 }
@@ -1259,4 +1335,7 @@
 			}
 		}
 	}
+}
+.form-modal{
+	width: 600px;
 }
