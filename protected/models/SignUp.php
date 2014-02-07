@@ -8,6 +8,9 @@
  * @property integer $eventId
  * @property string $name
  * @property string $email
+ * @property string $comment
+ * @property string $is_first
+ * @property string $is_need_consult
  * @property string $phone
  * @property integer $create_time
  */
@@ -23,9 +26,10 @@ class SignUp extends CActiveRecord
 	{
 		return array(
 			array('name, phone, eventId, create_time', 'required'),
-			array('eventId, create_time', 'numerical', 'integerOnly'=>true),
+			array('eventId, create_time, is_need_consult, is_first', 'numerical', 'integerOnly'=>true),
 			array('name, phone, email', 'length', 'max'=>255),
-			array('id, name, phone, email, eventId, create_time', 'safe', 'on'=>'search'),
+			array('comment', 'length', 'max'=>5000),
+			array('id, name, phone, email, eventId, create_time, is_need_consult, is_first', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -36,6 +40,9 @@ class SignUp extends CActiveRecord
 			'name' => 'Имя, Фамилия',
 			'phone' => 'Телефон',
 			'email' => 'Email',
+			'comment' => 'Комментарий',
+			'is_first' => 'Первое обращение',
+			'is_need_comment' => 'Требуется консультация',
 			'eventId' => 'ID события',
 			'create_time' => 'Дата записи',
 		);
@@ -62,11 +69,16 @@ class SignUp extends CActiveRecord
 		$hallName = empty($event->hall) ? 'Зал не указан' : $event->hall->name;
 		$masterNames = empty($event->users) ? 'Мастера не указаны' : $event->renderAdminUsers();
 		$dayOfWeek = DateMap::$smallDayMap[$event->day_of_week];
-
+		$comment = nl2br($this->comment);
+		$is_first = $this->is_first ? 'Да' : 'Нет';
+		$is_need_consult = $this->is_need_consult ? 'Да' : 'Нет';
 
 		$message = "Имя, фамилия: {$this->name}<br>
 Телефон: {$this->phone}<br>
-Email: {$this->email}<br><br>
+Email: {$this->email}<br>
+Первое обращение: {$is_first}<br>
+Требуется консультация: {$is_need_consult}<br>
+Комментарий: {$comment}<br><br>
 
 Запись на событие: {$direction->name}<br>
 Зал: {$hallName}<br><br>
