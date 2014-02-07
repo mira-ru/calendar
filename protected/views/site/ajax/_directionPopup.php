@@ -22,7 +22,7 @@ $image = Yii::app()->image;
 					<div class="text-center">
 						<span>Запись по телефону:</span>
 						<h2 class="phone green"><?php echo Yii::app()->params->miraPhone; ?></h2>
-						<a class="-button -button-green" data-target="#modal" data-toggle="modal" href="#">Записаться на занятие</a>
+						<?php //$this->widget('application.components.widgets.SignUpButtonWidget', array('event'=>$event)); ?>
 						<?php /*
 						<span class="clearfix">Наши мастера:</span>
 						<img src="/images/src/master.jpg" class="img-circle master-thumb" width="75" height="75">
