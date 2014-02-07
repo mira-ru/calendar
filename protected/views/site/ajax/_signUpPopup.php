@@ -44,7 +44,7 @@
 						</label>
 					</div>
 					<?php echo $form->hiddenField($model, 'eventId'); ?>
-					<input type="submit" value="Записаться" class="-button">
+					<input type="submit" onclick="yaCounter22425796.reachGoal('order'); return true;" value="Записаться" class="-button">
 					<br>
 					<div>Дети до 14 лет посещают центр в сопровождении взрослых</div>
 				<?php $this->endWidget(); ?>
