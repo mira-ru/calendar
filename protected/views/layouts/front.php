@@ -53,26 +53,41 @@
 				<div class="modal-content">
 					<div class="modal-header"><button type="button" class="close btn-lg" data-dismiss="modal" aria-hidden="true">&times;</button></div>
 					<div class="modal-body">
-						<h4>Запись на занятие</h4>
+						<h4 class="col-12">Запись на занятие</h4>
 						<div class="flow">
-							<form class="col-10">
-								<label class="flow">
-									<strong class="col-5">Имя, Фамилия</strong>
-									<input type="text" class="col-7" name="name"/>
-									<div class="clearfix"></div>
-								</label>
-								<label class="flow">
-									<strong class="col-5">Телефон</strong>
-									<input type="text" class="col-7" name="phone"/>
-									<div class="clearfix"></div>
-								</label>
-								<label class="flow">
-									<strong class="col-5">E-mail</strong>
-									<input type="text" class="col-7" name="phone"/>
-									<div class="clearfix"></div>
-								</label>
+							<form class="col-12">
+								<div class="flow">
+									<label class="col-6">
+										<strong>Ваше имя и фамилия <span class="required">*</span></strong>
+										<input type="text" class="col-12" name="name"/>
+										<div class="clearfix"></div>
+									</label>
+									<label class="col-6">
+										<strong>Контактный телефон <span class="required">*</span></strong>
+										<input type="text" class="col-12" name="name"/>
+										<div class="clearfix"></div>
+									</label>
+								</div>
+								<div class="flow">
+									<label class="col-12">
+										<strong>Адрес электронной почты</strong>
+										<input type="text" class="col-12" name="phone"/>
+										<div class="clearfix"></div>
+									</label>
+								</div>
+								<div class="flow">
+									<label class="col-12">
+										<strong>Комментарий</strong>
+										<textarea class="col-12"></textarea>
+										<div class="clearfix"></div>
+									</label>
+								</div>
+								<div class=""><label><input type="checkbox"> Я записываюсь впервые</label></div>
+								<div class=""><label><input type="checkbox"> Мне нужна консультация администратора центра</label></div>
 								<input type="hidden" value="Название занятия" name="service">
 								<input type="submit" value="Записаться" class="-button">
+								<br>
+								<div>Дети до 14 лет посещают центр в сопровождении взрослых</div>
 							</form>
 						</div>
 					</div>
