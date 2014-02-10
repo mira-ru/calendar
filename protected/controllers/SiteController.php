@@ -413,7 +413,7 @@ class SiteController extends FrontController
 
 			$email = Yii::createComponent('application.components.EmailComponent');
 			$email->to(array('info@miracentr.ru', 'roman.kuzakov@gmail.com'))
-				->from(array('email'=>'info@calendar.miracenter.ru', 'author'=>'Расписание miracentr.ru'))
+				->from(array('email'=>'info@miracenter.ru', 'author'=>'Расписание занятий'))
 				->subject('Новая запись на событие')
 				->message($model->getNotifierMessage())
 				->send();
