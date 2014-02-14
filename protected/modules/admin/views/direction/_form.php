@@ -145,6 +145,21 @@ $serviceList = CHtml::listData($services, 'id', 'name');
 		</div>
 	</div>
 
+	<div class="form-group <?php if ($model->hasErrors('comment')) echo 'has-error'; ?>">
+		<?php echo $form->label($model, 'comment', array('class'=>'col-lg-2 control-label')); ?>
+		<div class="col-lg-8">
+			<?php
+			echo CHtml::activeTextArea($model, 'comment', array(
+				'value'=>Kavychker::deformat($model->comment),
+				'maxlength'=>5000,
+				'class'=>'col-lg-12',
+				'rows'=>15,
+			));
+			echo $form->error($model,'comment', array('class'=>'text-danger'));
+			?>
+		</div>
+	</div>
+
 	<div class="form-group">
 		<div class="col-lg-offset-2 col-lg-10">
 			<?php echo CHtml::submitButton($model->isNewRecord ? 'Создать' : 'Сохранить', array('class'=>'btn btn-default')); ?>

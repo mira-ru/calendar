@@ -15,7 +15,7 @@ $('.search-button').click(function(){
 ");
 ?>
 
-<h1>Управление услугами</h1>
+<h1>Управление направлениями</h1>
 
 <div class="row">
 	<div class="col-xs-12 col-sm-9">

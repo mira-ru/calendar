@@ -4,7 +4,7 @@
 
 ?>
 
-<h1>Просмотр направления #<?php echo $model->name; ?></h1>
+<h1>Просмотр услуги #<?php echo $model->name; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
@@ -45,6 +45,11 @@
 			'name'=>'short_desc',
 			'type'=>'raw',
 			'value' => $model->short_desc,
+		),
+		array(
+			'name'=>'comment',
+			'type'=>'raw',
+			'value' => $model->comment,
 		),
 		array(
 			'name'=> 'create_time',

@@ -11,6 +11,7 @@
  * @property string $photo_url
  * @property integer $image_id
  * @property string $desc
+ * @property string $comment
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -71,7 +72,7 @@ class User extends CActiveRecord
 			array('name', 'length', 'max'=>255),
 			array('url, photo_url', 'urlCheck', 'message'=>'Invalid url format'),
 			array('url, photo_url', 'length', 'max'=>512),
-			array('desc', 'length', 'max'=>5000),
+			array('desc, comment', 'length', 'max'=>5000),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
 			// @todo Please remove those attributes that should not be searched.
 			array('id, status, name', 'safe', 'on'=>'search'),
@@ -102,7 +103,7 @@ class User extends CActiveRecord
 			),
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
-				'attributes' => array('desc'),
+				'attributes' => array('desc', 'comment'),
 			),
 			'UserLogBehavior' => array(
 				'class'     => 'application.components.behaviors.UserLogBehavior',
@@ -123,6 +124,7 @@ class User extends CActiveRecord
 			'photo_url' => 'URL фотоальбома',
 			'image_id' => 'Фото',
 			'desc' => 'Описание',
+			'comment' => 'Внутренние комментарии',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);

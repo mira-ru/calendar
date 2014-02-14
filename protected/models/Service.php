@@ -9,6 +9,7 @@
  * @property integer $center_id
  * @property string $name
  * @property string $color
+ * @property string $comment
  * @property integer $create_time
  * @property integer $update_time
  */
@@ -86,6 +87,7 @@ class Service extends CActiveRecord
 			array('name', 'length', 'max'=>255),
 			array('color', 'length', 'max'=>7),
 			array('color', 'required'),
+			array('comment', 'length', 'max'=>5000),
 			array('center_id', 'required'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -101,6 +103,10 @@ class Service extends CActiveRecord
 			),
 			'UserLogBehavior' => array(
 				'class'     => 'application.components.behaviors.UserLogBehavior',
+			),
+			'TextAreaBehavior' => array(
+				'class' => 'application.components.behaviors.TextAreaBehavior',
+				'attributes' => array('comment'),
 			),
 		);
 	}
@@ -127,6 +133,7 @@ class Service extends CActiveRecord
 			'center_id' => 'Центр',
 			'name' => 'Название',
 			'color' => 'Цвет',
+			'comment' => 'Внутренние комментарии',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);

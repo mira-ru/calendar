@@ -4,7 +4,7 @@
 
 ?>
 
-<h1>Добавление направления</h1>
+<h1>Добавление услуги</h1>
 
 <?php $this->renderPartial('_form', array(
 			'model'=>$model,

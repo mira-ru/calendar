@@ -45,6 +45,11 @@ $image = Yii::app()->image;
 			'value'=>$model->desc,
 		),
 		array(
+			'name'=>'comment',
+			'type'=>'raw',
+			'value'=>$model->comment,
+		),
+		array(
 			'name'=> 'create_time',
 			'value'=>date("d.m.Y", $model->create_time),
 		),

@@ -52,6 +52,8 @@ class EventController extends AdminController
 			$event = new Event();
 		}
 
+		$event->is_draft = EventTemplate::DRAFT_PREBOOKING;
+
 		$date = $request->getParam('date');
 		$startTime = $request->getParam('start_time');
 		$endTime = $request->getParam('end_time');

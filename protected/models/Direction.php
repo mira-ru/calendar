@@ -14,6 +14,7 @@
  * @property string $desc
  * @property string $short_desc
  * @property string price
+ * @property string comment
  * @property integer image_id
  * @property integer $create_time
  * @property integer $update_time
@@ -58,7 +59,7 @@ class Direction extends CActiveRecord
 			array('url, photo_url', 'urlCheck', 'message'=>'Invalid url format'),
 			array('url, photo_url', 'length', 'max'=>512),
 			array('file', 'file', 'types'=> 'jpg, bmp, png, jpeg', 'maxFiles'=> 1, 'maxSize' => 10737418240, 'allowEmpty' => true),
-			array('desc', 'length', 'max'=>5000),
+			array('desc, comment', 'length', 'max'=>5000),
 			array('price', 'length', 'max'=>2048),
 			array('short_desc', 'length', 'max'=>512),
 
@@ -136,7 +137,7 @@ class Direction extends CActiveRecord
 			),
 			'TextAreaBehavior' => array(
 				'class' => 'application.components.behaviors.TextAreaBehavior',
-				'attributes' => array('desc', 'price', 'short_desc'),
+				'attributes' => array('desc', 'price', 'short_desc', 'comment'),
 			),
 			'UserLogBehavior' => array(
 				'class'     => 'application.components.behaviors.UserLogBehavior',
@@ -173,6 +174,7 @@ class Direction extends CActiveRecord
 			'desc' => 'Описание',
 			'short_desc' => 'Краткое описание',
 			'price' => 'Цена',
+			'comment' => 'Внутренние комментарии',
 			'create_time' => 'Дата создания',
 			'update_time' => 'Дата обновления',
 		);

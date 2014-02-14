@@ -4,7 +4,7 @@
 
 ?>
 
-<h1>Редактирование направления: <?php echo $model->name; ?></h1>
+<h1>Редактирование услуги: <?php echo $model->name; ?></h1>
 
 <?php $this->renderPartial('_form', array(
 			'model'=>$model,

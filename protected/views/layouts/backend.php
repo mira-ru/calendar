@@ -79,7 +79,7 @@
 								    )),
 							),
 							array(
-								'label' => 'Услуги',
+								'label' => 'Направления',
 								'url' => $this->createUrl('/admin/service/index'),
 								'active' => $this->id == 'service',
 								'visible' => Yii::app()->user->checkAccess(array(
@@ -88,7 +88,7 @@
 								    )),
 							),
 							array(
-								'label' => 'Направления',
+								'label' => 'Услуги',
 								'url' => $this->createUrl('/admin/direction/index'),
 								'active' => $this->id == 'direction',
 								'visible' => Yii::app()->user->checkAccess(array(

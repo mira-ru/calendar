@@ -9,7 +9,7 @@ $this->breadcrumbs=array(
 
 ?>
 
-<h1>Просмотр услуги #<?php echo $model->name; ?></h1>
+<h1>Просмотр направления #<?php echo $model->name; ?></h1>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
@@ -35,6 +35,11 @@ $this->breadcrumbs=array(
 			'name'=>'center_id',
 			'type'=>'raw',
 			'value'=>empty($model->center_id) ? 'Центр не указан' : $model->center->name,
+		),
+		array(
+			'name'=>'comment',
+			'type'=>'raw',
+			'value'=>$model->comment,
 		),
 		array(
 			'name'=> 'create_time',
