@@ -133,6 +133,6 @@ return CMap::mergeArray(array(
 		'adminEmail'=>'webmaster@example.com',
 		'closeMain' => true, // закрытие главной страницы
 		'allowIp' => array('127.0.0.1', '195.239.212.54', '37.193.244.157', '89.189.191.1'),
-		'miraPhone' => '(383) 230-01-80',
+		'miraPhone' => '(383) 292-12-61',
 	),
 ), require(dirname(__FILE__) . '/main.php'));
