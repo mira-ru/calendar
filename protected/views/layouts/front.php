@@ -34,7 +34,7 @@
 		<div id="footer" class="grid">
 			<div class="flow align-middle">
 				<div class="col-2"><img src="/images/src/logobottom.gif"></div>
-				<div class="col-4">Мира — центр здорового отдыха<br><span>Новосибирск, БЦ Речной вокзал, </span>Добролюбова,&nbsp;2«А»<br><span>Запись по телефону </span>+7 (383) 2-300-108</div>
+				<div class="col-4">Мира — центр здорового отдыха<br><span>Новосибирск, БЦ Речной вокзал, </span>Добролюбова,&nbsp;2«А»<br><span>Запись по телефону </span>+7 (383) 292-12-61</div>
 				<div class="col-6">
 					<a href="http://vk.com/miracentr" class="vk"></a>
 					<a href="https://www.facebook.com/miracentr.ru" class="fb"></a>

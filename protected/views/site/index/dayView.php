@@ -33,7 +33,7 @@ $this->bodyClass = array('calendar');
 			</div>
 			<div class="col-2 text-right" id="phone">
 				<span>Запись по телефону:</span>
-				<h2>2-300-108</h2>
+				<h2>292-12-61</h2>
 			</div>
 		</div>
 	</div>
