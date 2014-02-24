@@ -40,7 +40,7 @@ class EventCommand extends CConsoleCommand{
 		Yii::import('application.models.*');
 		$templates = EventTemplate::model()->findAllByAttributes(array('status'=>EventTemplate::STATUS_ACTIVE, 'type'=>EventTemplate::TYPE_REGULAR));
 
-		$time = time()+3*DateMap::TIME_WEEK;
+		$time = time()-10*DateMap::TIME_WEEK;
 		$time = strtotime('TODAY', $time);
 
 		$count = 0;

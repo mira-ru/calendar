@@ -11,6 +11,9 @@ class UserLogBehavior extends CActiveRecordBehavior
 
 	public function beforeSave($event)
 	{
+		if ( !Yii::app() instanceof CWebApplication )
+			return true;
+
 		$owner = $this->getOwner();
 
 		if ( Yii::app()->user->isGuest )
@@ -32,6 +35,8 @@ class UserLogBehavior extends CActiveRecordBehavior
 
 		if ( $admin )
 			return $admin->username;
+
+		return '';
 	}
 
 	public function getUpdater()
@@ -42,6 +47,8 @@ class UserLogBehavior extends CActiveRecordBehavior
 
 		if ( $admin )
 			return $admin->username;
+
+		return '';
 	}
 
 }

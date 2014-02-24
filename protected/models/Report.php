@@ -295,6 +295,9 @@ class Report extends CActiveRecord
 	 */
 	static public function initEvents(&$model)
 	{
+		if ( !Yii::app() instanceof CWebApplication )
+			return true;
+
 		$model->onBeforeSave = array('Report', 'saveOldModelState');
 		$model->onAfterSave = array('Report', 'saveChangesToReport');
 		$model->onAfterDelete = array('Report', 'saveDeleteStateToReport');
