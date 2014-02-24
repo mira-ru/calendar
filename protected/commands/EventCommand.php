@@ -47,7 +47,7 @@ class EventCommand extends CConsoleCommand{
 		/** @var $template EventTemplate */
 		foreach ($templates as $template) {
 			$tmpTime = $time;
-			for ($i=0; $i<12*7; $i++) {
+			for ($i=0; $i<22*7; $i++) {
 				$dow = date('w', $tmpTime);
 				if ($template->day_of_week != $dow) {
 					$tmpTime += DateMap::TIME_DAY;
