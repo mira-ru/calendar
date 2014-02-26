@@ -2,7 +2,7 @@
 @import '../plugins/_modal';
 @import '../plugins/_jQuery-ui';
 
-.col-30, .col-60, .col-90, .col-120, .col-150, .col-180, .col-210, .col-240, .col-270, .col-300, .col-330, .col-360, .col-390, .col-420, .col-450, .col-480, .col-510, .col-540, .col-570, .col-600, .col-630, .col-660, .col-690, .col-720, .col-750, .col-780, .col-810, .col-840, .col-870, .col-900 {
+.col-30, .col-60, .col-90, .col-120, .col-150, .col-180, .col-210, .col-240, .col-270, .col-300, .col-330, .col-360, .col-390, .col-420, .col-450, .col-480, .col-510, .col-540, .col-570, .col-600, .col-630, .col-660, .col-690, .col-720, .col-750, .col-780, .col-810, .col-840, .col-870, .col-900, .col-960 {
 	// background: #ccc;
 	border: 1px #eeeeee solid;
 	border-radius: 6px;
@@ -25,6 +25,15 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
+}
+.col-30, .col-60, .col-90, .col-120, .col-150, .col-180 {
+        z-index: 2
+}
+.col-210, .col-240, .col-270, .col-300, .col-330, .col-360, .col-390, .col-420, .col-450, .col-480, .col-510, .col-540, .col-570 {
+        z-index: 1;
+}
+.col-600, .col-630, .col-660, .col-690, .col-720, .col-750, .col-780, .col-810, .col-840, .col-870, .col-900, .col-960 {
+        z-index: 0;
 }
 .start-07-30 {
 	margin-left: 3.125%;
